@@ -1,1 +1,10 @@
+# Java stuff #
 *.class
+
+
+# eclipse stuff #
+bin/
+.project
+.classpath
+
+
