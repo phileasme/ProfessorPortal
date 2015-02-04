@@ -12,5 +12,5 @@ Commands for running program after fresh clone (without eclipse):
 Linux:   javac -d bin/ -cp src src/*/*.java
 Windows: javac -d bin\ -cp src src\*\*.java
 
-Linux:   java -cp lib/StudentData.jar:bin test.TestStudentData
-Windows: java -cp lib\StudentData.jar;bin test.TestStudentData
+Linux:   java -cp lib/StudentData.jar:lib/javax.mail.jar:bin test.TestStudentData
+Windows: java -cp lib\StudentData.jar;lib\javax.mail.jar;bin test.TestStudentData
