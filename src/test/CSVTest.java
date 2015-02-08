@@ -10,13 +10,24 @@ public class CSVTest {
 	public static void main(String[] args) {
 		String path1 = "/home/max/Documents/KCL/PRA/Major CW/exam_results_test.csv";
 		
-		String s = "\"Hello world!\"";
-		System.out.println(s);
-		System.out.println(s.replaceAll("\"[\\S+]\"", ""));
-		System.out.println(s.replaceAll("^\"|\"$", ""));
-		System.out.println(s.replace("\"", ""));
-		
 		readCSV(path1);
+	}
+	
+	public static String clean(String s) {
+		String leftQuote = String.valueOf((char) 8220);
+		String rightQuote = String.valueOf((char) 8221);
+		String quote = "\"";
+		String empty = "";
+		
+		int charType = Character.getType(s.toCharArray()[0]);
+		
+		if (charType == 29) {
+			s = s.replaceAll(leftQuote + "|" + rightQuote, empty);
+		} else if (charType == 24) {
+			s = s.replaceAll(quote, empty);
+		}
+		
+		return s;
 	}
 	
 	public static void readCSV(String path) {
@@ -25,12 +36,7 @@ public class CSVTest {
 		try {
 			sc = new Scanner(new BufferedReader(new FileReader(path)));
 			
-			String[] categories = sc.nextLine().split(",");
-			
-			for (int i = 0; i < categories.length; ++i) {
-				// why doesn't this work?
-				categories[i] = categories[i].replace("\"", "");
-			}
+			String[] categories = clean(sc.nextLine()).split(",");
 			
 			for (int i = 0; i < categories.length; ++i) {
 				System.out.print(String.format("%-15s", categories[i]));
@@ -38,7 +44,7 @@ public class CSVTest {
 			System.out.print("\n");
 			
 			while (sc.hasNextLine()) {
-				String[] dataRow = sc.nextLine().split(",");
+				String[] dataRow = clean(sc.nextLine()).split(",");
 				
 				for (int i = 0; i < dataRow.length; ++i) {
 					String s = dataRow[i];
