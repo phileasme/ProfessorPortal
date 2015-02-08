@@ -83,8 +83,23 @@ public class StudentRecords {
 		public ArrayList<Student> returnStudents(){
 			return students;
 		}
-    
 		
+		/**
+		 * Return Individual student
+		 * @return Individual student
+		 */
+    
+		public Student returnStudent(int i){
+			return students.get(i);
+		}
+		
+		/**
+		 * Return size of student arraylist
+		 * @return students.size
+		 */
+		public int numOfStudents(){
+			return students.size();
+		}
 		
 		/**
 		 * Prints all the students.
