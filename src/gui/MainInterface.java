@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import records.Student;
+import records.StudentRecords;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -25,6 +26,7 @@ public class MainInterface extends JFrame {
 	Student test = new Student(10, "tutor@tutormail.com", "Test", "studentemail@mail.com");
 	private DefaultListModel studentListModel;
 	private JList studentList;
+	private StudentRecords sr = new StudentRecords();
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -40,7 +42,7 @@ public class MainInterface extends JFrame {
 	}
 	
 	/**
-	 * Creates the scrollable list of students by name and ID Number
+	 * Creates the scrollable list of students by name and ID Number from StudentRecords
 	 * 
 	 */
 	private void createStudentList(){
@@ -48,6 +50,9 @@ public class MainInterface extends JFrame {
 		JPanel studentPanel = new JPanel();
 		studentListModel = new DefaultListModel();
 		studentListModel.addElement(test.getName()+ "(" + test.getNumber() + ")");
+		for(int i = 0; i<sr.numOfStudents()-1; i++){
+			studentListModel.addElement(sr.returnStudent(i).getName() + "(" + sr.returnStudent(i).getNumber() + ")");
+		}
 		studentList = new JList(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane studentScroll = new JScrollPane(studentList);
@@ -68,7 +73,8 @@ public class MainInterface extends JFrame {
 		
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
-
+		StudentRecords sr = new StudentRecords();
+		System.out.println(sr.returnStudents());
 	}
 }
 
