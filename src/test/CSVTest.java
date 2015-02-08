@@ -10,6 +10,12 @@ public class CSVTest {
 	public static void main(String[] args) {
 		String path1 = "/home/max/Documents/KCL/PRA/Major CW/exam_results_test.csv";
 		
+		String s = "\"Hello world!\"";
+		System.out.println(s);
+		System.out.println(s.replaceAll("\"[\\S+]\"", ""));
+		System.out.println(s.replaceAll("^\"|\"$", ""));
+		System.out.println(s.replace("\"", ""));
+		
 		readCSV(path1);
 	}
 	
@@ -22,6 +28,11 @@ public class CSVTest {
 			String[] categories = sc.nextLine().split(",");
 			
 			for (int i = 0; i < categories.length; ++i) {
+				// why doesn't this work?
+				categories[i] = categories[i].replace("\"", "");
+			}
+			
+			for (int i = 0; i < categories.length; ++i) {
 				System.out.print(String.format("%-15s", categories[i]));
 			}
 			System.out.print("\n");
@@ -30,7 +41,9 @@ public class CSVTest {
 				String[] dataRow = sc.nextLine().split(",");
 				
 				for (int i = 0; i < dataRow.length; ++i) {
-					System.out.print(String.format("%-15s", dataRow[i]));
+					String s = dataRow[i];
+					// why doesn't this work?
+					System.out.print(String.format("%-15s", s.replaceAll("^\"|\"$", "")));
 				}
 				System.out.print("\n");
 			}
