@@ -2,7 +2,8 @@ HELLO HELLO HELLO!
 TESTING PUSH WITH ECLIPSE 
 === Watch this space ===
 
-
+Organizing tasks:
+https://docs.google.com/spreadsheets/d/1Db0pnohqPWpU5MSMMmltfIYkeRCz4dtUb8T05IF9g9E/edit?usp=sharing
 
 
 I'm putting a few notes here so that I don't forget them:
