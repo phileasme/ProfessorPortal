@@ -12,6 +12,7 @@ public class Student {
 	private String name;
 	private String email;
 	private String tutorEmail;
+	private String markingCode = null;
 
 	/**
 	 * Constructor.
@@ -54,6 +55,22 @@ public class Student {
 	 */
 	public String getTutorEmail() {
 		return tutorEmail;
+	}
+	
+	/**
+	 * Set the student's marking code.
+	 * 
+	 * @param code the student's anonymous marking code
+	 */
+	public void setMarkingCode(String code) {
+		markingCode = code;
+	}
+	
+	/**
+	 * @return the student's anonymous marking code
+	 */
+	public String getMarkingCode() {
+		return markingCode;
 	}
 	
 	/**
