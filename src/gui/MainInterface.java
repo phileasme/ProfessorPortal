@@ -10,6 +10,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import records.Student;
 import records.StudentRecords;
@@ -25,10 +27,12 @@ import records.StudentRecords;
  */
 public class MainInterface extends JFrame {
 	
-	Student test = new Student(10, "tutor@tutormail.com", "Test", "studentemail@mail.com");
 	private DefaultListModel<String> studentListModel;
 	private JList<String> studentList;
 	private StudentRecords sr = new StudentRecords();
+	private JPanel studentPanel;
+	private JScrollPane studentScroll;
+	private JMenuBar menuBar;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -49,27 +53,26 @@ public class MainInterface extends JFrame {
 	 */
 	private void createStudentList(){
 		setLayout(new BorderLayout());
-		JPanel studentPanel = new JPanel();
+		studentPanel = new JPanel();
 		
 		studentListModel = new DefaultListModel<String>();
-		studentListModel.addElement(test.getName()+ "(" + test.getNumber() + ")");
-		
+
+		//Adds all students from StudentRecords into the studentListModel
 		for (int i = 0; i < sr.numOfStudents()-1; i++) {
 			studentListModel.addElement(sr.returnStudent(i).getName() + " (" + sr.returnStudent(i).getNumber() + ")");
 		}
 		studentList = new JList<String>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane studentScroll = new JScrollPane(studentList);
+		studentScroll = new JScrollPane(studentList);
 		studentPanel.add(studentScroll);
 		add(studentScroll, BorderLayout.WEST);
 		
 	}
-	
 	/**
 	 * Creates the MenuBar - Sets to Frame
 	 */
 	private void createMenuBar(){
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		JMenu data = new JMenu("Data");
 		
