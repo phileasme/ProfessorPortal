@@ -77,7 +77,7 @@ public class Student {
 	 * @return all the info on the student: number, tutor's email, name, email
 	 */
 	public String toString() {
-		return number + " " + tutorEmail + " " + name + " " + email;
+		return name + " (" + number + ")";
 	}
 	
 }

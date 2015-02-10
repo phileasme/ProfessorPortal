@@ -1,18 +1,18 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JMenuBar;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import records.Student;
 import records.StudentRecords;
@@ -28,8 +28,8 @@ import records.StudentRecords;
  */
 public class MainInterface extends JFrame {
 	
-	private DefaultListModel<String> studentListModel;
-	private JList<String> studentList;
+	private DefaultListModel<Student> studentListModel;
+	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
 	private JScrollPane studentScroll;
@@ -56,19 +56,20 @@ public class MainInterface extends JFrame {
 		setLayout(new BorderLayout());
 		studentPanel = new JPanel();
 		
-		studentListModel = new DefaultListModel<String>();
+		studentListModel = new DefaultListModel<Student>();
 
 		//Adds all students from StudentRecords into the studentListModel
 		for (Student student : sr.returnStudents().values()) {
-			studentListModel.addElement(student.getName() + " (" + student.getNumber() + ")");
+			studentListModel.addElement(student);
 		}
 				
-		studentList = new JList<String>(studentListModel);
+		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
 		studentPanel.add(studentScroll);
 		add(studentScroll, BorderLayout.WEST);
 		
+		studentList.addMouseListener(new StudentPressListener());
 	}
 	/**
 	 * Creates the MenuBar - Sets to Frame
@@ -92,20 +93,29 @@ public class MainInterface extends JFrame {
 		setJMenuBar(menuBar);
 	}
 		
+	/**
+	 * MouseListener to make a pop up window of the Student Information appear
+	 */
+	
+	class StudentPressListener implements MouseListener{
+		public void mousePressed(MouseEvent e) {
+			int index;
+			Student stu;
+			index = studentList.getSelectedIndex();
+			stu = studentListModel.elementAt(index);
+			PopUpWindow studentInfo = new PopUpWindow(stu);
+			studentInfo.setVisible(true);
+		}
+		@Override
+		public void mouseClicked(MouseEvent e) {}
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e) {}
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+	}
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
 	}
 }
-
-/**
-JButton buttonTest = new JButton("Test");
-window.add(buttonTest);
-
-class StudentPopUpListener implements ActionListener {
-	public void actionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(window, "Test Student Dialog");
-	}
-}
-
-buttonTest.addActionListener(new StudentPopUpListener());
- */
