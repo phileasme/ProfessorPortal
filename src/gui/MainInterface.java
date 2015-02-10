@@ -44,9 +44,7 @@ public class MainInterface extends JFrame {
 	 */
 	public MainInterface(){
 		super("PRA Coursework - MNP");
-		setLayout(new BorderLayout());
 		createStudentList();
-		createSearchField();
 		createMenuBar();
 		setSize(500,400);
 		setVisible(true);
@@ -58,6 +56,8 @@ public class MainInterface extends JFrame {
 	 * 
 	 */
 	private void createStudentList(){
+		setLayout(new BorderLayout()); 
+		studentPanel = new JPanel();
 		studentListModel = new DefaultListModel<Student>();
 		//Adds all students from StudentRecords into the studentListModel
 		for (Student student : sr.returnStudents().values()) {
@@ -67,18 +67,11 @@ public class MainInterface extends JFrame {
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
-		
-		studentPanel = new JPanel();
-		studentPanel.add(studentScroll);
-		add(studentPanel, BorderLayout.WEST);
+		add(studentScroll, BorderLayout.WEST);
+		searchText = new JTextField(25);
+		studentPanel.add(searchText);
+		add(studentPanel, BorderLayout.NORTH);
 		studentList.addMouseListener(new StudentPressListener());
-	}
-	
-	private void createSearchField(){
-		searchText = new JTextField(20);
-		searchPanel = new JPanel();
-		searchPanel.add(searchText);
-		add(searchPanel, BorderLayout.NORTH);
 	}
 	
 	/**
