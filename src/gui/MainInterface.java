@@ -5,8 +5,9 @@ import java.awt.BorderLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -58,9 +59,10 @@ public class MainInterface extends JFrame {
 		studentListModel = new DefaultListModel<String>();
 
 		//Adds all students from StudentRecords into the studentListModel
-		for (int i = 0; i < sr.numOfStudents()-1; i++) {
-			studentListModel.addElement(sr.returnStudent(i).getName() + " (" + sr.returnStudent(i).getNumber() + ")");
+		for (Student student : sr.returnStudents().values()) {
+			studentListModel.addElement(student.getName() + " (" + student.getNumber() + ")");
 		}
+				
 		studentList = new JList<String>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
@@ -76,15 +78,22 @@ public class MainInterface extends JFrame {
 		JMenu file = new JMenu("File");
 		JMenu data = new JMenu("Data");
 		
+		// menu items
+		JMenuItem loadCodes = new JMenuItem("Load anonymous marking codes");
+		JMenuItem loadResults = new JMenuItem("Load exam results");
+		
+		// add menus to bar, and items to menus
 		menuBar.add(file);
 		menuBar.add(data);
+		
+		file.add(loadCodes);
+		file.add(loadResults);
+		
 		setJMenuBar(menuBar);
 	}
 		
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
-//		StudentRecords sr = new StudentRecords();
-//		System.out.println(sr.returnStudents());
 	}
 }
 

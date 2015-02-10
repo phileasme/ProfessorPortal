@@ -12,7 +12,8 @@ package records;
 /**
  * Importing libraries and packages
  */
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import studentdata.*;
 import studentdata.Connector;
@@ -25,20 +26,17 @@ import studentdata.DataTable;
 public class StudentRecords {
 	
 	/**
-	 *  The students ArrayList.
+	 *  Mapping of each student to their ID number.
 	 */
-	private ArrayList<Student> students = new ArrayList<>();	    
-        // Create a Connector object and open the connection to the server
+	private Map<String, Student> students = new LinkedHashMap<String, Student>();	    
        
 	
 	/**
      * Instantiates a new student records.
      */
         public StudentRecords(){
-        	
-        	/** 
-        	 * Server connection
-        	 */
+
+        // Create a Connector object and open the connection to the server
 		Connector server = new Connector();
         boolean success = server.connect("MNP","0a34d4ea3cc0da36ee91172b9cccb621");
         
@@ -62,14 +60,13 @@ public class StudentRecords {
          *  than adding them to an ArrayList of Students
          */
         for (int row = 0; row < rowCount; ++row) {
-        	//
-        		int numb= Integer.parseInt(data.getCell(row,0));
-        		String temail = data.getCell(row,1);
-        		String name = data.getCell(row,2);
-        		String email = data.getCell(row,3);
-        		Student st = new Student(numb,temail,name,email);
-        	
-        		students.add(st);
+        		String numb = data.getCell(row, 0);
+        		String temail = data.getCell(row, 1);
+        		String name = data.getCell(row, 2);
+        		String email = data.getCell(row, 3);
+        		Student st = new Student(numb, temail, name, email);
+        		
+        		students.put(numb, st);
             }
         	
         }
@@ -78,9 +75,9 @@ public class StudentRecords {
 		/**
 		 * Return students.
 		 *
-		 * @return the array list
+		 * @return the LinkedHashMap containing students
 		 */
-		public ArrayList<Student> returnStudents(){
+		public Map<String, Student> returnStudents(){
 			return students;
 		}
 		
@@ -95,8 +92,8 @@ public class StudentRecords {
 		}
 		
 		/**
-		 * Return size of student arraylist
-		 * @return students.size
+		 * Return size of students.
+		 * @return number of students
 		 */
 		public int numOfStudents(){
 			return students.size();
@@ -107,7 +104,7 @@ public class StudentRecords {
 		 */
 		public void printStudents() {
 			
-			for(Student each : students){
+			for(Student each : students.values()){
 				System.out.println(each);
 			}
 		}
