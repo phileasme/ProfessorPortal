@@ -9,8 +9,9 @@ import java.io.IOException;
 public class CSVTest {
 	public static void main(String[] args) {
 		String path1 = "/home/max/Documents/KCL/PRA/Major CW/exam_results_test.csv";
+		String path2 = "/home/max/Documents/KCL/PRA/Major CW/cw_results_test.csv";
 		
-		readCSV(path1);
+		readCSV(path2);
 	}
 	
 	public static String clean(String s) {
