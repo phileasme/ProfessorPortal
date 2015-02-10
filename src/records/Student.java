@@ -8,7 +8,7 @@ package records;
  */
 public class Student {
 
-	private int number;
+	private String number;
 	private String name;
 	private String email;
 	private String tutorEmail;
@@ -22,7 +22,7 @@ public class Student {
 	 * @param n the student's name
 	 * @param e the student's email address
 	 */
-	public Student(int num, String tEmail, String n, String e) {
+	public Student(String num, String tEmail, String n, String e) {
 		number = num;
 		name = n;
 		email = e;
@@ -32,7 +32,7 @@ public class Student {
 	/**
 	 * @return the number for this student
 	 */
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 	
