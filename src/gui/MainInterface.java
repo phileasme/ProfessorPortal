@@ -12,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import records.Student;
@@ -32,8 +33,10 @@ public class MainInterface extends JFrame {
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
+	private JPanel searchPanel;
 	private JScrollPane studentScroll;
 	private JMenuBar menuBar;
+	private JTextField searchText;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -41,7 +44,9 @@ public class MainInterface extends JFrame {
 	 */
 	public MainInterface(){
 		super("PRA Coursework - MNP");
+		setLayout(new BorderLayout());
 		createStudentList();
+		createSearchField();
 		createMenuBar();
 		setSize(500,400);
 		setVisible(true);
@@ -53,11 +58,7 @@ public class MainInterface extends JFrame {
 	 * 
 	 */
 	private void createStudentList(){
-		setLayout(new BorderLayout());
-		studentPanel = new JPanel();
-		
 		studentListModel = new DefaultListModel<Student>();
-
 		//Adds all students from StudentRecords into the studentListModel
 		for (Student student : sr.returnStudents().values()) {
 			studentListModel.addElement(student);
@@ -66,11 +67,20 @@ public class MainInterface extends JFrame {
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
-		studentPanel.add(studentScroll);
-		add(studentScroll, BorderLayout.WEST);
 		
+		studentPanel = new JPanel();
+		studentPanel.add(studentScroll);
+		add(studentPanel, BorderLayout.WEST);
 		studentList.addMouseListener(new StudentPressListener());
 	}
+	
+	private void createSearchField(){
+		searchText = new JTextField(20);
+		searchPanel = new JPanel();
+		searchPanel.add(searchText);
+		add(searchPanel, BorderLayout.NORTH);
+	}
+	
 	/**
 	 * Creates the MenuBar - Sets to Frame
 	 */
