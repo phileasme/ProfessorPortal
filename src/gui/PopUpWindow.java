@@ -28,7 +28,7 @@ public class PopUpWindow extends JFrame {
 	private Student stu;
 	private String studentName;
 	private String studentEmail;
-	private int studentNumber;
+	private String studentNumber;
 	private String studentTutor;
 
 	/**
@@ -42,7 +42,7 @@ public class PopUpWindow extends JFrame {
 		studentEmail = stu.getEmail();
 		studentNumber = stu.getNumber();
 		studentTutor = stu.getTutorEmail();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -90,7 +90,7 @@ public class PopUpWindow extends JFrame {
 		lblStudentNo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panel.add(lblStudentNo, "4, 10");
 		
-		JLabel studentNumberLabel = new JLabel(Integer.toString(studentNumber));
+		JLabel studentNumberLabel = new JLabel(studentNumber);
 		studentNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panel.add(studentNumberLabel, "8, 10");
 		
