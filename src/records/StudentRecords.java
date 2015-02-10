@@ -82,12 +82,19 @@ public class StudentRecords {
 		}
 		
 		/**
-		 * Return Individual student
-		 * @return Individual student
+		 * Return individual student from its (int) ID number.
+		 * @return individual student
 		 */
-		
-    
 		public Student returnStudent(int i){
+			return students.get(String.valueOf(i));
+		}
+		
+		/**
+		 * Return individual student from its (string) ID number.
+		 * 
+		 * @return individual student 
+		 */
+		public Student returnStudent(String i) {
 			return students.get(i);
 		}
 		
