@@ -84,7 +84,7 @@ public class MainInterface extends JFrame {
 		add(studentPanel, BorderLayout.NORTH);
 		studentList.addMouseListener(new StudentPressListener());
 
-		SearchFilterListener sfl = new SearchFilterListener();
+		SearchFilter sfl = new SearchFilter();
 	}
 	
 	/**
@@ -132,9 +132,13 @@ public class MainInterface extends JFrame {
 		public void mouseReleased(MouseEvent e) {}
 	}
 	
-   class SearchFilterListener {
+	/**
+	 *SearchFilter keeps track of searchText textArea  by using 
+	 *a DocumentListener and updates studentListModel using filteringList().
+	 */
+   class SearchFilter {
 	   
-	   public SearchFilterListener(){
+	   public SearchFilter(){
 	   searchText.getDocument().addDocumentListener(new DocumentListener() {
 	        
 	        @Override
@@ -159,6 +163,9 @@ public class MainInterface extends JFrame {
 	   }
    }
    
+   /**
+    * Method to change studentListModel
+    */
 public void filteringList(){
 	  if (searchText.getText().equals("")){
 		  for (Student student : sr.returnStudents().values()) {
@@ -166,19 +173,16 @@ public void filteringList(){
 			}
     
 	}
-	  
-	 else{
-		 //Compare searchtext Text with student name
-		  // 	Needs :  remove current elements ; use compare;
-		 //	loop every student ; compare the both in lowercase;
-		 	// 	add student in the 
+	  else {
+		 //Compare searchtext Text with student name and student number
 		 studentListModel.removeAllElements();
 		 for (Student student : sr.returnStudents().values()) {
-			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase()) )
-				
-				 studentListModel.addElement(student);
-		
+			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
+					 || student.getNumber().toString().contains(searchText.getText()) ){
+						 studentListModel.addElement(student);
+			 }
 			}
+		 
 	  }
     
 	
