@@ -5,21 +5,30 @@ import java.util.Map;
 
 import records.StudentRecords;
 import records.Student;
+import records.Result;
 import io.CSVLoader;
 
 public class TestFile {
 	public static void main(String[] args) {	
-		String path = "/home/max/Documents/KCL/PRA/Major CW/marking_codes_test.csv";
-		StudentRecords sr = new StudentRecords();
+//		String path = "/home/max/Documents/KCL/PRA/Major CW/marking_codes_test.csv";
+		String path = "/home/max/Documents/KCL/PRA/Major CW/exam_results_test.csv";
+//		String path = "/home/max/Documents/KCL/PRA/Major CW/cw_results_test.csv";
+//		StudentRecords sr = new StudentRecords();
 		
-		try {
+		/*try {
 			System.out.println(sr.returnStudent(34).getMarkingCode());			
 		} catch (NullPointerException e) {
 			System.out.println("null");
-		}
+		}*/
 		
-		CSVLoader c = new CSVLoader(sr, path);
+//		CSVLoader c = new CSVLoader(sr, path);
 		
-		System.out.println(sr.returnStudent(34).getMarkingCode());
+		
+//		System.out.println(sr.returnStudent(34).getMarkingCode());
+		
+		String num = "121213/1";
+		
+		String c = num.replaceFirst("/\\w$", "");
+		System.out.println(c);
 	}
 }
