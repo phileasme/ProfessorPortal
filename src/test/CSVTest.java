@@ -21,10 +21,10 @@ public class CSVTest {
 			codes = root + "/csv/anoncodes1.csv";
 			
 			results1 = root + "/csv/201314/4CCS1CS1.csv";
-		} else if (os.equals("windows")) {
-			codes = root + "\\csv\\anoncodes1.csv";
+		} else if (os.equals("windows 7")) {
+			codes = ""+root + "\\csv\\anoncodes1.csv";
 			
-			results1 = root + "\\csv\\201314\\4CCS1CS1.csv";
+			results1 = ""+root + "\\csv\\201314\\4CCS1CS1.csv";
 		}
 		
 		StudentRecords sr = new StudentRecords();
