@@ -60,6 +60,16 @@ public class Result {
 		return candKey;
 	}
 	
+	/**
+	 * Returns a string identifying the module, and assessment within that
+	 * module.
+	 * 
+	 * @return an identifying string
+	 */
+	public String getAssessment() {
+		return module + " " + assessment;
+	}
+	
 	public String toString() {
 		return module + " " + assessment + " " + candKey + " " + mark;
 	}
