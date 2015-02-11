@@ -14,7 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.*;
+import javax.swing.event.*;
 
+import java.awt.*;
+import java.awt.event.*;
 import records.Student;
 import records.StudentRecords;
 
@@ -48,6 +53,8 @@ public class MainInterface extends JFrame {
 		createMenuBar();
 		setSize(500,400);
 		setVisible(true);
+		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -58,20 +65,26 @@ public class MainInterface extends JFrame {
 	private void createStudentList(){
 		setLayout(new BorderLayout()); 
 		studentPanel = new JPanel();
+		searchText = new JTextField(25);
+		studentPanel.add(searchText);
 		studentListModel = new DefaultListModel<Student>();
+
 		//Adds all students from StudentRecords into the studentListModel
+		
 		for (Student student : sr.returnStudents().values()) {
 			studentListModel.addElement(student);
 		}
-				
+
+
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
 		add(studentScroll, BorderLayout.WEST);
-		searchText = new JTextField(25);
-		studentPanel.add(searchText);
+	
 		add(studentPanel, BorderLayout.NORTH);
 		studentList.addMouseListener(new StudentPressListener());
+
+		SearchFilterListener sfl = new SearchFilterListener();
 	}
 	
 	/**
@@ -118,6 +131,54 @@ public class MainInterface extends JFrame {
 		@Override
 		public void mouseReleased(MouseEvent e) {}
 	}
+	
+   class SearchFilterListener {
+	   
+	   public SearchFilterListener(){
+	   searchText.getDocument().addDocumentListener(new DocumentListener() {
+	        
+	        @Override
+	        public void removeUpdate(DocumentEvent e) {
+	            filteringList();
+	            
+	        }
+	        
+	        @Override
+	        public void insertUpdate(DocumentEvent e) {
+	        	 filteringList();
+	            
+	        }
+	        
+	        @Override
+	        public void changedUpdate(DocumentEvent e) {
+	        	 filteringList();
+	            
+	        }
+	        
+	    });
+	   }
+   }
+   
+public void filteringList(){
+	  if (searchText.getText().equals("")){
+		  for (Student student : sr.returnStudents().values()) {
+				studentListModel.addElement(student);
+			}
+    
+	}
+	  else if (searchText.getText().equals("Clear")){
+		 
+		  studentListModel.removeAllElements();
+	}
+	  else if (searchText.getText().equals("clear")){
+			 
+		  studentListModel.removeAllElements();
+	} 
+    
+	}
+
+
+	
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
 	}
