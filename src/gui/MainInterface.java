@@ -166,11 +166,12 @@ public void filteringList(){
 			}
     
 	}
+	  
 	 else{
 		 //Compare searchtext Text with student name
 		  // 	Needs :  remove current elements ; use compare;
 		 //	loop every student ; compare the both in lowercase;
-		 	// 	add student in the ListModel.
+		 	// 	add student in the 
 		 studentListModel.removeAllElements();
 		 for (Student student : sr.returnStudents().values()) {
 			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase()) )
