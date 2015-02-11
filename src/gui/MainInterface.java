@@ -166,14 +166,10 @@ public void filteringList(){
 			}
     
 	}
-	  else if (searchText.getText().equals("Clear")){
+	  else if (searchText.getText().equalsIgnoreCase("Clear")){
 		 
 		  studentListModel.removeAllElements();
 	}
-	  else if (searchText.getText().equals("clear")){
-			 
-		  studentListModel.removeAllElements();
-	} 
     
 	}
 
