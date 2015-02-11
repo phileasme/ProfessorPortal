@@ -9,27 +9,25 @@ package records;
  * 
  */
 
-/**
- * Importing libraries and packages
- */
 import java.util.Map;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ArrayList;
 
-import studentdata.*;
 import studentdata.Connector;
 import studentdata.DataTable;
+import records.Assessment;
 
 
 /**
  * The Class StudentRecords.
  */
 public class StudentRecords {
-	
-	/**
-	 *  Mapping of each student to their ID number.
-	 */
+
 	private Map<String, Student> students = new LinkedHashMap<String, Student>();	    
-       
+	private Map<String, String> markingCodes = new HashMap<String, String>();
+	private List<Assessment> assessments = new ArrayList<Assessment>();
 	
 	/**
      * Instantiates a new student records.
@@ -71,7 +69,6 @@ public class StudentRecords {
         	
         }
 		
-		
 		/**
 		 * Return students.
 		 *
@@ -83,6 +80,7 @@ public class StudentRecords {
 		
 		/**
 		 * Return individual student from its (int) ID number.
+		 * 
 		 * @return individual student
 		 */
 		public Student returnStudent(int i){
@@ -99,7 +97,55 @@ public class StudentRecords {
 		}
 		
 		/**
+		 * Says whether or not the provided student ID exists.
+		 * 
+		 * @param i the student's ID number
+		 * @return true if the student ID exists
+		 */
+		public boolean hasStudent(String i) {
+			if (students.containsKey(i)) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		/**
+		 * Add a new anonymous marking code, ID number pair.
+		 * 
+		 * @param markingCode an anonymous marking code
+		 * @param idNumber the corresponding student's ID number
+		 */
+		public void putCode(String markingCode, String idNumber) {
+			markingCodes.put(markingCode, idNumber);
+		}
+		
+		/**
+		 * Retrieve the ID number to the corresponding marking code.
+		 * 
+		 * @param markingCode an anonymous marking code
+		 * @return the corresponding student's ID number
+		 */
+		public String getIDFromCode(String markingCode) {
+			return markingCodes.get(markingCode);
+		}
+		
+		/**
+		 * Store a list of assessments which have been loaded with results.
+		 * 
+		 * @param assessmentList a list of assessments
+		 */
+		public void addAssessments(List<Assessment> assessmentList) {
+			for (Assessment ass : assessmentList) {
+				if (ass.size() > 0) {
+					assessments.add(ass);
+				}
+			}
+		}
+		
+		/**
 		 * Return size of students.
+		 * 
 		 * @return number of students
 		 */
 		public int numOfStudents(){

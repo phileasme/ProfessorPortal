@@ -27,4 +27,12 @@ public class Assessment {
 	public void addResult(Result result) {
 		results.add(result);
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int size() {
+		return results.size();
+	}
 }

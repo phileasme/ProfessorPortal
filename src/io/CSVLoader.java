@@ -77,34 +77,31 @@ public class CSVLoader {
 	private void loadMarkingCodes(List<String> firstRow, Scanner sc) {
 		
 		// keep track of whether codes have corresponding students on record
-		int loaded = 0;
 		int unknown = 0;
 		
-		// begin by storing first row. Need try/catch in case
-		// it's an unrecognised student
-		try {
+		// begin by storing first row
+		if (studentRecords.hasStudent(firstRow.get(0))) {
 			studentRecords.returnStudent(firstRow.get(0)).setMarkingCode(firstRow.get(1));
-			++loaded;
-		} catch (NullPointerException e) {
+		} else {
 			++unknown;
 		}
 		
 		// continue with rest of file
 		while (sc.hasNextLine()) {
 			String[] row = clean(sc.nextLine()).split(",");
-			try {
+			if (studentRecords.hasStudent(row[0])) {
 				studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
-				++loaded;
-			} catch (NullPointerException e) {
+			} else {
 				++unknown;
 			}
 		}
 				
 		// TODO replace this with popup message box
-		System.out.println("Anonymous marking codes imported. " + loaded +
+		System.out.println("Anonymous marking codes imported. " + studentRecords.numOfStudents() +
 				" codes were for known students; " + unknown + " codes were for unknown students");
 	}
 
+	// TODO write a blurb for this
 	/**
 	 * poop
 	 * 
@@ -119,30 +116,88 @@ public class CSVLoader {
 		int markIndex = categories.indexOf("Mark");
 		int gradeIndex = categories.indexOf("Grade");
 
-		List<Result> results = new ArrayList<Result>();
+		List<Assessment> assessments = new ArrayList<Assessment>();
 		
 		// determine if we are dealing with exam results or coursework results
 		String[] row = clean(sc.nextLine()).split(",");
 		boolean exam = Pattern.matches("^[a-zA-Z]\\w+", row[candKeyIndex]);
 		
+		// keep track of different module/assessment pairs. Key is Result.getAssessment().
 		Map<String, Assessment> assMap = new HashMap<String, Assessment>();
+		String currentAss;
+		Result r;
 		
-		if (exam) {
-			// file contains exam results, with anonymous marking codes
-			Result r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+		if (exam) { // file contains exam results, with anonymous marking codes
 			
+			// de-anonymise the marking code
+			String id = studentRecords.getIDFromCode(row[candKeyIndex]);
+			
+			if (id != null) {
+				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);			
+				
+			} else {
+				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+			}
+			
+			currentAss = r.getAssessment();
+			
+			if (!assMap.containsKey(currentAss)) {
+				assMap.put(currentAss, new Assessment());
+			}
+			
+			assMap.get(r.getAssessment()).addResult(r);
+			
+			// load rest of file
 			while (sc.hasNextLine()) {
 				row = clean(sc.nextLine()).split(",");
+				id = studentRecords.getIDFromCode(row[candKeyIndex]);
 				
+				if (id != null) {
+					r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+				} else {
+					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+				}
+				currentAss = r.getAssessment();
+				
+				if (!assMap.containsKey(currentAss)) {
+					assMap.put(currentAss, new Assessment());
+				}
+				
+				assMap.get(currentAss).addResult(r);
 			}
 			
 		} else { // file contains coursework results, with modified ID number
 			
 			// remove course indicator from end of ID number
 			String num = row[candKeyIndex].replaceFirst("/\\w$", "");
-			Result r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
+			
+			r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
+			currentAss = r.getAssessment();
+			
+			if (!assMap.containsKey(currentAss)) {
+				assMap.put(currentAss, new Assessment());
+			}
+			
+			assMap.get(r.getAssessment()).addResult(r);
+			
+			// load rest of file
+			while (sc.hasNextLine()) {
+				row = clean(sc.nextLine()).split(",");
+				num = row[candKeyIndex].replaceFirst("/\\w$", "");
+				
+				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+				currentAss = r.getAssessment();
+				
+				if (!assMap.containsKey(currentAss)) {
+					assMap.put(currentAss, new Assessment());
+				}
+				
+				assMap.get(currentAss).addResult(r);
+			}
 		}
 		
+		assessments.addAll(assMap.values());
+		studentRecords.addAssessments(assessments);
 	}
 	
 	/**
