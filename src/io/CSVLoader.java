@@ -134,7 +134,6 @@ public class CSVLoader {
 			
 			if (id != null) {
 				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);			
-				
 			} else {
 				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 			}
@@ -195,6 +194,15 @@ public class CSVLoader {
 				assMap.get(currentAss).addResult(r);
 			}
 		}
+		
+		 // temporary stuff
+		int numResults = 0;
+		
+		for (Assessment a : assMap.values()) {
+			numResults += a.size();
+		}
+		
+		System.out.println("Loaded " + numResults + " results, accross " + assMap.size() + " assessment(s)");
 		
 		assessments.addAll(assMap.values());
 		studentRecords.addAssessments(assessments);
