@@ -12,8 +12,14 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.*;
+import javax.swing.event.*;
 
+import java.awt.*;
+import java.awt.event.*;
 import records.Student;
 import records.StudentRecords;
 
@@ -32,8 +38,10 @@ public class MainInterface extends JFrame {
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
+	private JPanel searchPanel;
 	private JScrollPane studentScroll;
 	private JMenuBar menuBar;
+	private JTextField searchText;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -45,6 +53,8 @@ public class MainInterface extends JFrame {
 		createMenuBar();
 		setSize(500,400);
 		setVisible(true);
+		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -53,24 +63,30 @@ public class MainInterface extends JFrame {
 	 * 
 	 */
 	private void createStudentList(){
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout()); 
 		studentPanel = new JPanel();
-		
+		searchText = new JTextField(25);
+		studentPanel.add(searchText);
 		studentListModel = new DefaultListModel<Student>();
 
 		//Adds all students from StudentRecords into the studentListModel
+		
 		for (Student student : sr.returnStudents().values()) {
 			studentListModel.addElement(student);
 		}
-				
+
+
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
-		studentPanel.add(studentScroll);
 		add(studentScroll, BorderLayout.WEST);
-		
+	
+		add(studentPanel, BorderLayout.NORTH);
 		studentList.addMouseListener(new StudentPressListener());
+
+		SearchFilter sfl = new SearchFilter();
 	}
+	
 	/**
 	 * Creates the MenuBar - Sets to Frame
 	 */
@@ -115,6 +131,64 @@ public class MainInterface extends JFrame {
 		@Override
 		public void mouseReleased(MouseEvent e) {}
 	}
+	
+	/**
+	 *SearchFilter keeps track of searchText textArea  by using 
+	 *a DocumentListener and updates studentListModel using filteringList().
+	 */
+   class SearchFilter {
+	   
+	   public SearchFilter(){
+	   searchText.getDocument().addDocumentListener(new DocumentListener() {
+	        
+	        @Override
+	        public void removeUpdate(DocumentEvent e) {
+	            filteringList();
+	            
+	        }
+	        
+	        @Override
+	        public void insertUpdate(DocumentEvent e) {
+	        	 filteringList();
+	            
+	        }
+	        
+	        @Override
+	        public void changedUpdate(DocumentEvent e) {
+	        	 filteringList();
+	            
+	        }
+	        
+	    });
+	   }
+   }
+   
+   /**
+    * Method to change studentListModel
+    */
+public void filteringList(){
+	  if (searchText.getText().equals("")){
+		  for (Student student : sr.returnStudents().values()) {
+				studentListModel.addElement(student);
+			}
+    
+	}
+	  else {
+		 //Compare searchtext Text with student name and student number
+		 studentListModel.removeAllElements();
+		 for (Student student : sr.returnStudents().values()) {
+			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
+					 || student.getNumber().toString().contains(searchText.getText()) ){
+						 studentListModel.addElement(student);
+			 }
+			}
+		 
+	  }
+    
+	
+}
+
+	
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
 	}

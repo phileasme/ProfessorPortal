@@ -1,19 +1,17 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-import java.awt.Font;
-import records.*;
+
+import records.Student;
 
 /**
  * Class to create a Pop Up Window containing the student details
@@ -43,7 +41,8 @@ public class PopUpWindow extends JFrame {
 		studentNumber = stu.getNumber();
 		studentTutor = stu.getTutorEmail();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setSize(540,300);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -51,56 +50,60 @@ public class PopUpWindow extends JFrame {
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,}));
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		
 		JLabel studentNameLabel = new JLabel(studentName);
 		studentNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		panel.add(studentNameLabel, "8, 4");
+		c.gridx = 1;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.PAGE_START;
+		panel.add(studentNameLabel, c);
 		
 		JLabel studentEmailLabel = new JLabel(studentEmail);
 		studentEmailLabel.setFont(new Font("Tahoma", Font.ITALIC, 18));
-		panel.add(studentEmailLabel, "8, 6");
+		c.gridx = 1;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.weighty = 0.05;
+		panel.add(studentEmailLabel, c);
 		
 		JLabel lblStudentNo = new JLabel("Student No: ");
 		lblStudentNo.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panel.add(lblStudentNo, "4, 10");
+		c.gridx = 0;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.PAGE_START;
+		panel.add(lblStudentNo, c);
+		
 		
 		JLabel studentNumberLabel = new JLabel(studentNumber);
 		studentNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panel.add(studentNumberLabel, "8, 10");
+		c.gridx = 1;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.PAGE_START;
+		panel.add(studentNumberLabel, c);
 		
 		JLabel lblTutor = new JLabel("Tutor: ");
 		lblTutor.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panel.add(lblTutor, "4, 12");
+		c.gridx = 0;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.weighty = 0.05;
+		panel.add(lblTutor, c);
 		
 		JLabel tutorEmailLabel = new JLabel(studentTutor);
 		tutorEmailLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panel.add(tutorEmailLabel, "8, 12");
+		c.gridx = 1;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.weighty = 0.001;
+		panel.add(tutorEmailLabel, c);
 	}
 
 }
