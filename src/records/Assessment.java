@@ -29,8 +29,9 @@ public class Assessment {
 	}
 	
 	/**
+	 * Returns the number of results in the list.
 	 * 
-	 * @return
+	 * @return the number of Result instances in the list
 	 */
 	public int size() {
 		return results.size();
