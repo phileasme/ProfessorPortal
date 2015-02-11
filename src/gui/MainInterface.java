@@ -166,17 +166,22 @@ public void filteringList(){
 			}
     
 	}
-	  else if (searchText.getText().equals("Clear")){
-		 
-		  studentListModel.removeAllElements();
-	}
-	  else if (searchText.getText().equals("clear")){
-			 
-		  studentListModel.removeAllElements();
-	} 
+	 else{
+		 //Compare searchtext Text with student name
+		  // 	Needs :  remove current elements ; use compare;
+		 //	loop every student ; compare the both in lowercase;
+		 	// 	add student in the ListModel.
+		 studentListModel.removeAllElements();
+		 for (Student student : sr.returnStudents().values()) {
+			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase()) )
+				
+				 studentListModel.addElement(student);
+		
+			}
+	  }
     
-	}
-
+	
+}
 
 	
 	public static void main (String[] args){
