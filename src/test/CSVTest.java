@@ -14,21 +14,25 @@ public class CSVTest {
 		String os = System.getProperty("os.name").toLowerCase();
 		String root = System.getProperty("user.dir");
 		
-		String codes = null;
+		String codes1 = null;
+		String codes2 = null;
 		String results1 = null;
 		
 		if (os.equals("linux")) {
-			codes = root + "/csv/anoncodes1.csv";
+			codes1 = root + "/csv/anoncodes1.csv";
+			codes2 = root + "/csv/anoncodes2.csv";
 			
 			results1 = root + "/csv/201314/4CCS1CS1.csv";
 		} else if (os.equals("windows")) {
-			codes = root + "\\csv\\anoncodes1.csv";
+			codes1 = root + "\\csv\\anoncodes1.csv";
+			codes1 = root + "\\csv\\anoncodes2.csv";
 			
 			results1 = root + "\\csv\\201314\\4CCS1CS1.csv";
 		}
 		
 		StudentRecords sr = new StudentRecords();
-		CSVLoader csv = new CSVLoader(sr, codes);
+		CSVLoader csv = new CSVLoader(sr, codes1);
+		csv = new CSVLoader(sr, codes2);
 		csv = new CSVLoader(sr, results1);
 		
 	}
