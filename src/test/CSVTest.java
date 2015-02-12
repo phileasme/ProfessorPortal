@@ -23,9 +23,9 @@ public class CSVTest {
 			codes2 = root + "/csv/anoncodes2.csv";
 			
 			results1 = root + "/csv/201314/4CCS1CS1.csv";
-		} else if (os.equals("windows")) {
-			codes1 = root + "\\csv\\anoncodes1.csv";
-			codes1 = root + "\\csv\\anoncodes2.csv";
+		} else if (os.equals("windows 7")) {
+			codes1 = ""+root + "\\csv\\anoncodes1.csv";
+			codes2 = ""+root + "\\csv\\anoncodes2.csv";
 			
 			results1 = root + "\\csv\\201314\\4CCS1CS1.csv";
 		}
