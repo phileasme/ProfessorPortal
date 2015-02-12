@@ -21,6 +21,10 @@ import records.Assessment;
  * results and make them available to the main GUI window.
  * 
  * @author Max Karasinski
+ * 
+ * @see records.StudentRecords
+ * @see records.Assessment
+ * @see records.Result
  *
  */
 public class CSVLoader {
@@ -104,7 +108,17 @@ public class CSVLoader {
 
 	// TODO write a blurb for this
 	/**
-	 * poop
+	 * Loads exam/coursework results into StudentRecords by making Result
+	 * objects from each row in the CSV.
+	 * <p>
+	 * Results are de-anonymised as they are made, by either looking up the
+	 * marking code in StudentRecords or by removing the "/1" from the end of
+	 * the ID number (depending on whether the CSV is for exam or coursework
+	 * results).
+	 * <p>
+	 * Results are stored in Assessment objects, with new ones being made each
+	 * time a new module/assessment pair is encountered. At the end, a list of
+	 * these assessments is stored in StudentRecords.
 	 * 
 	 * @param categories the header row of the CSV file
 	 * @param sc a Scanner that has read the first line of the loaded CSV file
@@ -135,7 +149,6 @@ public class CSVLoader {
 			
 			if (id != null) {
 				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
-				System.out.println(r);
 			} else {
 				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 			}
@@ -155,7 +168,6 @@ public class CSVLoader {
 				
 				if (id != null) {
 					r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
-					System.out.println(r);
 				} else {
 					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 				}
