@@ -30,31 +30,35 @@ import records.Assessment;
 public class CSVLoader {
 
 	private StudentRecords studentRecords;
+	private String filePath;
+	
+	public static final int MARKING_CODES = 0;
+	public static final int RESULTS = 1;
 	
 	/**
 	 * Constructs a CSVLoader which will load either anonymous marking codes or
 	 * exam results, depending on the length of the header row.
 	 * 
-	 * @param sr the StudentRecords from the main GUI window
+	 * @param studentRecords the StudentRecords from the main GUI window
 	 * @param filePath the path to the CSV file to be loaded
 	 */
-	public CSVLoader(StudentRecords sr, String filePath) {
-		studentRecords = sr;
-		readCSV(filePath);
+	public CSVLoader(StudentRecords studentRecords, String filePath) {
+		this.studentRecords = studentRecords;
+		this.filePath = filePath;
 	}
 	
-	private void readCSV(String path) {
+	public void readCSV(int runMode) {
 		Scanner sc = null;
 		
 		try {
-			sc = new Scanner(new BufferedReader(new FileReader(path)));
+			sc = new Scanner(new BufferedReader(new FileReader(filePath)));
 			
 			List<String> categories = Arrays.asList(clean(sc.nextLine()).split(","));
 			
-			if (categories.size() == 2) {
+			if ((runMode == MARKING_CODES) && (categories.size() == 2)) {
 				// file contains anonymous marking codes
 				loadMarkingCodes(categories, sc);
-			} else {
+			} else if ((runMode == RESULTS) && (categories.size() >= 5)) {
 				// file contains exam/CW results
 				loadExamResults(categories, sc);
 			}

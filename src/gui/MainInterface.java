@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -10,18 +12,19 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.*;
 import javax.swing.event.*;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.io.File;
+
 import records.Student;
 import records.StudentRecords;
+import io.CSVLoader;
+import io.CSVFilter;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -41,6 +44,8 @@ public class MainInterface extends JFrame {
 	private JPanel searchPanel;
 	private JScrollPane studentScroll;
 	private JMenuBar menuBar;
+	private JMenuItem loadCodes;
+	private JMenuItem loadResults;
 	private JTextField searchText;
 	
 	/**
@@ -53,7 +58,6 @@ public class MainInterface extends JFrame {
 		createMenuBar();
 		setSize(500,400);
 		setVisible(true);
-		
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -75,7 +79,6 @@ public class MainInterface extends JFrame {
 			studentListModel.addElement(student);
 		}
 
-
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
@@ -96,8 +99,11 @@ public class MainInterface extends JFrame {
 		JMenu data = new JMenu("Data");
 		
 		// menu items
-		JMenuItem loadCodes = new JMenuItem("Load anonymous marking codes");
-		JMenuItem loadResults = new JMenuItem("Load exam results");
+		loadCodes = new JMenuItem("Load anonymous marking codes");
+		loadResults = new JMenuItem("Load exam results");
+		
+		loadCodes.addActionListener(new CSVLoaderListener());
+		loadResults.addActionListener(new CSVLoaderListener());
 		
 		// add menus to bar, and items to menus
 		menuBar.add(file);
@@ -130,6 +136,29 @@ public class MainInterface extends JFrame {
 		public void mouseExited(MouseEvent e) {}
 		@Override
 		public void mouseReleased(MouseEvent e) {}
+	}
+	
+	class CSVLoaderListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fc = new JFileChooser();
+			
+			// make only folders and csv files visible
+			fc.addChoosableFileFilter(new CSVFilter());
+			fc.setAcceptAllFileFilterUsed(false);
+			
+			int returnVal = fc.showOpenDialog(MainInterface.this);
+			
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				CSVLoader loader = new CSVLoader(sr, file.getAbsolutePath());
+				
+				if (e.getSource() == loadCodes) {
+					loader.readCSV(CSVLoader.MARKING_CODES);
+				} else if (e.getSource() == loadResults) {
+					loader.readCSV(CSVLoader.RESULTS);
+				}
+			}
+		}
 	}
 	
 	/**
