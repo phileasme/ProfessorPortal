@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-//import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Pattern;
@@ -82,6 +81,7 @@ public class CSVLoader {
 		// begin by storing first row
 		if (studentRecords.hasStudent(firstRow.get(0))) {
 			studentRecords.returnStudent(firstRow.get(0)).setMarkingCode(firstRow.get(1));
+			studentRecords.putCode(firstRow.get(1), firstRow.get(0));
 		} else {
 			++unknown;
 		}
@@ -91,6 +91,7 @@ public class CSVLoader {
 			String[] row = clean(sc.nextLine()).split(",");
 			if (studentRecords.hasStudent(row[0])) {
 				studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
+				studentRecords.putCode(row[1], row[0]);
 			} else {
 				++unknown;
 			}
@@ -133,7 +134,8 @@ public class CSVLoader {
 			String id = studentRecords.getIDFromCode(row[candKeyIndex]);
 			
 			if (id != null) {
-				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);			
+				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+				System.out.println(r);
 			} else {
 				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 			}
@@ -153,6 +155,7 @@ public class CSVLoader {
 				
 				if (id != null) {
 					r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+					System.out.println(r);
 				} else {
 					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 				}

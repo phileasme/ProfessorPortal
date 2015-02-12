@@ -153,6 +153,15 @@ public class StudentRecords {
 		}
 		
 		/**
+		 * Returns number of assessments on record.
+		 * 
+		 * @return size of assessments list
+		 */
+		public int numOfAssessments() {
+			return assessments.size();
+		}
+		
+		/**
 		 * Prints all the students.
 		 */
 		public void printStudents() {
@@ -161,8 +170,4 @@ public class StudentRecords {
 				System.out.println(each);
 			}
 		}
-		
-
-	
-
 }
