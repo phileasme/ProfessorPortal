@@ -5,7 +5,6 @@ import java.util.Map;
 import records.StudentRecords;
 import io.CSVLoader;
 
-
 public class CSVTest {
 	
 	// change paths and stuff as you wish
