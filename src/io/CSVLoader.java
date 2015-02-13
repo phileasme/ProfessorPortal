@@ -32,7 +32,14 @@ public class CSVLoader {
 	private StudentRecords studentRecords;
 	private String filePath;
 	
+	/**
+	 * Marking codes will be passed to the loader.
+	 */
 	public static final int MARKING_CODES = 0;
+	
+	/**
+	 * Exam/coursework results will be passed to the loader.
+	 */
 	public static final int RESULTS = 1;
 	
 	/**
@@ -47,7 +54,19 @@ public class CSVLoader {
 		this.filePath = filePath;
 	}
 	
-	public void readCSV(int runMode) {
+	/**
+	 * Creates a {@link Scanner} that reads the first row of the CSV file given
+	 * to the constructor. The number of columns in the first row is used as a
+	 * weak test that the file contains the appropriate data for the specified
+	 * running mode (which determines the next method to use on the rest of the
+	 * file).
+	 * 
+	 * @param runMode integer indicating the type of data contained in the file
+	 * 
+	 * @throws IllegalArguentException if runMode is not one of MARKING_CODES or
+	 * RESULTS.
+	 */
+	public void readCSV(int runMode) throws IllegalArgumentException{
 		Scanner sc = null;
 		
 		try {
@@ -61,6 +80,8 @@ public class CSVLoader {
 			} else if ((runMode == RESULTS) && (categories.size() >= 5)) {
 				// file contains exam/CW results
 				loadExamResults(categories, sc);
+			} else {
+				throw new IllegalArgumentException("Illegal argument: use one of CSVLoader.MARKING_CODES or RESULTS");
 			}
 			
 		} catch (IOException e) {
@@ -110,7 +131,6 @@ public class CSVLoader {
 				" codes were for known students; " + unknown + " codes were for unknown students");
 	}
 
-	// TODO write a blurb for this
 	/**
 	 * Loads exam/coursework results into StudentRecords by making Result
 	 * objects from each row in the CSV.
