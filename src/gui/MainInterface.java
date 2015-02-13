@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.*;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import java.io.File;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
-import io.CSVFilter;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -118,7 +118,6 @@ public class MainInterface extends JFrame {
 	/**
 	 * MouseListener to make a pop up window of the Student Information appear
 	 */
-	
 	class StudentPressListener implements MouseListener{
 		public void mousePressed(MouseEvent e) {
 			int index;
@@ -138,12 +137,22 @@ public class MainInterface extends JFrame {
 		public void mouseReleased(MouseEvent e) {}
 	}
 	
+	/**
+	 * Listener attached to File -> Load X menu items. Constructs a {@link JFileChooser}
+	 * which is restricted to files that have a .csv extension. After selecting a
+	 * valid file, a new {@link CSVLoader} is constructed which loads the file.
+	 * <p>
+	 * Some code taken/inspired by the Java tutorial 
+	 * <a href="http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html">here</a>.
+	 *  
+	 *
+	 */
 	class CSVLoaderListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc = new JFileChooser();
 			
 			// make only folders and csv files visible
-			fc.addChoosableFileFilter(new CSVFilter());
+			fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
 			fc.setAcceptAllFileFilterUsed(false);
 			
 			int returnVal = fc.showOpenDialog(MainInterface.this);
@@ -165,60 +174,56 @@ public class MainInterface extends JFrame {
 	 *SearchFilter keeps track of searchText textArea  by using 
 	 *a DocumentListener and updates studentListModel using filteringList().
 	 */
-   class SearchFilter {
-	   
-	   public SearchFilter(){
-	   searchText.getDocument().addDocumentListener(new DocumentListener() {
-	        
-	        @Override
-	        public void removeUpdate(DocumentEvent e) {
-	            filteringList();
-	            
-	        }
-	        
-	        @Override
-	        public void insertUpdate(DocumentEvent e) {
-	        	 filteringList();
-	            
-	        }
-	        
-	        @Override
-	        public void changedUpdate(DocumentEvent e) {
-	        	 filteringList();
-	            
-	        }
-	        
-	    });
-	   }
-   }
+	class SearchFilter {
+
+		public SearchFilter(){
+			searchText.getDocument().addDocumentListener(new DocumentListener() {
+
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					filteringList();
+				}
+
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					filteringList();
+				}
+
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					filteringList();
+				}
+			});
+		}
+	}
    
    /**
     * Method to change studentListModel
     */
-public void filteringList(){
-	  if (searchText.getText().equals("")){
-		  for (Student student : sr.returnStudents().values()) {
-				studentListModel.addElement(student);
-			}
-    
-	}
-	  else {
-		 //Compare searchtext Text with student name and student number
-		 studentListModel.removeAllElements();
-		 for (Student student : sr.returnStudents().values()) {
-			 if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
-					 || student.getNumber().toString().contains(searchText.getText()) ){
-						 studentListModel.addElement(student);
-			 }
-			}
-		 
-	  }
-    
-	
-}
+   public void filteringList(){
+	   if (searchText.getText().equals("")){
+		   for (Student student : sr.returnStudents().values()) {
+			   studentListModel.addElement(student);
+		   }
+
+	   }
+	   else {
+		   //Compare searchtext Text with student name and student number
+		   studentListModel.removeAllElements();
+		   for (Student student : sr.returnStudents().values()) {
+			   if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
+					   || student.getNumber().toString().contains(searchText.getText()) ){
+				   studentListModel.addElement(student);
+			   }
+		   }
+
+	   }
+
+
+   }
 
 	
-	public static void main (String[] args){
-		MainInterface mi = new MainInterface();
-	}
+   public static void main (String[] args){
+	   MainInterface mi = new MainInterface();
+   }
 }
