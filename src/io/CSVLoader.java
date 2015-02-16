@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import records.StudentRecords;
+import records.Student;
 import records.Result;
 import records.Assessment;
 
@@ -192,6 +193,7 @@ public class CSVLoader {
 				
 				if (id != null) {
 					r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+					studentRecords.returnStudent(id).addResult(r);
 				} else {
 					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 				}
@@ -210,6 +212,12 @@ public class CSVLoader {
 			String num = row[candKeyIndex].replaceFirst("/\\w$", "");
 			
 			r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
+			
+			Student student = studentRecords.returnStudent(num);
+			if (student != null) {
+				student.addResult(r);
+			}
+			
 			currentAss = r.getAssessment();
 			
 			if (!assMap.containsKey(currentAss)) {
@@ -234,7 +242,8 @@ public class CSVLoader {
 			}
 		}
 		
-		 // temporary stuff
+		// TODO don't forget to get rid of this
+		// temporary stuff
 		int numResults = 0;
 		
 		for (Assessment a : assMap.values()) {
@@ -243,6 +252,7 @@ public class CSVLoader {
 		
 		System.out.println("Loaded " + numResults + " results, accross " + assMap.size() + " assessment(s)");
 		
+		// not temporary stuff!
 		assessments.addAll(assMap.values());
 		studentRecords.addAssessments(assessments);
 	}
