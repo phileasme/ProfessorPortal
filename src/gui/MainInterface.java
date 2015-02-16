@@ -42,10 +42,14 @@ public class MainInterface extends JFrame {
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
 	private JScrollPane studentScroll;
+	private JTextField searchText;
+	
 	private JMenuBar menuBar;
 	private JMenuItem loadCodes;
 	private JMenuItem loadResults;
-	private JTextField searchText;
+	private JMenuItem averageResults;
+	private JMenuItem emailToStudents;
+	private JMenuItem emailSettings;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -103,6 +107,13 @@ public class MainInterface extends JFrame {
 		// menu items
 		loadCodes = new JMenuItem("Load anonymous marking codes");
 		loadResults = new JMenuItem("Load exam results");
+		averageResults = new JMenuItem("Compare to Average");
+		emailToStudents = new JMenuItem("Email to Students");
+		emailSettings = new JMenuItem("Email Settings");
+		
+		// want this to remain greyed-out until at least one set of marking codes
+		// has been loaded
+		loadResults.setEnabled(false);
 		
 		loadCodes.addActionListener(new CSVLoaderListener());
 		loadResults.addActionListener(new CSVLoaderListener());
@@ -113,6 +124,9 @@ public class MainInterface extends JFrame {
 		
 		file.add(loadCodes);
 		file.add(loadResults);
+		data.add(averageResults);
+		data.add(emailToStudents);
+		data.add(emailSettings);
 		
 		setJMenuBar(menuBar);
 	}
@@ -168,6 +182,8 @@ public class MainInterface extends JFrame {
 				} else if (e.getSource() == loadResults) {
 					loader.readCSV(CSVLoader.RESULTS);
 				}
+				
+				if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 			}
 		}
 	}
