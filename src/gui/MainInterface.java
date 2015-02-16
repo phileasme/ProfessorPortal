@@ -41,7 +41,6 @@ public class MainInterface extends JFrame {
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
-	private JPanel searchPanel;
 	private JScrollPane studentScroll;
 	private JMenuBar menuBar;
 	private JMenuItem loadCodes;
@@ -56,7 +55,7 @@ public class MainInterface extends JFrame {
 		super("PRA Coursework - MNP");
 		createStudentList();
 		createMenuBar();
-		setSize(500,400);
+		setSize(1000,600);
 		setVisible(true);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,14 +66,14 @@ public class MainInterface extends JFrame {
 	 * 
 	 */
 	private void createStudentList(){
-		setLayout(new BorderLayout()); 
+		setLayout(new BorderLayout());
+		
 		studentPanel = new JPanel();
+		studentPanel.setLayout(new BorderLayout());
 		searchText = new JTextField(25);
-		studentPanel.add(searchText);
 		studentListModel = new DefaultListModel<Student>();
 
 		//Adds all students from StudentRecords into the studentListModel
-		
 		for (Student student : sr.returnStudents().values()) {
 			studentListModel.addElement(student);
 		}
@@ -82,9 +81,12 @@ public class MainInterface extends JFrame {
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
-		add(studentScroll, BorderLayout.WEST);
-	
-		add(studentPanel, BorderLayout.NORTH);
+		
+		studentPanel.add(searchText, BorderLayout.NORTH);
+		studentPanel.add(studentScroll);
+		
+		add(studentPanel, BorderLayout.WEST);
+		
 		studentList.addMouseListener(new StudentPressListener());
 
 		SearchFilter sfl = new SearchFilter();
