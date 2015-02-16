@@ -1,5 +1,7 @@
 package records;
 
+import java.util.ArrayList;
+
 /**
  * Class to store basic student information, as retrieved from the server via
  * the StudentData jar.
@@ -13,7 +15,7 @@ public class Student {
 	private String email;
 	private String tutorEmail;
 	private String markingCode = null;
-
+	private ArrayList<Result> results = new ArrayList<Result>();
 	/**
 	 * Constructor.
 	 * 
@@ -73,6 +75,9 @@ public class Student {
 		return markingCode;
 	}
 	
+	public void addResult(Result res){
+		results.add(res);
+	}
 	/**
 	 * @return all the info on the student: number, tutor's email, name, email
 	 */
