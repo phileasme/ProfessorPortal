@@ -7,7 +7,7 @@ import io.CSVLoader;
 
 public class CSVTest {
 	
-	// change paths and stuff as you wish
+	// change paths and stuff as you wish and all the cool things
 	
 	public static void main(String[] args) {
 		String os = System.getProperty("os.name").toLowerCase();
