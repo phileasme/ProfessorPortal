@@ -81,8 +81,11 @@ public class CSVLoader {
 			} else if ((runMode == RESULTS) && (categories.size() >= 5)) {
 				// file contains exam/CW results
 				loadExamResults(categories, sc);
+			} else if ((runMode != MARKING_CODES) && (runMode != RESULTS)) {
+				throw new IllegalArgumentException("Illegal argument: use one of CSVLoader.MARKING_CODES or CSVLoader.RESULTS");
 			} else {
-				throw new IllegalArgumentException("Illegal argument: use one of CSVLoader.MARKING_CODES or RESULTS");
+				// TODO replace this with a pop-up message
+				System.out.println("Incorrect column format in selected CSV file!");
 			}
 			
 		} catch (IOException e) {
@@ -229,7 +232,7 @@ public class CSVLoader {
 				row = clean(sc.nextLine()).split(",");
 				num = row[candKeyIndex].replaceFirst("/\\w$", "");
 				
-				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+				r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
 				student = studentRecords.returnStudent(num);
 				if (student != null) student.addResult(r);
 				

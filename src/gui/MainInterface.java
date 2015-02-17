@@ -143,12 +143,6 @@ public class MainInterface extends JFrame {
 		
 		ResultsTabManager resultTabs = new ResultsTabManager(this, sr);
 		
-		JLabel l1 = new JLabel("Nothing here");
-		JLabel l2 = new JLabel("HAHA! Nothing here either!");
-		
-		resultTabs.add("Tab 1", l1);
-		resultTabs.add("Tab 2", l2);
-		
 		dataPanel.add(resultTabs);
 		add(dataPanel);
 	}

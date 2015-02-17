@@ -2,6 +2,9 @@ package records;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
+
+//import records.Result;
 
 /**
  * Storage for instances of Result, all of which are from the same module from
@@ -35,5 +38,17 @@ public class Assessment {
 	 */
 	public int size() {
 		return results.size();
+	}
+	
+	public ListIterator<Result> listIterator() {
+		return results.listIterator();
+	}
+	
+	public String toString() {
+		if (size() > 0) {
+			return results.get(0).module + "-" + results.get(0).assessment;
+		} else {
+			return "Empty assessment";
+		}
 	}
 }
