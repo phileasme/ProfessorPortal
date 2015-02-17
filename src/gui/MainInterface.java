@@ -9,10 +9,12 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
+import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -41,6 +43,7 @@ public class MainInterface extends JFrame {
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
 	private JPanel studentPanel;
+	private JPanel dataPanel;
 	private JScrollPane studentScroll;
 	private JTextField searchText;
 	
@@ -57,12 +60,14 @@ public class MainInterface extends JFrame {
 	 */
 	public MainInterface(){
 		super("PRA Coursework - MNP");
-		createStudentList();
-		createMenuBar();
-		setSize(1000,600);
-		setVisible(true);
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1000,600);
+		
+		createMenuBar();
+		createStudentList();
+		createDataBox();
+		
+		setVisible(true);
 	}
 	
 	/**
@@ -129,6 +134,21 @@ public class MainInterface extends JFrame {
 		data.add(emailSettings);
 		
 		setJMenuBar(menuBar);
+	}
+	
+	private void createDataBox() {
+		dataPanel = new JPanel();
+		dataPanel.setLayout(new BorderLayout());
+		JTabbedPane resultTabs = new JTabbedPane();
+		
+		JLabel l1 = new JLabel("Nothing here");
+		JLabel l2 = new JLabel("HAHA! Nothing here either!");
+		
+		resultTabs.add("Tab 1", l1);
+		resultTabs.add("Tab 2", l2);
+		
+		dataPanel.add(resultTabs);
+		add(dataPanel);
 	}
 		
 	/**
