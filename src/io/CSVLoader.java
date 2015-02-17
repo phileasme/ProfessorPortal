@@ -214,9 +214,7 @@ public class CSVLoader {
 			r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
 			
 			Student student = studentRecords.returnStudent(num);
-			if (student != null) {
-				student.addResult(r);
-			}
+			if (student != null) student.addResult(r);
 			
 			currentAss = r.getAssessment();
 			
@@ -232,6 +230,9 @@ public class CSVLoader {
 				num = row[candKeyIndex].replaceFirst("/\\w$", "");
 				
 				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+				student = studentRecords.returnStudent(num);
+				if (student != null) student.addResult(r);
+				
 				currentAss = r.getAssessment();
 				
 				if (!assMap.containsKey(currentAss)) {

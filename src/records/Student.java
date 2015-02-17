@@ -1,6 +1,8 @@
 package records;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class to store basic student information, as retrieved from the server via
@@ -15,7 +17,8 @@ public class Student {
 	private String email;
 	private String tutorEmail;
 	private String markingCode = null;
-	private ArrayList<Result> results = new ArrayList<Result>();
+	private Map<String, Result> results = new TreeMap<String, Result>();
+	
 	/**
 	 * Constructor.
 	 * 
@@ -75,9 +78,29 @@ public class Student {
 		return markingCode;
 	}
 	
+	/**
+	 * Adds a result to the student's list of results.
+	 * 
+	 * @param res the result to be added
+	 */
 	public void addResult(Result res){
-		results.add(res);
+		// e.g. 4CCS1PRA-001
+		String key = res.module + "-" + res.assessment;
+		results.put(key, res);
 	}
+	
+	/**
+	 * Use an result's module + assessment code, formatted as "module-assessment",
+	 * e.g. "4CCS1ELA-001", to fetch a result belonging to the student.
+	 * 
+	 * @param key the module + assessment identifier for the result 
+	 * (e.g. "4CCS1ELA-001")
+	 * @return the corresponding result
+	 */
+	public Result getResult(String key) {
+		return results.get(key);
+	}
+	
 	/**
 	 * @return all the info on the student: number, tutor's email, name, email
 	 */
