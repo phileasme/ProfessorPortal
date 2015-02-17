@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Observable;
 
 import studentdata.Connector;
 import studentdata.DataTable;
@@ -23,7 +24,7 @@ import records.Assessment;
 /**
  * The Class StudentRecords.
  */
-public class StudentRecords {
+public class StudentRecords extends Observable {
 
 	private Map<String, Student> students = new LinkedHashMap<String, Student>();	    
 	private Map<String, String> markingCodes = new HashMap<String, String>();
@@ -38,9 +39,7 @@ public class StudentRecords {
 		Connector server = new Connector();
         boolean success = server.connect("MNP","0a34d4ea3cc0da36ee91172b9cccb621");
         
-        /**
-         * In case the servlet fails to connect
-         */
+        // In case the servlet fails to connect
         if (success == false) {
             System.out.println("Fatal error: could not open connection to server");
             System.exit(1);
@@ -48,15 +47,12 @@ public class StudentRecords {
         
         
         DataTable data = server.getData();
-        /**
-         * Declaring and initialising rowCount
-         */
+        
+        // Declaring and initialising rowCount
         int rowCount = data.getRowCount();
         
-        /**
-         *  Looping through all rows and creating an instance for each students 
-         *  than adding them to an ArrayList of Students
-         */
+         // Loop through all rows and create an instance for each student
+         // then adding them to an ArrayList of Students
         for (int row = 0; row < rowCount; ++row) {
         		String numb = data.getCell(row, 0);
         		String temail = data.getCell(row, 1);
@@ -141,6 +137,10 @@ public class StudentRecords {
 					assessments.add(ass);
 				}
 			}
+			
+			// alert ResultsTabManager so that it can update result tabs
+			setChanged();
+			notifyObservers(assessments);
 		}
 		
 		/**

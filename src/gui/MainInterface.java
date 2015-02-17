@@ -24,6 +24,7 @@ import javax.swing.event.*;
 
 import java.io.File;
 
+import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
@@ -139,7 +140,8 @@ public class MainInterface extends JFrame {
 	private void createDataBox() {
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
-		JTabbedPane resultTabs = new JTabbedPane();
+		
+		ResultsTabManager resultTabs = new ResultsTabManager(this, sr);
 		
 		JLabel l1 = new JLabel("Nothing here");
 		JLabel l2 = new JLabel("HAHA! Nothing here either!");
