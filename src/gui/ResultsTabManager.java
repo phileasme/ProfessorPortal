@@ -9,6 +9,7 @@ import java.util.Observer;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JScrollPane;
 
 import records.Assessment;
 import records.StudentRecords;
@@ -50,7 +51,8 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			}
 			
 			JTable table = new JTable(results, columns);
-			addTab(tabName, table);
+			JScrollPane scrollPane = new JScrollPane(table);
+			addTab(tabName, scrollPane);
 		}
 	}
 }
