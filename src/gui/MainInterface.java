@@ -9,12 +9,10 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JFileChooser;
-import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -181,8 +179,16 @@ public class MainInterface extends JFrame {
 	 *
 	 */
 	class CSVLoaderListener implements ActionListener {
+		
+		private String currentPath = null;
+		
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser fc = new JFileChooser();
+			JFileChooser fc;
+			if (currentPath != null) {
+				fc = new JFileChooser(currentPath);
+			} else {
+				fc = new JFileChooser();
+			}
 			
 			// make only folders and csv files visible
 			fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
@@ -193,6 +199,9 @@ public class MainInterface extends JFrame {
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File[] files = fc.getSelectedFiles();
+				
+				// will start file chooser in this directory next time
+				currentPath = files[0].getAbsolutePath();
 				
 				for (File file : files) {
 					CSVLoader loader = new CSVLoader(sr, file.getAbsolutePath());
@@ -255,10 +264,7 @@ public class MainInterface extends JFrame {
 				   studentListModel.addElement(student);
 			   }
 		   }
-
 	   }
-
-
    }
 
 	
