@@ -40,10 +40,19 @@ public class Assessment {
 		return results.size();
 	}
 	
+	/**
+	 * Creates a {@link ListIterator} for the list of results on the assessment.
+	 * 
+	 * @return a ListIterator<Result> of the list of results
+	 */
 	public ListIterator<Result> listIterator() {
 		return results.listIterator();
 	}
 	
+	/**
+	 * If there are any results stored, returns an identifier for the assessment
+	 * of the form "module-assessment code", e.g. "4CCS1PRA-001".
+	 */
 	public String toString() {
 		if (size() > 0) {
 			return results.get(0).module + "-" + results.get(0).assessment;
