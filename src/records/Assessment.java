@@ -2,6 +2,9 @@ package records;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListIterator;
+
+//import records.Result;
 
 /**
  * Storage for instances of Result, all of which are from the same module from
@@ -35,5 +38,26 @@ public class Assessment {
 	 */
 	public int size() {
 		return results.size();
+	}
+	
+	/**
+	 * Creates a {@link ListIterator} for the list of results on the assessment.
+	 * 
+	 * @return a ListIterator<Result> of the list of results
+	 */
+	public ListIterator<Result> listIterator() {
+		return results.listIterator();
+	}
+	
+	/**
+	 * If there are any results stored, returns an identifier for the assessment
+	 * of the form "module-assessment code", e.g. "4CCS1PRA-001".
+	 */
+	public String toString() {
+		if (size() > 0) {
+			return results.get(0).module + "-" + results.get(0).assessment;
+		} else {
+			return "Empty assessment";
+		}
 	}
 }
