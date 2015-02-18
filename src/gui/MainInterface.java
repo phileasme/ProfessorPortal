@@ -173,9 +173,10 @@ public class MainInterface extends JFrame {
 	 * Listener attached to File -> Load X menu items. Constructs a {@link JFileChooser}
 	 * which is restricted to files that have a .csv extension. After selecting a
 	 * valid file, a new {@link CSVLoader} is constructed which loads the file.
+	 * Multiple file selection is allowed.
 	 * <p>
-	 * Some code taken/inspired by the Java tutorial 
-	 * <a href="http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html">here</a>.
+	 * Some code taken/inspired by this 
+	 * <a href="http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html">Java tutorial</a>.
 	 *  
 	 *
 	 */
@@ -186,17 +187,21 @@ public class MainInterface extends JFrame {
 			// make only folders and csv files visible
 			fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
 			fc.setAcceptAllFileFilterUsed(false);
+			fc.setMultiSelectionEnabled(true);
 			
 			int returnVal = fc.showOpenDialog(MainInterface.this);
 			
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File file = fc.getSelectedFile();
-				CSVLoader loader = new CSVLoader(sr, file.getAbsolutePath());
+				File[] files = fc.getSelectedFiles();
 				
-				if (e.getSource() == loadCodes) {
-					loader.readCSV(CSVLoader.MARKING_CODES);
-				} else if (e.getSource() == loadResults) {
-					loader.readCSV(CSVLoader.RESULTS);
+				for (File file : files) {
+					CSVLoader loader = new CSVLoader(sr, file.getAbsolutePath());
+					
+					if (e.getSource() == loadCodes) {
+						loader.readCSV(CSVLoader.MARKING_CODES);
+					} else if (e.getSource() == loadResults) {
+						loader.readCSV(CSVLoader.RESULTS);
+					}
 				}
 				
 				if (!loadResults.isEnabled()) loadResults.setEnabled(true);
