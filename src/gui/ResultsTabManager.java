@@ -6,14 +6,17 @@ import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import records.Assessment;
 import records.StudentRecords;
 import records.Result;
+import gui.PopUpWindow;
 
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
@@ -26,9 +29,8 @@ import records.Result;
  */
 public class ResultsTabManager extends JTabbedPane implements Observer {
 
-	private MainInterface frame;
+//	private MainInterface frame;
 	private StudentRecords studentRecords;
-	private JLabel initialLabel;
 	
 	/**
 	 * Creates a new ResultsTabManager, and gives it references to the main GUI
@@ -40,9 +42,9 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 	 */
 	public ResultsTabManager(MainInterface frame, StudentRecords studentRecords) {
 		studentRecords.addObserver(this);
-		
-		this.frame = frame;
 		this.studentRecords = studentRecords;
+		
+		setTabLayoutPolicy(this.SCROLL_TAB_LAYOUT);
 	}
 
 	/**
@@ -58,7 +60,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 	public void update(Observable o, Object assessments) {
 		List<Assessment> assessmentList = (ArrayList<Assessment>) assessments;
 		
-		String[] columns = {"Student Number", "Student Name", "Mark", "Grade"};
+		String[] columns = {"Student Name", "Student Number", "Mark", "Grade"};
 		
 		for (Assessment a : assessmentList) {
 			// will be, e.g. "4CCS1PRA-001"
@@ -84,14 +86,38 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 					studentName = "Anonymous Student";
 				}
 				
-				results[rowIndex][0] = studentNumber;
-				results[rowIndex][1] = studentName;
+				results[rowIndex][0] = studentName;
+				results[rowIndex][1] = studentNumber;
 				results[rowIndex][2] = r.mark;
 				results[rowIndex][3] = r.grade;
 			}
 			
-			// add table to new tab
-			JTable table = new JTable(results, columns);
+			/* create the table from the data and give it a mouse listener
+			which will make a pop-up window with student info when the name
+			is clicked on */
+			final JTable table = new JTable(results, columns);
+			
+			table.addMouseListener(new MouseListener() {
+				public void mouseReleased(MouseEvent e) {
+					if (table.getSelectedColumn() == 0) {
+						int row = table.getSelectedRow();
+						String num = (String) table.getValueAt(row, 1);
+						
+						if (studentRecords.hasStudent(num)) {
+							PopUpWindow p = new PopUpWindow(studentRecords.returnStudent(num));
+							p.setVisible(true);
+						}
+					}
+				}
+				
+				public void mouseClicked(MouseEvent e) {}
+				public void mousePressed(MouseEvent e) {}
+				public void mouseEntered(MouseEvent e) {}
+				public void mouseExited(MouseEvent e) {}
+			});
+			
+//			table.setAutoCreateRowSorter(true);
+			
 			JScrollPane scrollPane = new JScrollPane(table);
 			addTab(tabName, scrollPane);
 		}
