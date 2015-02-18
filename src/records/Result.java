@@ -67,9 +67,13 @@ public class Result {
 	 * @return an identifying string
 	 */
 	public String getAssessment() {
-		return module + " " + assessment;
+		return module + "-" + assessment;
 	}
 	
+	/**
+	 * Returns a string containing all the information on the result except for
+	 * grade: module, assessment, candidate key / student number, and mark.
+	 */
 	public String toString() {
 		return module + " " + assessment + " " + candKey + " " + mark;
 	}
