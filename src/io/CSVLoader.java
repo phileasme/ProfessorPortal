@@ -177,6 +177,7 @@ public class CSVLoader {
 			
 			if (id != null) {
 				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+				studentRecords.returnStudent(id).addResult(r);
 			} else {
 				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
 			}
