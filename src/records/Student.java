@@ -1,6 +1,6 @@
 package records;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -99,6 +99,16 @@ public class Student {
 	 */
 	public Result getResult(String key) {
 		return results.get(key);
+	}
+	
+	/**
+	 * Get an iterable object with all the results that have been loaded for
+	 * the student, ordered by module.
+	 * 
+	 * @return an iterable object containing all the results
+	 */
+	public Collection<Result> getAllResults() {
+		return results.values();
 	}
 	
 	/**
