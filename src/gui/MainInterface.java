@@ -37,7 +37,7 @@ import io.CSVLoader;
  *
  */
 public class MainInterface extends JFrame {
-	
+
 	private DefaultListModel<Student> studentListModel;
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
@@ -45,14 +45,14 @@ public class MainInterface extends JFrame {
 	private JPanel dataPanel;
 	private JScrollPane studentScroll;
 	private JTextField searchText;
-	
+
 	private JMenuBar menuBar;
 	private JMenuItem loadCodes;
 	private JMenuItem loadResults;
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
-	
+
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
 	 * 
@@ -61,21 +61,21 @@ public class MainInterface extends JFrame {
 		super("PRA Coursework - MNP");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000,600);
-		
+
 		createMenuBar();
 		createStudentList();
 		createDataBox();
-		
+
 		setVisible(true);
 	}
-	
+
 	/**
 	 * Creates the scrollable list of students by name and ID Number from StudentRecords
 	 * 
 	 */
 	private void createStudentList(){
 		setLayout(new BorderLayout());
-		
+
 		studentPanel = new JPanel();
 		studentPanel.setLayout(new BorderLayout());
 		searchText = new JTextField(25);
@@ -89,17 +89,17 @@ public class MainInterface extends JFrame {
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
-		
+
 		studentPanel.add(searchText, BorderLayout.NORTH);
 		studentPanel.add(studentScroll);
-		
+
 		add(studentPanel, BorderLayout.WEST);
-		
+
 		studentList.addMouseListener(new StudentPressListener());
 
 		SearchFilter sfl = new SearchFilter();
 	}
-	
+
 	/**
 	 * Creates the MenuBar - Sets to Frame
 	 */
@@ -107,44 +107,44 @@ public class MainInterface extends JFrame {
 		menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		JMenu data = new JMenu("Data");
-		
+
 		// menu items
 		loadCodes = new JMenuItem("Load anonymous marking codes");
 		loadResults = new JMenuItem("Load exam results");
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		emailSettings = new JMenuItem("Email Settings");
-		
+
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
 		loadResults.setEnabled(false);
-		
+
 		loadCodes.addActionListener(new CSVLoaderListener());
 		loadResults.addActionListener(new CSVLoaderListener());
-		
+
 		// add menus to bar, and items to menus
 		menuBar.add(file);
 		menuBar.add(data);
-		
+
 		file.add(loadCodes);
 		file.add(loadResults);
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(emailSettings);
-		
+
 		setJMenuBar(menuBar);
 	}
-	
+
 	private void createDataBox() {
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
-		
+
 		ResultsTabManager resultTabs = new ResultsTabManager(this, sr);
-		
+
 		dataPanel.add(resultTabs);
 		add(dataPanel);
 	}
-		
+
 	/**
 	 * MouseListener to make a pop up window of the Student Information appear
 	 */
@@ -166,7 +166,7 @@ public class MainInterface extends JFrame {
 		@Override
 		public void mouseReleased(MouseEvent e) {}
 	}
-	
+
 	/**
 	 * Listener attached to File -> Load X menu items. Constructs a {@link JFileChooser}
 	 * which is restricted to files that have a .csv extension. After selecting a
@@ -179,9 +179,9 @@ public class MainInterface extends JFrame {
 	 *
 	 */
 	class CSVLoaderListener implements ActionListener {
-		
+
 		private String currentPath = null;
-		
+
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc;
 			if (currentPath != null) {
@@ -189,35 +189,35 @@ public class MainInterface extends JFrame {
 			} else {
 				fc = new JFileChooser();
 			}
-			
+
 			// make only folders and csv files visible
 			fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
 			fc.setAcceptAllFileFilterUsed(false);
 			fc.setMultiSelectionEnabled(true);
-			
+
 			int returnVal = fc.showOpenDialog(MainInterface.this);
-			
+
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File[] files = fc.getSelectedFiles();
-				
+				CSVLoader loader = new CSVLoader(sr);
+
 				// will start file chooser in this directory next time
 				currentPath = files[0].getAbsolutePath();
-				
+
 				for (File file : files) {
-					CSVLoader loader = new CSVLoader(sr, file.getAbsolutePath());
-					
+
 					if (e.getSource() == loadCodes) {
-						loader.readCSV(CSVLoader.MARKING_CODES);
+						loader.readCSV(file.getAbsolutePath(), CSVLoader.MARKING_CODES);
 					} else if (e.getSource() == loadResults) {
-						loader.readCSV(CSVLoader.RESULTS);
+						loader.readCSV(file.getAbsolutePath(), CSVLoader.RESULTS);
 					}
 				}
-				
+
 				if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 			}
 		}
 	}
-	
+
 	/**
 	 *SearchFilter keeps track of searchText textArea  by using 
 	 *a DocumentListener and updates studentListModel using filteringList().
@@ -244,31 +244,29 @@ public class MainInterface extends JFrame {
 			});
 		}
 	}
-   
-   /**
-    * Method to change studentListModel
-    */
-   public void filteringList(){
-	   if (searchText.getText().equals("")){
-		   for (Student student : sr.returnStudents().values()) {
-			   studentListModel.addElement(student);
-		   }
 
-	   }
-	   else {
-		   //Compare searchtext Text with student name and student number
-		   studentListModel.removeAllElements();
-		   for (Student student : sr.returnStudents().values()) {
-			   if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
-					   || student.getNumber().toString().contains(searchText.getText()) ){
-				   studentListModel.addElement(student);
-			   }
-		   }
-	   }
-   }
+	/**
+	 * Method to change studentListModel
+	 */
+	public void filteringList(){
+		if (searchText.getText().equals("")){
+			for (Student student : sr.returnStudents().values()) {
+				studentListModel.addElement(student);
+			}
+		} else {
+			//Compare searchtext Text with student name and student number
+			studentListModel.removeAllElements();
+			for (Student student : sr.returnStudents().values()) {
+				if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
+						|| student.getNumber().toString().contains(searchText.getText()) ){
+					studentListModel.addElement(student);
+				}
+			}
+		}
+	}
 
-	
-   public static void main (String[] args){
-	   MainInterface mi = new MainInterface();
-   }
+
+	public static void main (String[] args){
+		MainInterface mi = new MainInterface();
+	}
 }
