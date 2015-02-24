@@ -1,5 +1,7 @@
 package io;
 
+import javax.swing.JOptionPane;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,7 +33,6 @@ import records.Assessment;
 public class CSVLoader {
 
 	private StudentRecords studentRecords;
-	private String filePath;
 	
 	/**
 	 * Marking codes will be passed to the loader.
@@ -50,16 +51,15 @@ public class CSVLoader {
 	 * @param studentRecords the StudentRecords from the main GUI window
 	 * @param filePath the path to the CSV file to be loaded
 	 */
-	public CSVLoader(StudentRecords studentRecords, String filePath) {
+	public CSVLoader(StudentRecords studentRecords) {
 		this.studentRecords = studentRecords;
-		this.filePath = filePath;
 	}
 	
 	/**
 	 * Creates a {@link Scanner} that reads the first row of the CSV file given
 	 * to the constructor. The number of columns in the first row is used as a
 	 * weak test that the file contains the appropriate data for the specified
-	 * running mode (which determines the next method to use on the rest of the
+	 * running mode (which determines the method that is used to parse the 
 	 * file).
 	 * 
 	 * @param runMode integer indicating the type of data contained in the file
@@ -67,7 +67,7 @@ public class CSVLoader {
 	 * @throws IllegalArguentException if runMode is not one of MARKING_CODES or
 	 * RESULTS.
 	 */
-	public void readCSV(int runMode) throws IllegalArgumentException{
+	public void readCSV(String filePath, int runMode) throws IllegalArgumentException{
 		Scanner sc = null;
 		
 		try {
@@ -84,8 +84,8 @@ public class CSVLoader {
 			} else if ((runMode != MARKING_CODES) && (runMode != RESULTS)) {
 				throw new IllegalArgumentException("Illegal argument: use one of CSVLoader.MARKING_CODES or CSVLoader.RESULTS");
 			} else {
-				// TODO replace this with a pop-up message
-				System.out.println("Incorrect column format in selected CSV file!");
+				JOptionPane.showMessageDialog(null, "Incorrect column format in selected CSV file!\nPlease try again.",
+								"", JOptionPane.WARNING_MESSAGE);
 			}
 			
 		} catch (IOException e) {
@@ -110,11 +110,13 @@ public class CSVLoader {
 		
 		// keep track of whether codes have corresponding students on record
 		int unknown = 0;
+		int known = 0;
 		
 		// begin by storing first row
 		if (studentRecords.hasStudent(firstRow.get(0))) {
 			studentRecords.returnStudent(firstRow.get(0)).setMarkingCode(firstRow.get(1));
 			studentRecords.putCode(firstRow.get(1), firstRow.get(0));
+			++known;
 		} else {
 			++unknown;
 		}
@@ -125,14 +127,14 @@ public class CSVLoader {
 			if (studentRecords.hasStudent(row[0])) {
 				studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
 				studentRecords.putCode(row[1], row[0]);
+				++known;
 			} else {
 				++unknown;
 			}
 		}
 				
-		// TODO replace this with popup message box
-		System.out.println("Anonymous marking codes imported. " + studentRecords.numOfStudents() +
-				" codes were for known students; " + unknown + " codes were for unknown students");
+		JOptionPane.showMessageDialog(null, "Anonymous marking codes imported.\n" + known +
+			" codes were for known students; " + unknown + " codes were for unknown students");
 	}
 
 	/**

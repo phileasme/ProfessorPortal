@@ -16,7 +16,6 @@ import records.Student;
 /**
  * Class to create a Pop Up Window containing the student details
  * @author Nikita Vorontsov
- * @author Max Karasinski
  * @author Phileas Hocquard
  *
  */
