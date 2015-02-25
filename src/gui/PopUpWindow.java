@@ -47,10 +47,17 @@ public class PopUpWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
+		//New JPanel using GridBagConstraints to set Labels in
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
+		
+		//For phileas
+		JPanel newPanel = new JPanel();
+		contentPane.add(newPanel, BorderLayout.SOUTH);
+		JLabel testJ = new JLabel("Test");
+		newPanel.add(testJ);
 		
 		JLabel studentNameLabel = new JLabel(studentName);
 		studentNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
