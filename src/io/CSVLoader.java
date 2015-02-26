@@ -178,10 +178,10 @@ public class CSVLoader {
 			String id = studentRecords.getIDFromCode(row[candKeyIndex]);
 			
 			if (id != null) {
-				r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+				r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 				studentRecords.returnStudent(id).addResult(r);
 			} else {
-				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
 			}
 			
 			currentAss = r.getAssessment();
@@ -198,10 +198,10 @@ public class CSVLoader {
 				id = studentRecords.getIDFromCode(row[candKeyIndex]);
 				
 				if (id != null) {
-					r = new Result(row[moduleIndex], row[assIndex], id, row[markIndex], row[gradeIndex]);
+					r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 					studentRecords.returnStudent(id).addResult(r);
 				} else {
-					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], row[markIndex], row[gradeIndex]);
+					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
 				}
 				currentAss = r.getAssessment();
 				
@@ -217,7 +217,7 @@ public class CSVLoader {
 			// remove course indicator from end of ID number
 			String num = row[candKeyIndex].replaceFirst("/\\w$", "");
 			
-			r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
+			r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 			
 			Student student = studentRecords.returnStudent(num);
 			if (student != null) student.addResult(r);
@@ -235,7 +235,7 @@ public class CSVLoader {
 				row = clean(sc.nextLine()).split(",");
 				num = row[candKeyIndex].replaceFirst("/\\w$", "");
 				
-				r = new Result(row[moduleIndex], row[assIndex], num, row[markIndex], row[gradeIndex]);
+				r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 				student = studentRecords.returnStudent(num);
 				if (student != null) student.addResult(r);
 				

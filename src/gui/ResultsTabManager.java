@@ -70,7 +70,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			if (indexOfTab(tabName) >= 0) continue;
 			
 			// one row for each result
-			String[][] results = new String[a.size()][4];
+			Object[][] results = new Object[a.size()][4];
 			int rowIndex = 0;
 			
 			for (ListIterator<Result> it = a.listIterator(); it.hasNext(); ++rowIndex) {
