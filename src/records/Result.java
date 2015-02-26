@@ -21,7 +21,7 @@ public class Result {
 	/**
 	 * The mark awarded.
 	 */
-	public final String mark;
+	public final int mark;
 	
 	/**
 	 * Note on result. Will be blank unless student was absent, withdrew, etc.
@@ -33,7 +33,7 @@ public class Result {
 	 */
 	private String candKey;
 	
-	public Result(String module, String assessment, String candKey, String mark, String grade) {
+	public Result(String module, String assessment, String candKey, int mark, String grade) {
 		this.module = module;
 		this.assessment = assessment;
 		this.candKey = candKey;
