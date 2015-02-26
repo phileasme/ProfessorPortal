@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
 
 import records.Assessment;
 import records.StudentRecords;
@@ -97,8 +97,8 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			is clicked on */
 			final JTable table = new JTable(results, columns);
 			
-			table.addMouseListener(new MouseListener() {
-				public void mouseReleased(MouseEvent e) {
+			table.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
 					if (table.getSelectedColumn() == 0) {
 						int row = table.getSelectedRow();
 						String num = (String) table.getValueAt(row, 1);
@@ -109,11 +109,6 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 						}
 					}
 				}
-				
-				public void mouseClicked(MouseEvent e) {}
-				public void mousePressed(MouseEvent e) {}
-				public void mouseEntered(MouseEvent e) {}
-				public void mouseExited(MouseEvent e) {}
 			});
 			
 //			table.setAutoCreateRowSorter(true);
