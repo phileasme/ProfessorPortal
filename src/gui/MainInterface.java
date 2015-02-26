@@ -2,7 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -148,8 +148,8 @@ public class MainInterface extends JFrame {
 	/**
 	 * MouseListener to make a pop up window of the Student Information appear
 	 */
-	class StudentPressListener implements MouseListener{
-		public void mousePressed(MouseEvent e) {
+	class StudentPressListener extends MouseAdapter{
+		public void mouseClicked(MouseEvent e) {
 			int index;
 			Student stu;
 			index = studentList.getSelectedIndex();
@@ -157,14 +157,6 @@ public class MainInterface extends JFrame {
 			PopUpWindow studentInfo = new PopUpWindow(stu);
 			studentInfo.setVisible(true);
 		}
-		@Override
-		public void mouseClicked(MouseEvent e) {}
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-		@Override
-		public void mouseExited(MouseEvent e) {}
-		@Override
-		public void mouseReleased(MouseEvent e) {}
 	}
 
 	/**
