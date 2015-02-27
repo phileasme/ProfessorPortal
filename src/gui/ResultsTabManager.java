@@ -69,6 +69,8 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			// table already exists; skip it
 			if (indexOfTab(tabName) >= 0) continue;
 			
+			
+			
 			// one row for each result
 			Object[][] results = new Object[a.size()][4];
 			int rowIndex = 0;
@@ -95,7 +97,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			/* create the table from the data and give it a mouse listener
 			which will make a pop-up window with student info when the name
 			is clicked on */
-			final JTable table = new JTable(results, columns);
+			final JTable table = new JTable(new ResultsTableModel(results, columns));
 			
 			table.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -112,7 +114,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			});
 			
 //			table.setAutoCreateRowSorter(true);
-			
+			table.setCellEditor(null);
 			JScrollPane scrollPane = new JScrollPane(table);
 			addTab(tabName, scrollPane);
 		}
