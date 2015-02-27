@@ -119,8 +119,9 @@ public class MainInterface extends JFrame {
 		// has been loaded
 		loadResults.setEnabled(false);
 
-		loadCodes.addActionListener(new CSVLoaderListener());
-		loadResults.addActionListener(new CSVLoaderListener());
+		CSVLoaderListener CSVll = new CSVLoaderListener();
+		loadCodes.addActionListener(CSVll);
+		loadResults.addActionListener(CSVll);
 
 		// add menus to bar, and items to menus
 		menuBar.add(file);
@@ -176,6 +177,7 @@ public class MainInterface extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc;
+			System.out.println(currentPath);
 			if (currentPath != null) {
 				fc = new JFileChooser(currentPath);
 			} else {
