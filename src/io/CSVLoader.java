@@ -33,6 +33,10 @@ import records.Assessment;
 public class CSVLoader {
 
 	private StudentRecords studentRecords;
+	private Pattern angledQuotesPattern;
+	private Pattern straightQuotesPattern;
+	private Pattern numSymbolPattern;
+	private Pattern courseNumPattern;
 	
 	/**
 	 * Marking codes will be passed to the loader.
@@ -44,15 +48,25 @@ public class CSVLoader {
 	 */
 	public static final int RESULTS = 1;
 	
+	
 	/**
-	 * Constructs a CSVLoader which will load either anonymous marking codes or
-	 * exam results, depending on the length of the header row.
+	 * Constructs a CSVLoader and pre-compiles some patterns to ease string 
+	 * replacement later on.
 	 * 
 	 * @param studentRecords the StudentRecords from the main GUI window
 	 * @param filePath the path to the CSV file to be loaded
 	 */
 	public CSVLoader(StudentRecords studentRecords) {
 		this.studentRecords = studentRecords;
+		
+		String leftQuote = String.valueOf((char) 8220);
+		String rightQuote = String.valueOf((char) 8221);
+
+		// compile these now, **once**, to save CPU time later on
+		angledQuotesPattern = Pattern.compile(leftQuote + "|" + rightQuote);
+		straightQuotesPattern = Pattern.compile("\"");
+		numSymbolPattern = Pattern.compile("#");
+		courseNumPattern = Pattern.compile("/\\w$");
 	}
 	
 	/**
@@ -132,7 +146,7 @@ public class CSVLoader {
 				++unknown;
 			}
 		}
-				
+		
 		JOptionPane.showMessageDialog(null, "Anonymous marking codes imported.\n" + known +
 			" codes were for known students; " + unknown + " codes were for unknown students");
 	}
@@ -215,7 +229,7 @@ public class CSVLoader {
 		} else { // file contains coursework results, with modified ID number
 			
 			// remove course indicator from end of ID number
-			String num = row[candKeyIndex].replaceFirst("/\\w$", "");
+			String num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
 			
 			r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 			
@@ -233,7 +247,7 @@ public class CSVLoader {
 			// load rest of file
 			while (sc.hasNextLine()) {
 				row = clean(sc.nextLine()).split(",");
-				num = row[candKeyIndex].replaceFirst("/\\w$", "");
+				num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
 				
 				r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
 				student = studentRecords.returnStudent(num);
@@ -273,22 +287,14 @@ public class CSVLoader {
 	 * @return the cleaned string
 	 */
 	private String clean(String s) {
-		String leftQuote = String.valueOf((char) 8220);
-		String rightQuote = String.valueOf((char) 8221);
-		String quote = "\"";
-		String empty = "";
-
-		int charType = Character.getType(s.toCharArray()[0]);
-
+		int charType = Character.getType(s.charAt(0));
+		
 		if (charType == 29) {
-			// angled opening/closing quotation marks
-			s = s.replaceAll(leftQuote + "|" + rightQuote, empty);
+			s = angledQuotesPattern.matcher(s).replaceAll("");
 		} else if (charType == 24) {
-			// vertical double quotation marks
-			s = s.replaceAll(quote, empty);
+			s = straightQuotesPattern.matcher(s).replaceAll("");
 		}
-
-		// remove # now to make life easier later
-		return s.replaceAll("#", "");
+		
+		return numSymbolPattern.matcher(s).replaceAll("");
 	}
 }
