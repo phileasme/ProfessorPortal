@@ -1,22 +1,21 @@
 package gui;
 
-import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JScrollPane;
-
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
 
 import records.Assessment;
-import records.StudentRecords;
 import records.Result;
-import gui.PopUpWindow;
+import records.Student;
+import records.StudentRecords;
 
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
@@ -113,10 +112,26 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 				}
 			});
 			
+		
+			
+			
 //			table.setAutoCreateRowSorter(true);
 			table.setCellEditor(null);
 			JScrollPane scrollPane = new JScrollPane(table);
 			addTab(tabName, scrollPane);
+		}  
+	
+	}
+	public void test(){
+		int index = getSelectedIndex();
+		String title = getTitleAt(index);
+		Assessment  ass = studentRecords.getAssessment(title);
+		
+		for (ListIterator<Result> it = ass.listIterator(); it.hasNext();){
+			Result r = it.next();
+			Student s = studentRecords.returnStudent(r.getCandKey());
+			
 		}
 	}
+	
 }
