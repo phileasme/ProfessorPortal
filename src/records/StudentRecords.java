@@ -9,16 +9,14 @@ package records;
  * 
  */
 
-import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.Observable;
 
 import studentdata.Connector;
 import studentdata.DataTable;
-import records.Assessment;
 
 
 /**
@@ -28,7 +26,7 @@ public class StudentRecords extends Observable {
 
 	private Map<String, Student> students = new LinkedHashMap<String, Student>();	    
 	private Map<String, String> markingCodes = new HashMap<String, String>();
-	private List<Assessment> assessments = new ArrayList<Assessment>();
+	private Map<String,Assessment> assessments = new HashMap<String,Assessment>();
 	
 	/**
      * Instantiates a new student records.
@@ -134,7 +132,8 @@ public class StudentRecords extends Observable {
 		public void addAssessments(List<Assessment> assessmentList) {
 			for (Assessment ass : assessmentList) {
 				if (ass.size() > 0) {
-					assessments.add(ass);
+					assessments.put(ass.toString(),ass);
+
 				}
 			}
 			
@@ -161,6 +160,9 @@ public class StudentRecords extends Observable {
 			return assessments.size();
 		}
 		
+		public Assessment getAssessment(String assesment){
+			return assessments.get(assesment);
+		}
 		/**
 		 * Prints all the students.
 		 */
