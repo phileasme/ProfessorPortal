@@ -3,6 +3,8 @@ package gui;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Observable;
@@ -57,7 +59,11 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object assessments) {
-		List<Assessment> assessmentList = (ArrayList<Assessment>) assessments;
+		HashMap<String,Assessment>  assess = (HashMap<String,Assessment>) assessments;
+		
+		List<Assessment> assessmentList = new ArrayList<Assessment>( assess.values());
+				
+		//Collections.sort(assessmentList);
 		
 		String[] columns = {"Student Name", "Student Number", "Mark", "Grade"};
 		
