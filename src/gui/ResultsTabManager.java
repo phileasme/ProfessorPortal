@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -128,7 +129,14 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		}  
 	
 	}
-	public void test(){
+	
+	/**
+	 * Searches the currently selected tab and makes a scatterplot where each 
+	 * point is a student's mark for the current assessment vs the average 
+	 * mark across all <b>other</b> assessments. A data point is made for each 
+	 * student in the current assessment.
+	 */
+	public void plotAverageMarks(){
 		int index = getSelectedIndex();
 		String title = getTitleAt(index);
 		Assessment  ass = studentRecords.getAssessment(title);
@@ -137,6 +145,27 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			Result r = it.next();
 			Student s = studentRecords.returnStudent(r.getCandKey());
 			
+			Collection<Result> studentResults = s.getAllResults();
+			
+			double assResult = r.mark;
+			double average = 0.0;
+			double resultCount = 0.0;
+			
+			for (Result result : studentResults) {
+				if (!(result == r)) {
+					average += result.mark;
+					++resultCount;
+				}
+			}
+			
+			if (resultCount == 0.0) {
+				average = 0.0;
+			} else {
+				average = average / resultCount;
+			}
+			
+			// TODO make scatterplot
+			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
 		}
 	}
 	
