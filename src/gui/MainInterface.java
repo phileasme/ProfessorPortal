@@ -52,7 +52,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
-
+	private ResultsTabManager resultTabs;
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
 	 * 
@@ -61,7 +61,6 @@ public class MainInterface extends JFrame {
 		super("PRA Coursework - MNP");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000,600);
-
 		createMenuBar();
 		createStudentList();
 		createDataBox();
@@ -98,6 +97,19 @@ public class MainInterface extends JFrame {
 		studentList.addMouseListener(new StudentPressListener());
 
 		SearchFilter sfl = new SearchFilter();
+		averageResults.addActionListener(new ActionListener(){
+			
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Scatterplot scat = new Scatterplot();
+			resultTabs.plotAverageMarks();
+				
+				scat.setVisible(true);
+				
+			}
+		});
+		
+	
 	}
 
 	/**
@@ -136,14 +148,16 @@ public class MainInterface extends JFrame {
 		setJMenuBar(menuBar);
 	}
 
-	private void createDataBox() {
+	private ResultsTabManager  createDataBox() {
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
 
-		ResultsTabManager resultTabs = new ResultsTabManager(this, sr);
-
+		 resultTabs = new ResultsTabManager(this, sr);
+			
 		dataPanel.add(resultTabs);
-		add(dataPanel);
+		add(dataPanel);	
+
+		return resultTabs;
 	}
 
 	/**
@@ -159,6 +173,7 @@ public class MainInterface extends JFrame {
 			studentInfo.setVisible(true);
 		}
 	}
+
 
 	/**
 	 * Listener attached to File -> Load X menu items. Constructs a {@link JFileChooser}
