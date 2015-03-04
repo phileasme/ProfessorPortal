@@ -3,7 +3,6 @@ package gui;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -140,17 +139,20 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		int index = getSelectedIndex();
 		String title = getTitleAt(index);
 		Assessment  ass = studentRecords.getAssessment(title);
+		int counter = 0;
+		float[][] data = new float [2][ass.size()];
 		
-		for (ListIterator<Result> it = ass.listIterator(); it.hasNext();){
+		for (ListIterator<Result> it = ass.listIterator(); it.hasNext(); ++counter){
+	
 			Result r = it.next();
 			Student s = studentRecords.returnStudent(r.getCandKey());
 			
 			Collection<Result> studentResults = s.getAllResults();
 			
 			double assResult = r.mark;
-			double average = 0.0;
-			double resultCount = 0.0;
-			
+			double average = 0;
+			double resultCount = 0;
+	
 			for (Result result : studentResults) {
 				if (!(result == r)) {
 					average += result.mark;
@@ -158,15 +160,26 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 				}
 			}
 			
-			if (resultCount == 0.0) {
-				average = 0.0;
+			if (resultCount == 0) {
+				average = 0;
 			} else {
 				average = average / resultCount;
 			}
+			 /**
+		     * Populates the data array 
+		     */
+			 data[0] [counter] = (float)  assResult;
+			 data[1] [counter] =(float) average;
 			
+			 
 			// TODO make scatterplot
 			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
+			
 		}
+		Scatterplot scatp = new Scatterplot();
+		scatp.makedata(data);
+		scatp.setVisible(true);
+		
 	}
-	
+
 }
