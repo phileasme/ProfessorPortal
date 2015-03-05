@@ -100,11 +100,10 @@ public class MainInterface extends JFrame {
 		averageResults.addActionListener(new ActionListener(){
 			
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				Scatterplot scat = new Scatterplot();
+
 			resultTabs.plotAverageMarks();
 				
-				scat.setVisible(true);
+
 				
 			}
 		});
