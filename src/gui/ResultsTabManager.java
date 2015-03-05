@@ -19,6 +19,8 @@ import records.Result;
 import records.Student;
 import records.StudentRecords;
 
+import test.ScatterTest;
+
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
  * when new assignments have been loaded. When this happens, create a table
@@ -140,7 +142,8 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		String title = getTitleAt(index);
 		Assessment  ass = studentRecords.getAssessment(title);
 		int counter = 0;
-		float[][] data = new float [2][ass.size()];
+		
+		Scatterplot st = new Scatterplot(title);
 		
 		for (ListIterator<Result> it = ass.listIterator(); it.hasNext(); ++counter){
 	
@@ -165,20 +168,18 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			} else {
 				average = average / resultCount;
 			}
+			
 			 /**
 		     * Populates the data array 
 		     */
-			 data[0] [counter] = (float)  assResult;
-			 data[1] [counter] =(float) average;
-			
+			st.addPoint(average, assResult);
 			 
-			// TODO make scatterplot
+			
 			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
 			
 		}
-		Scatterplot scatp = new Scatterplot();
-		scatp.makedata(data);
-		scatp.setVisible(true);
+
+		st.launch();
 		
 	}
 
