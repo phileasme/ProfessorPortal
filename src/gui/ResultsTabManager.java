@@ -19,8 +19,6 @@ import records.Result;
 import records.Student;
 import records.StudentRecords;
 
-import test.ScatterTest;
-
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
  * when new assignments have been loaded. When this happens, create a table
@@ -32,7 +30,6 @@ import test.ScatterTest;
  */
 public class ResultsTabManager extends JTabbedPane implements Observer {
 
-//	private MainInterface frame;
 	private StudentRecords studentRecords;
 	
 	/**
@@ -141,11 +138,11 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		int index = getSelectedIndex();
 		String title = getTitleAt(index);
 		Assessment  ass = studentRecords.getAssessment(title);
-		int counter = 0;
 		
 		Scatterplot st = new Scatterplot(title);
 		
-		for (ListIterator<Result> it = ass.listIterator(); it.hasNext(); ++counter){
+		// iterate through all results (rows of table) in current assessment
+		for (ListIterator<Result> it = ass.listIterator(); it.hasNext();){
 	
 			Result r = it.next();
 			Student s = studentRecords.returnStudent(r.getCandKey());
@@ -156,6 +153,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			double average = 0;
 			double resultCount = 0;
 	
+			// add marks for not-currently-selected assessment
 			for (Result result : studentResults) {
 				if (!(result == r)) {
 					average += result.mark;
@@ -169,13 +167,11 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 				average = average / resultCount;
 			}
 			
-			 /**
-		     * Populates the data array 
-		     */
+		    // populate the scatterplot 
 			st.addPoint(average, assResult);
 			 
 			
-			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
+//			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
 			
 		}
 
