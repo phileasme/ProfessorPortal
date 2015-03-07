@@ -53,6 +53,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
 	private ResultsTabManager resultTabs;
+	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
 	 * 
@@ -97,18 +98,6 @@ public class MainInterface extends JFrame {
 		studentList.addMouseListener(new StudentPressListener());
 
 		SearchFilter sfl = new SearchFilter();
-		averageResults.addActionListener(new ActionListener(){
-			
-			public void actionPerformed(ActionEvent arg0) {
-
-			resultTabs.plotAverageMarks();
-				
-
-				
-			}
-		});
-		
-	
 	}
 
 	/**
@@ -129,6 +118,10 @@ public class MainInterface extends JFrame {
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
 		loadResults.setEnabled(false);
+		
+		// want this to remain greyed-out until at least one set of results has
+		// been loaded
+		averageResults.setEnabled(false);
 
 		CSVLoaderListener CSVll = new CSVLoaderListener();
 		loadCodes.addActionListener(CSVll);
@@ -144,6 +137,12 @@ public class MainInterface extends JFrame {
 		data.add(emailToStudents);
 		data.add(emailSettings);
 
+		averageResults.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				resultTabs.plotAverageMarks();
+			}
+		});
+		
 		setJMenuBar(menuBar);
 	}
 
@@ -182,7 +181,6 @@ public class MainInterface extends JFrame {
 	 * <p>
 	 * Some code taken/inspired by this 
 	 * <a href="http://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html">Java tutorial</a>.
-	 *  
 	 *
 	 */
 	class CSVLoaderListener implements ActionListener {
@@ -226,12 +224,13 @@ public class MainInterface extends JFrame {
 
 					if (e.getSource() == loadCodes) {
 						loader.readCSV(file.getAbsolutePath(), CSVLoader.MARKING_CODES);
+						if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 					} else if (e.getSource() == loadResults) {
 						loader.readCSV(file.getAbsolutePath(), CSVLoader.RESULTS);
+						if (!averageResults.isEnabled()) averageResults.setEnabled(true);
 					}
 				}
 
-				if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 			}
 		}
 	}
