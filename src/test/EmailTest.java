@@ -10,6 +10,7 @@ import javax.mail.Session;
 import javax.mail.Message;
 import javax.mail.URLName;
 import javax.mail.PasswordAuthentication;
+import javax.mail.Authenticator;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
@@ -25,7 +26,7 @@ public class EmailTest {
 	private String fromAddress; // must be k-----@kcl.ac.uk
 	private String password;
 	
-	private String toAddress = "ali.ansari@mailinator.com";
+	private String toAddress = "kenneth.barker@mailinator.com";
 	
 	
 	public EmailTest() {
@@ -41,27 +42,16 @@ public class EmailTest {
 		if (i == 0) {
 
 			try {
-				Session session = Session.getInstance(props, null);
+				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
+				Session session = Session.getInstance(props, pa);
 				session.setDebug(true);
-
-				/*URLName url = new URLName(
-						"smtp", 
-						serverName,
-						port,
-						null,
-						fromAddress,
-						password
-						);
-				PasswordAuthentication pw = new PasswordAuthentication(fromAddress, password);
-
-				session.setPasswordAuthentication(url, pw);*/
 				
 				// set up message
 				Message msg = new MimeMessage(session);
 
 				msg.setFrom(new InternetAddress(fromAddress));
 
-				msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
 
 				msg.setSubject("test message");
 
@@ -72,8 +62,10 @@ public class EmailTest {
 				msg.setHeader("X-Mailer", "Plague Rat 666");
 				msg.setSentDate(new Date());
 
-				// is this the best way to authenticate?
-				Transport.send(msg, fromAddress, password);
+				Transport transport = session.getTransport();
+				transport.connect();
+				transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
+				transport.close();
 
 				System.out.println("\nGREAT SUCCESS!");
 
@@ -112,5 +104,19 @@ public class EmailTest {
 	
 	public static void main(String[] args) {
 		EmailTest et = new EmailTest();
+	}
+	
+	class PRAauthenticator extends Authenticator {
+		String email;
+		String password;
+		
+		public PRAauthenticator(String email, String password) {
+			this.email = email;
+			this.password = password;
+		}
+		
+		public PasswordAuthentication getPasswordAuthentication() {
+			return new PasswordAuthentication(email, password);
+		}
 	}
 }
