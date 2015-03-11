@@ -20,12 +20,17 @@ import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.*;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
+import io.Scraper;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -86,13 +91,13 @@ public class MainInterface extends JFrame {
 			studentListModel.addElement(student);
 		}
 
-		//Creates scrollable JList to view students
 		studentList = new JList<Student>(studentListModel);
 		studentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentScroll = new JScrollPane(studentList);
 
 		studentPanel.add(searchText, BorderLayout.NORTH);
 		studentPanel.add(studentScroll);
+
 		add(studentPanel, BorderLayout.WEST);
 
 		studentList.addMouseListener(new StudentPressListener());
@@ -137,7 +142,6 @@ public class MainInterface extends JFrame {
 		data.add(emailToStudents);
 		data.add(emailSettings);
 
-		//Plots average marks of results tabs
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				resultTabs.plotAverageMarks();
@@ -166,10 +170,10 @@ public class MainInterface extends JFrame {
 		public void mouseClicked(MouseEvent e) {
 			int index;
 			Student stu;
-			index = studentList.getSelectedIndex(); //Gets index of selected student
-			stu = studentListModel.elementAt(index); //Finds the Student object of the selected student from ListModel
-			PopUpWindow studentInfo = new PopUpWindow(stu); //Creates a new PopUpWindow using the selected student
-			studentInfo.setVisible(true); //Sets the popupwindow to be visible
+			index = studentList.getSelectedIndex();
+			stu = studentListModel.elementAt(index);
+			PopUpWindow studentInfo = new PopUpWindow(stu);
+			studentInfo.setVisible(true);
 		}
 	}
 
@@ -284,7 +288,10 @@ public class MainInterface extends JFrame {
 	}
 
 
-	public static void main (String[] args){
+	public static void main (String[] args) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
 		MainInterface mi = new MainInterface();
+		Scraper scrap = new Scraper();
+//	Scraper scrap = new Scraper();
+//	System.out.println(scrap);
 	}
 }
