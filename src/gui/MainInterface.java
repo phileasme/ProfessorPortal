@@ -196,6 +196,11 @@ public class MainInterface extends JFrame {
 	}
 
 
+	class EmailListener extends MouseAdapter{
+		public void mouseClicked(MouseEvent e) {
+			EmailWindow ew = new EmailWindow();
+		}
+	}
 	/**
 	 * Listener attached to File -> Load X menu items. Constructs a {@link JFileChooser}
 	 * which is restricted to files that have a .csv extension. After selecting a
