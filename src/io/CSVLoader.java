@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Observer;
+import java.util.Observable;
 
 import records.StudentRecords;
 import records.Student;
@@ -30,14 +34,17 @@ import records.Assessment;
  * @see records.Result
  *
  */
-public class CSVLoader {
+public class CSVLoader implements Observer {
 
 	private StudentRecords studentRecords;
 	private Pattern angledQuotesPattern;
 	private Pattern straightQuotesPattern;
 	private Pattern numSymbolPattern;
 	private Pattern courseNumPattern;
+	private Pattern fileNamePattern;
 	
+	
+	// TODO get rid of these if definitely not needed
 	/**
 	 * Marking codes will be passed to the loader.
 	 */
@@ -54,7 +61,6 @@ public class CSVLoader {
 	 * replacement later on.
 	 * 
 	 * @param studentRecords the StudentRecords from the main GUI window
-	 * @param filePath the path to the CSV file to be loaded
 	 */
 	public CSVLoader(StudentRecords studentRecords) {
 		this.studentRecords = studentRecords;
@@ -67,21 +73,17 @@ public class CSVLoader {
 		straightQuotesPattern = Pattern.compile("\"");
 		numSymbolPattern = Pattern.compile("#");
 		courseNumPattern = Pattern.compile("/\\w$");
+		fileNamePattern = Pattern.compile("(\\w+)\\.csv");
 	}
 	
 	/**
 	 * Creates a {@link Scanner} that reads the first row of the CSV file given
-	 * to the constructor. The number of columns in the first row is used as a
-	 * weak test that the file contains the appropriate data for the specified
-	 * running mode (which determines the method that is used to parse the 
-	 * file).
+	 * to the constructor. The number of columns in the first row is used to 
+	 * determine the method that is used to parse the file.
 	 * 
-	 * @param runMode integer indicating the type of data contained in the file
-	 * 
-	 * @throws IllegalArguentException if runMode is not one of MARKING_CODES or
-	 * RESULTS.
+	 * @param filePath path to the file to be loaded
 	 */
-	public void readCSV(String filePath, int runMode) throws IllegalArgumentException{
+	public void readCSV(String filePath) {
 		Scanner sc = null;
 		
 		try {
@@ -89,17 +91,23 @@ public class CSVLoader {
 			
 			List<String> categories = Arrays.asList(clean(sc.nextLine()).split(","));
 			
-			if ((runMode == MARKING_CODES) && (categories.size() == 2)) {
+			if (categories.size() == 2) {
 				// file contains anonymous marking codes
-				loadMarkingCodes(categories, sc);
-			} else if ((runMode == RESULTS) && (categories.size() >= 5)) {
+				// get filename for dialog message
+				Matcher m = fileNamePattern.matcher(filePath);
+				String p;
+				
+				if (m.find()) {
+					p = m.group(1) + ": ";
+				} else {
+					p = "";
+				}
+				
+				loadMarkingCodes(categories, sc, p);
+				
+			} else if (categories.size() >= 5) {
 				// file contains exam/CW results
 				loadExamResults(categories, sc);
-			} else if ((runMode != MARKING_CODES) && (runMode != RESULTS)) {
-				throw new IllegalArgumentException("Illegal argument: use one of CSVLoader.MARKING_CODES or CSVLoader.RESULTS");
-			} else {
-				JOptionPane.showMessageDialog(null, "Incorrect column format in selected CSV file!\nPlease try again.",
-								"", JOptionPane.WARNING_MESSAGE);
 			}
 			
 		} catch (IOException e) {
@@ -119,8 +127,9 @@ public class CSVLoader {
 	 * 
 	 * @param firstRow the first row of the loaded CSV file
 	 * @param sc a Scanner that has read the first line of the loaded CSV file
+	 * @param filename the name of the CSV file being loaded
 	 */
-	private void loadMarkingCodes(List<String> firstRow, Scanner sc) {
+	private void loadMarkingCodes(List<String> firstRow, Scanner sc, String filename) {
 		
 		// keep track of whether codes have corresponding students on record
 		int unknown = 0;
@@ -147,7 +156,7 @@ public class CSVLoader {
 			}
 		}
 		
-		JOptionPane.showMessageDialog(null, "Anonymous marking codes imported.\n" + known +
+		JOptionPane.showMessageDialog(null, filename + "Anonymous marking codes imported.\n" + known +
 			" codes were for known students; " + unknown + " codes were for unknown students");
 	}
 
@@ -262,20 +271,17 @@ public class CSVLoader {
 				assMap.get(currentAss).addResult(r);
 			}
 		}
-		
-		// TODO don't forget to get rid of this
-		// temporary stuff
-		int numResults = 0;
-		
-		for (Assessment a : assMap.values()) {
-			numResults += a.size();
-		}
-		
-		System.out.println("Loaded " + numResults + " results, accross " + assMap.size() + " assessment(s)");
-		
-		// not temporary stuff!
+
 		assessments.addAll(assMap.values());
 		studentRecords.addAssessments(assessments);
+	}
+
+	/**
+	 * Loads a CSV file from a path sent to it by an instance of {@link CSVTracker}.
+	 */
+	@Override
+	public void update(Observable o, Object path) {
+		readCSV((String) path);
 	}
 	
 	/**

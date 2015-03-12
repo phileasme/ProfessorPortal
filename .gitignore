@@ -1,11 +1,11 @@
 # Java stuff #
 *.class
 
-
 # eclipse stuff #
 bin/
 .project
 .classpath
 .settings
 
-
+# file with csv paths to preload #
+loaded_results_log.txt
