@@ -26,6 +26,7 @@ import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
+import io.CSVTracker;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -41,10 +42,15 @@ public class MainInterface extends JFrame {
 	private DefaultListModel<Student> studentListModel;
 	private JList<Student> studentList;
 	private StudentRecords sr = new StudentRecords();
+	
 	private JPanel studentPanel;
 	private JPanel dataPanel;
 	private JScrollPane studentScroll;
 	private JTextField searchText;
+	
+	private ResultsTabManager resultTabs;
+	private CSVTracker csvTracker;
+	private CSVLoader loader;
 
 	private JMenuBar menuBar;
 	private JMenuItem loadCodes;
@@ -52,7 +58,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
-	private ResultsTabManager resultTabs;
+	
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -65,8 +71,12 @@ public class MainInterface extends JFrame {
 		createMenuBar();
 		createStudentList();
 		createDataBox();
-
+		
+		// set visible now so that the window is visible when marking codes notification pops up
 		setVisible(true);
+		
+		// creates csv loaders and checks for previously loaded data to load
+		createFileLoaders();
 	}
 
 	/**
@@ -126,7 +136,7 @@ public class MainInterface extends JFrame {
 		CSVLoaderListener CSVll = new CSVLoaderListener();
 		loadCodes.addActionListener(CSVll);
 		loadResults.addActionListener(CSVll);
-
+		
 		// add menus to bar, and items to menus
 		menuBar.add(file);
 		menuBar.add(data);
@@ -147,7 +157,7 @@ public class MainInterface extends JFrame {
 		setJMenuBar(menuBar);
 	}
 
-	private ResultsTabManager  createDataBox() {
+	private void createDataBox() {
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new BorderLayout());
 
@@ -155,8 +165,15 @@ public class MainInterface extends JFrame {
 			
 		dataPanel.add(resultTabs);
 		add(dataPanel);	
-
-		return resultTabs;
+	}
+	
+	private void createFileLoaders() {
+		loader = new CSVLoader(sr);
+		csvTracker = new CSVTracker();
+		csvTracker.addObserver(loader);
+		csvTracker.init();
+		
+		if (sr.hasCodes()) loadResults.setEnabled(true);
 	}
 
 	/**
@@ -216,20 +233,28 @@ public class MainInterface extends JFrame {
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File[] files = fc.getSelectedFiles();
-				CSVLoader loader = new CSVLoader(sr);
 
 				// will start file chooser in this directory next time
 				currentPath = files[0].getAbsolutePath();
+				
+				String[] paths = new String[files.length];
 
-				for (File file : files) {
-
+				for (int i = 0; i < files.length; i++) {
+					loader.readCSV(files[i].getAbsolutePath());
+					
 					if (e.getSource() == loadCodes) {
-						loader.readCSV(file.getAbsolutePath(), CSVLoader.MARKING_CODES);
 						if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 					} else if (e.getSource() == loadResults) {
-						loader.readCSV(file.getAbsolutePath(), CSVLoader.RESULTS);
 						if (!averageResults.isEnabled()) averageResults.setEnabled(true);
 					}
+					
+					paths[i] = files[i].getAbsolutePath();
+				}
+				
+				if (e.getSource() == loadCodes) {
+					csvTracker.writeFilePaths(paths, CSVTracker.CODES);
+				} else if (e.getSource() == loadResults) {
+					csvTracker.writeFilePaths(paths, CSVTracker.RESULTS);
 				}
 
 			}
@@ -282,7 +307,6 @@ public class MainInterface extends JFrame {
 			}
 		}
 	}
-
 
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();

@@ -34,13 +34,15 @@ public class CSVTest {
 		
 		StudentRecords sr = new StudentRecords();
 		CSVLoader csv = new CSVLoader(sr);
-		csv.readCSV(codes1, CSVLoader.MARKING_CODES);
+//		csv.readCSV(codes1, CSVLoader.MARKING_CODES);
+		csv.readCSV(codes1);
 		
-		csv.readCSV(codes2, CSVLoader.MARKING_CODES);
+//		csv.readCSV(codes2, CSVLoader.MARKING_CODES);
+		csv.readCSV(codes2);
 		
-		csv.readCSV(results1, CSVLoader.RESULTS);
+//		csv.readCSV(results1, CSVLoader.RESULTS);
 		
-		csv.readCSV(results2, CSVLoader.RESULTS);
+//		csv.readCSV(results2, CSVLoader.RESULTS);
 		
 		System.out.println("\nAfter loading, studentRecords.assessments has " + sr.numOfAssessments() + " assessments");
 		
