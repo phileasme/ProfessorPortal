@@ -314,10 +314,8 @@ public class MainInterface extends JFrame {
 	}
 
 
-	public static void main (String[] args){
+	public static void main (String[] args) throws Exception {
 		MainInterface mi = new MainInterface();
 		Scraper scrap = new Scraper();
-//	Scraper scrap = new Scraper();
-//	System.out.println(scrap);
 	}
 }
