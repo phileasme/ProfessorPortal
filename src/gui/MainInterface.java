@@ -63,10 +63,10 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
+	private JMenuItem removeLogs;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
-	 * 
 	 */
 	public MainInterface(){
 		super("PRA Coursework - MNP");
@@ -126,6 +126,7 @@ public class MainInterface extends JFrame {
 		// menu items
 		loadCodes = new JMenuItem("Load anonymous marking codes");
 		loadResults = new JMenuItem("Load exam results");
+		removeLogs = new JMenuItem("Delete logged files");
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		emailSettings = new JMenuItem("Email Settings");
@@ -148,6 +149,7 @@ public class MainInterface extends JFrame {
 
 		file.add(loadCodes);
 		file.add(loadResults);
+		file.add(removeLogs);
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(emailSettings);
@@ -156,6 +158,13 @@ public class MainInterface extends JFrame {
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				resultTabs.plotAverageMarks();
+			}
+		});
+		
+		// empties log file containing loaded csv's
+		removeLogs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				csvTracker.flush();
 			}
 		});
 		
@@ -176,7 +185,7 @@ public class MainInterface extends JFrame {
 		loader = new CSVLoader(sr);
 		csvTracker = new CSVTracker();
 		csvTracker.addObserver(loader);
-		csvTracker.init();
+		csvTracker.initialise();
 		
 		if (sr.hasCodes()) loadResults.setEnabled(true);
 	}
@@ -247,24 +256,31 @@ public class MainInterface extends JFrame {
 				// will start file chooser in this directory next time
 				currentPath = files[0].getAbsolutePath();
 				
+				// determines whether or not file paths will be logged
+				boolean success = false;
+				
 				String[] paths = new String[files.length];
 
 				for (int i = 0; i < files.length; i++) {
-					loader.readCSV(files[i].getAbsolutePath());
+					paths[i] = files[i].getAbsolutePath();
 					
 					if (e.getSource() == loadCodes) {
+						success = loader.loadMarkingCodes(paths[i]);
 						if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 					} else if (e.getSource() == loadResults) {
+						success = loader.loadExamResults(paths[i]);
 						if (!averageResults.isEnabled()) averageResults.setEnabled(true);
 					}
 					
-					paths[i] = files[i].getAbsolutePath();
 				}
 				
-				if (e.getSource() == loadCodes) {
-					csvTracker.writeFilePaths(paths, CSVTracker.CODES);
-				} else if (e.getSource() == loadResults) {
-					csvTracker.writeFilePaths(paths, CSVTracker.RESULTS);
+				// log file paths to be loaded on program launch
+				if (success) {
+					if (e.getSource() == loadCodes) {
+						csvTracker.writeFilePaths(paths, CSVTracker.CODES);
+					} else if (e.getSource() == loadResults) {
+						csvTracker.writeFilePaths(paths, CSVTracker.RESULTS);
+					}
 				}
 
 			}
@@ -321,6 +337,6 @@ public class MainInterface extends JFrame {
 
 	public static void main (String[] args) throws Exception {
 		MainInterface mi = new MainInterface();
-		Scraper scrap = new Scraper();
+//		Scraper scrap = new Scraper();
 	}
 }

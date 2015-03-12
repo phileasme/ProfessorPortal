@@ -75,6 +75,7 @@ public class Student {
 	 * @return the student's anonymous marking code
 	 */
 	public String getMarkingCode() {
+		System.out.println("poop!");
 		return markingCode;
 	}
 	
