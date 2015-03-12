@@ -1,0 +1,3 @@
+C /home/max/workspace/pracoursework2/csv/anoncodes1.csv
+R /home/max/workspace/pracoursework2/csv/201213/4CCS1CS1.csv
+C /home/max/workspace/pracoursework2/csv/201213/4CCS1IAI-cw.csv

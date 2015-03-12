@@ -20,13 +20,18 @@ import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.*;
 
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
 import io.CSVTracker;
+import io.Scraper;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -58,7 +63,6 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
-	
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -103,6 +107,7 @@ public class MainInterface extends JFrame {
 
 		studentPanel.add(searchText, BorderLayout.NORTH);
 		studentPanel.add(studentScroll);
+
 		add(studentPanel, BorderLayout.WEST);
 
 		studentList.addMouseListener(new StudentPressListener());
@@ -185,8 +190,8 @@ public class MainInterface extends JFrame {
 			Student stu;
 			index = studentList.getSelectedIndex(); //Gets index of selected student
 			stu = studentListModel.elementAt(index); //Finds the Student object of the selected student from ListModel
-			PopUpWindow studentInfo = new PopUpWindow(stu); //Creates a new PopUpWindow using the selected student
-			studentInfo.setVisible(true); //Sets the popupwindow to be visible
+			PopUpWindow studentInfo = new PopUpWindow(stu);
+			studentInfo.setVisible(true);
 		}
 	}
 
@@ -308,7 +313,11 @@ public class MainInterface extends JFrame {
 		}
 	}
 
+
 	public static void main (String[] args){
 		MainInterface mi = new MainInterface();
+		Scraper scrap = new Scraper();
+//	Scraper scrap = new Scraper();
+//	System.out.println(scrap);
 	}
 }
