@@ -73,8 +73,6 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			// table already exists; skip it
 			if (indexOfTab(tabName) >= 0) continue;
 			
-			
-			
 			// one row for each result
 			Object[][] results = new Object[a.size()][4];
 			int rowIndex = 0;

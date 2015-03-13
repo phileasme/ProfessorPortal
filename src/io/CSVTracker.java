@@ -74,7 +74,7 @@ public class CSVTracker extends Observable {
 	 * one. Should be called immediately after adding a {@link CSVLoader} as an
 	 * Observer.
 	 */
-	public void init() {
+	public void initialise() {
 		if (!(new File(filename).exists())) {
 			makeResultFile();
 		} else {
@@ -92,13 +92,15 @@ public class CSVTracker extends Observable {
 		ArrayList<String> examResults = loadedFiles.get(RESULTS);
 
 		for (String path : markingCodes) {
+			System.out.println("load codes");
 			setChanged();
-			notifyObservers(path);
+			notifyObservers(CODES + path);
 		}
 
 		for (String path : examResults) {
+			System.out.println("load results");
 			setChanged();
-			notifyObservers(path);
+			notifyObservers(RESULTS + path);
 		}
 	}
 
@@ -130,6 +132,17 @@ public class CSVTracker extends Observable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Removes all entries from log file and resets map
+	 */
+	public void flush() {
+		makeResultFile();
+		
+		loadedFiles = new HashMap<Character, ArrayList<String>>();
+		loadedFiles.put(CODES, new ArrayList<String>());
+		loadedFiles.put(RESULTS, new ArrayList<String>());
 	}
 
 	/**

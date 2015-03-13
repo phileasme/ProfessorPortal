@@ -43,19 +43,6 @@ public class CSVLoader implements Observer {
 	private Pattern courseNumPattern;
 	private Pattern fileNamePattern;
 	
-	
-	// TODO get rid of these if definitely not needed
-	/**
-	 * Marking codes will be passed to the loader.
-	 */
-	public static final int MARKING_CODES = 0;
-	
-	/**
-	 * Exam/coursework results will be passed to the loader.
-	 */
-	public static final int RESULTS = 1;
-	
-	
 	/**
 	 * Constructs a CSVLoader and pre-compiles some patterns to ease string 
 	 * replacement later on.
@@ -77,92 +64,81 @@ public class CSVLoader implements Observer {
 	}
 	
 	/**
-	 * Creates a {@link Scanner} that reads the first row of the CSV file given
-	 * to the constructor. The number of columns in the first row is used to 
-	 * determine the method that is used to parse the file.
+	 * Reads from a CSV file, takes the (ID number, marking code) pairs, finds 
+	 * the student associated with that number, and stores the marking code in
+	 * that Student object inside studentRecords.
 	 * 
-	 * @param filePath path to the file to be loaded
+	 * @param filePath the path to a file containing marking codes
+	 * @return false if an error occurs or if the file does not contain marking codes  
 	 */
-	public void readCSV(String filePath) {
+	public boolean loadMarkingCodes(String filePath) {
 		Scanner sc = null;
 		
 		try {
 			sc = new Scanner(new BufferedReader(new FileReader(filePath)));
 			
-			List<String> categories = Arrays.asList(clean(sc.nextLine()).split(","));
+			String[] row = clean(sc.nextLine()).split(",");
 			
-			if (categories.size() == 2) {
-				// file contains anonymous marking codes
+			if (row.length == 2) {
 				// get filename for dialog message
 				Matcher m = fileNamePattern.matcher(filePath);
-				String p;
+				String fileName;
 				
 				if (m.find()) {
-					p = m.group(1) + ": ";
+					fileName = m.group(1) + ": ";
 				} else {
-					p = "";
+					fileName = "";
 				}
 				
-				loadMarkingCodes(categories, sc, p);
+				// keep track of whether codes have corresponding students on record
+				int unknown = 0;
+				int known = 0;
 				
-			} else if (categories.size() >= 5) {
-				// file contains exam/CW results
-				loadExamResults(categories, sc);
-			}
-			
-		} catch (IOException e) {
-			System.out.println("IO Exception");
-			System.out.println(e.getStackTrace());
-		} finally {
-			if (sc != null) {
-				sc.close();
-			}
-		}
-	}
-	
-	/**
-	 * Takes the (ID number, marking code) pairs from the loaded CSV file, finds
-	 * the student associated with that number, and stores the marking code in
-	 * that Student object inside studentRecords.
-	 * 
-	 * @param firstRow the first row of the loaded CSV file
-	 * @param sc a Scanner that has read the first line of the loaded CSV file
-	 * @param filename the name of the CSV file being loaded
-	 */
-	private void loadMarkingCodes(List<String> firstRow, Scanner sc, String filename) {
-		
-		// keep track of whether codes have corresponding students on record
-		int unknown = 0;
-		int known = 0;
-		
-		// begin by storing first row
-		if (studentRecords.hasStudent(firstRow.get(0))) {
-			studentRecords.returnStudent(firstRow.get(0)).setMarkingCode(firstRow.get(1));
-			studentRecords.putCode(firstRow.get(1), firstRow.get(0));
-			++known;
-		} else {
-			++unknown;
-		}
-		
-		// continue with rest of file
-		while (sc.hasNextLine()) {
-			String[] row = clean(sc.nextLine()).split(",");
-			if (studentRecords.hasStudent(row[0])) {
-				studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
-				studentRecords.putCode(row[1], row[0]);
-				++known;
+				// begin by storing first row
+				if (studentRecords.hasStudent(row[0])) {
+					studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
+					studentRecords.putCode(row[1], row[0]);
+					++known;
+				} else {
+					++unknown;
+				}
+				
+				// continue with rest of file
+				while (sc.hasNextLine()) {
+					row = clean(sc.nextLine()).split(",");
+					if (studentRecords.hasStudent(row[0])) {
+						studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
+						studentRecords.putCode(row[1], row[0]);
+						++known;
+					} else {
+						++unknown;
+					}
+				}
+				
+				JOptionPane.showMessageDialog(null, fileName + "Anonymous marking codes imported.\n" + known +
+						" codes were for known students; " + unknown + " codes were for unknown students");
 			} else {
-				++unknown;
+				showWarning("Incorrect column format in selected CSV file!");
+				sc.close();
+				return false;
 			}
+				
+		} catch (IOException e) {
+			showWarning("Something went wrong!\nCause: " + e.getMessage());
+			e.printStackTrace();
 		}
 		
-		JOptionPane.showMessageDialog(null, filename + "Anonymous marking codes imported.\n" + known +
-			" codes were for known students; " + unknown + " codes were for unknown students");
+		if (sc != null) {
+			sc.close();
+			return true;
+		}
+		return false;
+		
 	}
 
 	/**
 	 * Loads exam/coursework results into StudentRecords by making Result
-	 * objects from each row in the CSV.
+	 * objects from each row in the provided CSV.
 	 * <p>
 	 * Results are de-anonymised as they are made, by either looking up the
 	 * marking code in StudentRecords or by removing the "/1" from the end of
@@ -173,115 +149,149 @@ public class CSVLoader implements Observer {
 	 * time a new module/assessment pair is encountered. At the end, a list of
 	 * these assessments is stored in StudentRecords.
 	 * 
-	 * @param categories the header row of the CSV file
-	 * @param sc a Scanner that has read the first line of the loaded CSV file
+	 * @param filePath the path to a file containing marking codes
+	 * @return false if an error occurs or if the file does not contain results
 	 */
-	private void loadExamResults(List<String> categories, Scanner sc) {
-		// first find locations in row of info that we want
-		int moduleIndex = categories.indexOf("Module");
-		int assIndex = categories.indexOf("Ass");
-		int candKeyIndex = categories.indexOf("Cand Key");
-		int markIndex = categories.indexOf("Mark");
-		int gradeIndex = categories.indexOf("Grade");
-
-		List<Assessment> assessments = new ArrayList<Assessment>();
+	public boolean loadExamResults(String filePath) {
+		Scanner sc = null;
 		
-		// determine if we are dealing with exam results or coursework results
-		String[] row = clean(sc.nextLine()).split(",");
-		boolean exam = Pattern.matches("^[a-zA-Z]\\w+", row[candKeyIndex]);
-		
-		// keep track of different module/assessment pairs. Key is Result.getAssessment().
-		Map<String, Assessment> assMap = new HashMap<String, Assessment>();
-		String currentAss;
-		Result r;
-		
-		if (exam) { // file contains exam results, with anonymous marking codes
+		try {
+			sc = new Scanner(new BufferedReader(new FileReader(filePath)));
 			
-			// de-anonymise the marking code
-			String id = studentRecords.getIDFromCode(row[candKeyIndex]);
+			List<String> categories = Arrays.asList(clean(sc.nextLine().toLowerCase()).split(","));
 			
-			if (id != null) {
-				r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
-				studentRecords.returnStudent(id).addResult(r);
+			if (categories.size() >= 5) {
+				// first find locations in row of info that we want
+				int moduleIndex = categories.indexOf("module");
+				int assIndex = categories.indexOf("ass");
+				int candKeyIndex = categories.indexOf("cand key");
+				int markIndex = categories.indexOf("mark");
+				int gradeIndex = categories.indexOf("grade");
+				
+				List<Assessment> assessments = new ArrayList<Assessment>();
+				
+				// determine if we are dealing with exam results or coursework results
+				String[] row = clean(sc.nextLine()).split(",");
+				boolean exam = Pattern.matches("^[a-zA-Z]\\w+", row[candKeyIndex]);
+				
+				// keep track of different module/assessment pairs. Key is Result.getAssessment().
+				Map<String, Assessment> assMap = new HashMap<String, Assessment>();
+				String currentAss;
+				Result r;
+				
+				if (exam) { // file contains exam results, with anonymous marking codes
+					
+					// de-anonymise the marking code
+					String id = studentRecords.getIDFromCode(row[candKeyIndex]);
+					
+					if (id != null) {
+						r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
+						studentRecords.returnStudent(id).addResult(r);
+					} else {
+						r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
+					}
+					
+					currentAss = r.getAssessment();
+					
+					if (!assMap.containsKey(currentAss)) {
+						assMap.put(currentAss, new Assessment());
+					}
+					
+					assMap.get(r.getAssessment()).addResult(r);
+					
+					// load rest of file
+					while (sc.hasNextLine()) {
+						row = clean(sc.nextLine()).split(",");
+						id = studentRecords.getIDFromCode(row[candKeyIndex]);
+						
+						if (id != null) {
+							r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
+							studentRecords.returnStudent(id).addResult(r);
+						} else {
+							r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
+						}
+						currentAss = r.getAssessment();
+						
+						if (!assMap.containsKey(currentAss)) {
+							assMap.put(currentAss, new Assessment());
+						}
+						
+						assMap.get(currentAss).addResult(r);
+					}
+					
+				} else { // file contains coursework results, with modified ID number
+					
+					// remove course indicator from end of ID number
+					String num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
+					
+					r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
+					
+					Student student = studentRecords.returnStudent(num);
+					if (student != null) student.addResult(r);
+					
+					currentAss = r.getAssessment();
+					
+					if (!assMap.containsKey(currentAss)) {
+						assMap.put(currentAss, new Assessment());
+					}
+					
+					assMap.get(r.getAssessment()).addResult(r);
+					
+					// load rest of file
+					while (sc.hasNextLine()) {
+						row = clean(sc.nextLine()).split(",");
+						num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
+						
+						r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
+						student = studentRecords.returnStudent(num);
+						if (student != null) student.addResult(r);
+						
+						currentAss = r.getAssessment();
+						
+						if (!assMap.containsKey(currentAss)) {
+							assMap.put(currentAss, new Assessment());
+						}
+						
+						assMap.get(currentAss).addResult(r);
+					}
+				}
+				
+				assessments.addAll(assMap.values());
+				studentRecords.addAssessments(assessments);
 			} else {
-				r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
+				showWarning("Incorrect column format in selected CSV file!");
+				sc.close();
+				return false;
 			}
 			
-			currentAss = r.getAssessment();
-			
-			if (!assMap.containsKey(currentAss)) {
-				assMap.put(currentAss, new Assessment());
-			}
-			
-			assMap.get(r.getAssessment()).addResult(r);
-			
-			// load rest of file
-			while (sc.hasNextLine()) {
-				row = clean(sc.nextLine()).split(",");
-				id = studentRecords.getIDFromCode(row[candKeyIndex]);
-				
-				if (id != null) {
-					r = new Result(row[moduleIndex], row[assIndex], id, Integer.parseInt(row[markIndex]), row[gradeIndex]);
-					studentRecords.returnStudent(id).addResult(r);
-				} else {
-					r = new Result(row[moduleIndex], row[assIndex], row[candKeyIndex], Integer.parseInt(row[markIndex]), row[gradeIndex]);
-				}
-				currentAss = r.getAssessment();
-				
-				if (!assMap.containsKey(currentAss)) {
-					assMap.put(currentAss, new Assessment());
-				}
-				
-				assMap.get(currentAss).addResult(r);
-			}
-			
-		} else { // file contains coursework results, with modified ID number
-			
-			// remove course indicator from end of ID number
-			String num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
-			
-			r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
-			
-			Student student = studentRecords.returnStudent(num);
-			if (student != null) student.addResult(r);
-			
-			currentAss = r.getAssessment();
-			
-			if (!assMap.containsKey(currentAss)) {
-				assMap.put(currentAss, new Assessment());
-			}
-			
-			assMap.get(r.getAssessment()).addResult(r);
-			
-			// load rest of file
-			while (sc.hasNextLine()) {
-				row = clean(sc.nextLine()).split(",");
-				num = courseNumPattern.matcher(row[candKeyIndex]).replaceFirst("");
-				
-				r = new Result(row[moduleIndex], row[assIndex], num, Integer.parseInt(row[markIndex]), row[gradeIndex]);
-				student = studentRecords.returnStudent(num);
-				if (student != null) student.addResult(r);
-				
-				currentAss = r.getAssessment();
-				
-				if (!assMap.containsKey(currentAss)) {
-					assMap.put(currentAss, new Assessment());
-				}
-				
-				assMap.get(currentAss).addResult(r);
-			}
+		} catch (IOException e) {
+			showWarning("Something went wrong!\nCause: " + e.getMessage());
+			e.printStackTrace();
 		}
-
-		assessments.addAll(assMap.values());
-		studentRecords.addAssessments(assessments);
+		
+		if (sc != null) {
+			sc.close();
+			return true;
+		}
+		return false;
+		
+		
 	}
 
 	/**
 	 * Loads a CSV file from a path sent to it by an instance of {@link CSVTracker}.
 	 */
 	@Override
-	public void update(Observable o, Object path) {
-		readCSV((String) path);
+	public void update(Observable o, Object data) {
+		String file = (String) data;
+		char type = file.charAt(0);
+		
+		if (type == 'C') {
+			loadMarkingCodes(file.substring(1, file.length()));
+		} else if (type == 'R') {
+			loadExamResults(file.substring(1, file.length()));
+		}
+		
 	}
 	
 	/**
@@ -302,5 +312,9 @@ public class CSVLoader implements Observer {
 		}
 		
 		return numSymbolPattern.matcher(s).replaceAll("");
+	}
+	
+	private void showWarning(String message) {
+		JOptionPane.showMessageDialog(null, message, "", JOptionPane.WARNING_MESSAGE);
 	}
 }
