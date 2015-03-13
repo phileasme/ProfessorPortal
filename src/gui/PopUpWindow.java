@@ -1,5 +1,4 @@
 package gui;
-
 import java.util.Collection;
 
 import java.awt.BorderLayout;
@@ -64,6 +63,7 @@ public class PopUpWindow extends JFrame {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		
+		//Creates student name label using the student's name
 		JLabel studentNameLabel = new JLabel(studentName);
 		studentNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		c.gridx = 1;
@@ -72,6 +72,7 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(studentNameLabel, c);
 		
+		//Creates students email label using the student's email
 		JLabel studentEmailLabel = new JLabel(studentEmail);
 		studentEmailLabel.setFont(new Font("Tahoma", Font.ITALIC, 18));
 		c.gridx = 1;
@@ -81,6 +82,7 @@ public class PopUpWindow extends JFrame {
 		c.weighty = 0.05;
 		panel.add(studentEmailLabel, c);
 		
+		//Creates label: "Student No: "
 		JLabel lblStudentNo = new JLabel("Student No: ");
 		lblStudentNo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		c.gridx = 0;
@@ -89,6 +91,7 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(lblStudentNo, c);
 		
+		//Creates a student's ID Number label
 		JLabel studentNumberLabel = new JLabel(studentNumber);
 		studentNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		c.gridx = 1;
@@ -97,6 +100,7 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(studentNumberLabel, c);
 		
+		//Creates a "Tutor: " label
 		JLabel lblTutor = new JLabel("Tutor: ");
 		lblTutor.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		c.gridx = 0;
@@ -106,6 +110,7 @@ public class PopUpWindow extends JFrame {
 		c.weighty = 0.05;
 		panel.add(lblTutor, c);
 		
+		//Creates a tutor's email label
 		JLabel tutorEmailLabel = new JLabel(studentTutor);
 		tutorEmailLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		c.gridx = 1;
