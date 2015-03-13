@@ -1,37 +1,32 @@
 package gui;
 
+import io.CSVLoader;
+import io.CSVTracker;
+
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.event.*;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
-import io.CSVLoader;
-import io.CSVTracker;
-import io.Scraper;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -53,7 +48,7 @@ public class MainInterface extends JFrame {
 	private JScrollPane studentScroll;
 	private JTextField searchText;
 	
-	private ResultsTabManager resultTabs;
+	private ResultsTabManager resultTabs 	;
 	private CSVTracker csvTracker;
 	private CSVLoader loader;
 
@@ -152,6 +147,9 @@ public class MainInterface extends JFrame {
 		data.add(emailToStudents);
 		data.add(emailSettings);
 
+		//Opens the Email window
+		emailToStudents.addActionListener(new EmailListener());
+		
 		//Plots average marks of results tabs
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -196,9 +194,9 @@ public class MainInterface extends JFrame {
 	}
 
 
-	class EmailListener extends MouseAdapter{
-		public void mouseClicked(MouseEvent e) {
-			EmailWindow ew = new EmailWindow();
+	class EmailListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			EmailWindow ew = new EmailWindow(sr);
 		}
 	}
 	/**
@@ -321,6 +319,6 @@ public class MainInterface extends JFrame {
 
 	public static void main (String[] args) throws Exception {
 		MainInterface mi = new MainInterface();
-		Scraper scrap = new Scraper();
+		//Scraper scrap = new Scraper();
 	}
 }
