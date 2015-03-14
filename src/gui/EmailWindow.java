@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import org.gjt.sp.jedit.gui.JCheckBoxList;
 
 import records.Student;
 import records.StudentRecords;
@@ -30,9 +29,8 @@ public class EmailWindow extends JFrame {
 	private JButton selectAll;
 	private JButton selectNone;
 	
-	private Map<JCheckBox, Student> studentCheck;
-	private ArrayList<Student> studentsToEmail;
-	private JCheckBox student;
+	private Student[] studentsToEmail;
+	private ArrayList<Student> studentArray;
 	
 	public EmailWindow(StudentRecords sr) {
 		super("Send Email");
@@ -58,20 +56,15 @@ public class EmailWindow extends JFrame {
 		studentButtonPanel.add(selectAll, BorderLayout.WEST);
 		studentButtonPanel.add(selectNone, BorderLayout.EAST);
 		
-		studentsToEmail = new ArrayList<Student>();
-		studentCheck = new HashMap<JCheckBox, Student>();
-		
-		Box box = Box.createVerticalBox();
-		
-		for(Student st: sr.returnStudents().values()) {
-			student = new JCheckBox(st.toString());
-			studentCheck.put(student, st);
-			student.addActionListener(new CheckListener());
-			box.add(student);
+		studentsToEmail = new Student[sr.numOfStudents()];
+		studentArray = new ArrayList<Student>(sr.returnStudents().values());
+	
+		for(int i = 0; i < sr.numOfStudents(); i++) {
+			studentsToEmail[i] = studentArray.get(i);
 		}
 		
-		
-		JScrollPane studentScroll = new JScrollPane(box);
+		JCheckBoxList studentCheck = new JCheckBoxList(studentsToEmail);
+		JScrollPane studentScroll = new JScrollPane(studentCheck);
 		studentPanel.add(studentScroll, BorderLayout.CENTER);
 		studentPanel.add(studentButtonPanel, BorderLayout.NORTH);
 		this.add(studentPanel, BorderLayout.WEST);
@@ -81,19 +74,19 @@ public class EmailWindow extends JFrame {
 		
 	}
 	
-	class CheckListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			JCheckBox check = (JCheckBox) e.getSource();
-			if(check.isSelected() == true) {
-				studentsToEmail.remove(check);
-				check.setSelected(false);
-			} else {
-			check.setSelected(true);
-			studentsToEmail.add(studentCheck.get(check));
-			}
-			for(Student st: studentsToEmail) {
-				System.out.println(st.toString());
-			}
-		}
-	}
+//	class CheckListener implements ActionListener {
+//		public void actionPerformed(ActionEvent e) {
+//			JCheckBox check = (JCheckBox) e.getSource();
+//			if(check.isSelected() == true) {
+//				studentsToEmail.remove(check);
+//				check.setSelected(false);
+//			} else {
+//			check.setSelected(true);
+//			studentsToEmail.add(studentCheck.get(check));
+//			}
+//			for(Student st: studentsToEmail) {
+//				System.out.println(st.toString());
+//			}
+//		}
+//	}
 }
