@@ -15,13 +15,19 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 public class Scraper {
-	
+	private String webdata = "";
+	private String module = "";
 	private String user = "";
 	private String pass = "";
-	private String webdata = "";
 	
-	
-	public Scraper() throws FailingHttpStatusCodeException, MalformedURLException, IOException{
+
+    /**  http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
+	public Scraper(String url,String mname,String numb,String pass) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
+		webdata = url;
+		module = mname;
+		user =  numb;
+		this.pass = pass;
+		
  System.setProperty("jsse.enableSNIExtension", "false");
     	WebClient webClient = new WebClient();
             
@@ -36,34 +42,17 @@ public class Scraper {
        
             final HtmlPage Loginpage= (HtmlPage) webClient.getPage("https://login-keats.kcl.ac.uk/");
             
-            	//System.out.println(Loginpage);
-
          final  List<HtmlForm> forms = Loginpage.getForms();
          for(HtmlForm form : forms){
         	if( form.getId().equals("login")){
         		
-        	
-            System.out.println(""+form);
            final HtmlTextInput username = form.getInputByName("username");
          final HtmlPasswordInput password = form.getInputByName("password");
       
-        	
-     
-         Scanner in = new  Scanner(System.in);
-         System.out.println("Webpage with student data :");
-         
-         //   http://keats.kcl.ac.uk/mod/page/view.php?id=886138
-         webdata =in.nextLine();
-         System.out.println("User name:");
-        user =  in.nextLine();
-      System.out.println(" password :");
-          pass =  in.nextLine();
-
         
             username.setValueAttribute(user);
             password.setValueAttribute(pass);
-            //System.out.println(Loginpage.asText());
-
+      
             // Click "Sign In" button/link
            final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
 
