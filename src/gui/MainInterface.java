@@ -59,6 +59,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
 	private JMenuItem removeLogs;
+	private JMenuItem fetch;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -125,7 +126,8 @@ public class MainInterface extends JFrame {
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		emailSettings = new JMenuItem("Email Settings");
-
+		fetch = new JMenuItem("Fetch Participation");
+		
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
 		loadResults.setEnabled(false);
@@ -148,7 +150,8 @@ public class MainInterface extends JFrame {
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(emailSettings);
-
+		data.add(fetch);
+		
 		//Opens the Email window
 		emailToStudents.addActionListener(new EmailListener());
 		
@@ -164,6 +167,14 @@ public class MainInterface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				csvTracker.flush();
 			}
+		});
+
+		//Participant login data
+		fetch.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				ScrapperPopUp scrap = new ScrapperPopUp();
+			}
+			
 		});
 		
 		setJMenuBar(menuBar);
