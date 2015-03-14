@@ -12,10 +12,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.gjt.sp.jedit.gui.JCheckBoxList;
-
 import records.Student;
 import records.StudentRecords;
+import com.jidesoft.swing.CheckBoxList;
 
 public class EmailWindow extends JFrame {
 
@@ -50,12 +49,6 @@ public class EmailWindow extends JFrame {
 		
 		studentButtonPanel = new JPanel(new BorderLayout());
 		
-		selectAll = new JButton("Select All");
-		selectNone = new JButton("Select None");
-		
-		studentButtonPanel.add(selectAll, BorderLayout.WEST);
-		studentButtonPanel.add(selectNone, BorderLayout.EAST);
-		
 		studentsToEmail = new Student[sr.numOfStudents()];
 		studentArray = new ArrayList<Student>(sr.returnStudents().values());
 	
@@ -63,8 +56,27 @@ public class EmailWindow extends JFrame {
 			studentsToEmail[i] = studentArray.get(i);
 		}
 		
-		JCheckBoxList studentCheck = new JCheckBoxList(studentsToEmail);
+		CheckBoxList studentCheck = new CheckBoxList(studentsToEmail);
 		JScrollPane studentScroll = new JScrollPane(studentCheck);
+		
+		selectAll = new JButton("Select All");
+		selectNone = new JButton("Select None");
+		
+		studentButtonPanel.add(selectAll, BorderLayout.WEST);
+		studentButtonPanel.add(selectNone, BorderLayout.EAST);
+		
+		selectAll.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+					studentCheck.selectAll();
+			}
+		});
+		
+		selectNone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				studentCheck.selectNone();
+			}
+		});
+		
 		studentPanel.add(studentScroll, BorderLayout.CENTER);
 		studentPanel.add(studentButtonPanel, BorderLayout.NORTH);
 		this.add(studentPanel, BorderLayout.WEST);
@@ -74,19 +86,4 @@ public class EmailWindow extends JFrame {
 		
 	}
 	
-//	class CheckListener implements ActionListener {
-//		public void actionPerformed(ActionEvent e) {
-//			JCheckBox check = (JCheckBox) e.getSource();
-//			if(check.isSelected() == true) {
-//				studentsToEmail.remove(check);
-//				check.setSelected(false);
-//			} else {
-//			check.setSelected(true);
-//			studentsToEmail.add(studentCheck.get(check));
-//			}
-//			for(Student st: studentsToEmail) {
-//				System.out.println(st.toString());
-//			}
-//		}
-//	}
 }

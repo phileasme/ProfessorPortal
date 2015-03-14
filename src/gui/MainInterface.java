@@ -202,7 +202,9 @@ public class MainInterface extends JFrame {
 		}
 	}
 
-
+	/**
+	 * MouseListener to open the Email Window to email settings
+	 */
 	class EmailListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			EmailWindow ew = new EmailWindow(sr);
