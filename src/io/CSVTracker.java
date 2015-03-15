@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.File;
+
 import java.nio.charset.Charset;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Creates and tracks a text file in which paths of CSV files that have been 
@@ -43,7 +45,11 @@ public class CSVTracker extends Observable {
 	private String root;
 	private String slash;
 	private String filename;
+	
+	// <Assessment.toString(), path_to_csv>
+	private Map<String, String> pathMap;
 
+	// contains paths to loaded csv files
 	private Map<Character, ArrayList<String>> loadedFiles = new HashMap<Character, ArrayList<String>>();
 
 	private Charset charset = Charset.forName("UTF-8");
@@ -51,7 +57,7 @@ public class CSVTracker extends Observable {
 	/**
 	 * Creates a new instance and does a little bit of internal book-keeping.
 	 */
-	public CSVTracker() {
+	public CSVTracker(Map<String, String> pathMap) {
 		root = System.getProperty("user.dir");
 		String os = System.getProperty("os.name").toLowerCase();
 
@@ -66,6 +72,8 @@ public class CSVTracker extends Observable {
 
 		loadedFiles.put(CODES, new ArrayList<String>());
 		loadedFiles.put(RESULTS, new ArrayList<String>());
+		
+		this.pathMap = pathMap;
 	}
 
 	/**
@@ -75,9 +83,7 @@ public class CSVTracker extends Observable {
 	 * Observer.
 	 */
 	public void initialise() {
-		if (!(new File(filename).exists())) {
-			makeResultFile();
-		} else {
+		if (new File(filename).exists()) {
 			populateFileList();
 			loadFiles();
 		}
@@ -92,59 +98,73 @@ public class CSVTracker extends Observable {
 		ArrayList<String> examResults = loadedFiles.get(RESULTS);
 
 		for (String path : markingCodes) {
-			System.out.println("load codes");
 			setChanged();
 			notifyObservers(CODES + path);
 		}
 
 		for (String path : examResults) {
-			System.out.println("load results");
 			setChanged();
 			notifyObservers(RESULTS + path);
 		}
 	}
-
+	
 	/**
-	 * Takes a list of file paths and records them in a text file. A character 
-	 * is placed before the path to signify whether the file contains marking 
-	 * codes or exam results.
+	 * Adds file paths to a list corresponding to the data contained in the file.
+	 * The specified file type must be one of the following:
+	 * <ul>
+	 * <li>CODES: file contains anonymous marking codes.</li>
+	 * <li>RESULTS: file contains exam/coursework results</li>
+	 * </ul>
 	 * 
-	 * @param paths a list of absolute file paths
-	 * @param key a character which represents the type of data contained in the file
+	 * @param paths an array of file paths
+	 * @param fileType the type of data contained in the file
 	 */
-	public void writeFilePaths(String[] paths, char key) {
-		try {
-			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), charset, StandardOpenOption.APPEND);
-			ArrayList<String> files = loadedFiles.get(key);
-
-			for (String path : paths) {
-
-				if (!files.contains(path)) {
-					writer.write(key + " " + path, 0, path.length() + 2);
-					writer.newLine();
-
-					// store path to prevent potentially re-recording it later
-					files.add(path);
-				}
-			}
-
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void addFiles(String[] paths, char fileType) {
+		ArrayList<String> category = loadedFiles.get(fileType);
+		
+		for (String path : paths) {
+			category.add(path);
 		}
 	}
 	
 	/**
-	 * Removes all entries from log file and resets map
+	 * Takes a list of file paths and records them in a text file. A character 
+	 * is placed before the path to signify whether the file contains marking 
+	 * codes or exam results.
 	 */
-	public void flush() {
-		makeResultFile();
+	public void writeToLog() {
+		ArrayList<String> markingCodes = loadedFiles.get(CODES);
+		ArrayList<String> examResults = loadedFiles.get(RESULTS);
 		
-		loadedFiles = new HashMap<Character, ArrayList<String>>();
-		loadedFiles.put(CODES, new ArrayList<String>());
-		loadedFiles.put(RESULTS, new ArrayList<String>());
+		try {
+			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), charset);
+			
+			for (String path : markingCodes) {
+				writer.write(CODES + " " + path, 0, path.length() + 2);
+				writer.newLine();
+			}
+			
+			for (String path : examResults) {
+				writer.write(RESULTS + " " + path, 0, path.length() + 2);
+				writer.newLine();
+			}
+			
+			writer.close();
+			
+		} catch (IOException e) {
+			System.out.println("Could not find file");
+		}
 	}
-
+	
+	/**
+	 * Removes the path corresponding to the provided assessment name.
+	 * 
+	 * @param name the string representation of an {@link records.Assessment}
+	 */
+	public void removeEntry(String name) {
+		loadedFiles.get(RESULTS).remove(pathMap.get(name));
+	}
+	
 	/**
 	 * Reads all previously recorded files and separates them based on whether
 	 * they contain marking codes or exam results.
@@ -170,16 +190,4 @@ public class CSVTracker extends Observable {
 		}
 	}
 
-	/**
-	 * Creates the text file from which csv files will be loaded when
-	 * MainInterface is instantiated.
-	 */
-	private void makeResultFile() {
-		try {
-			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), charset);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

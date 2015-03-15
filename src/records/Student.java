@@ -16,7 +16,7 @@ public class Student {
 	private String name;
 	private String email;
 	private String tutorEmail;
-	private String markingCode = null;
+//	private String markingCode = null;
 	private Map<String, Result> results = new TreeMap<String, Result>();
 	
 	/**
@@ -60,23 +60,6 @@ public class Student {
 	 */
 	public String getTutorEmail() {
 		return tutorEmail;
-	}
-	
-	/**
-	 * Set the student's marking code.
-	 * 
-	 * @param code the student's anonymous marking code
-	 */
-	public void setMarkingCode(String code) {
-		markingCode = code;
-	}
-	
-	/**
-	 * @return the student's anonymous marking code
-	 */
-	public String getMarkingCode() {
-		System.out.println("poop!");
-		return markingCode;
 	}
 	
 	/**

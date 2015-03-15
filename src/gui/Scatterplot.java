@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Dimension;
+import javax.swing.JFrame;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -25,7 +26,7 @@ import org.jfree.ui.ApplicationFrame;
  * @author Max Karasinski
  *
  */
-public class Scatterplot extends ApplicationFrame {
+public class Scatterplot extends JFrame {
 
 	private XYSeries dataSeries;
 	

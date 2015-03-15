@@ -123,6 +123,11 @@ public class StudentRecords extends Observable {
 		if (markingCodes.size() > 0) return true;
 		return false;
 	}
+	
+	public boolean hasAssessments() {
+		if (assessments.size() > 0) return true;
+		return false;
+	}
 
 	/**
 	 * Store a list of assessments which have been loaded with results.
@@ -130,9 +135,9 @@ public class StudentRecords extends Observable {
 	 * @param assessmentList a list of assessments
 	 */
 	public void addAssessments(List<Assessment> assessmentList) {
-		for (Assessment ass : assessmentList) {
-			if (ass.size() > 0) {
-				assessments.put(ass.toString(),ass);
+		for (Assessment a : assessmentList) {
+			if (a.size() > 0) {
+				assessments.put(a.toString(), a);
 
 			}
 		}
@@ -140,6 +145,10 @@ public class StudentRecords extends Observable {
 		// alert ResultsTabManager so that it can update result tabs
 		setChanged();
 		notifyObservers(assessments);
+	}
+	
+	public void removeAssessment(String name) {
+		assessments.remove(name);
 	}
 
 	/**
