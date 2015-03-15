@@ -4,7 +4,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -14,14 +13,9 @@ import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 
 import records.Assessment;
 import records.Result;
@@ -130,17 +124,9 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			addTab(tabName, scrollPane);
 			
 			int index = indexOfTab(tabName);
-			final JButton close = new JButton(new ImageIcon("img" + System.getProperty("file.separator") + "close_tab.png"));
-			close.setBorder(null);
-			close.setPreferredSize(new Dimension(16, 16));
 			
-			JPanel tabPanel = new JPanel();
-			tabPanel.setOpaque(false);
-			
-			tabPanel.add(new JLabel(tabName));
-			tabPanel.add(close);
-			
-			close.addActionListener(new CloseTabListener(tabName));
+			ResultsTabPanel tabPanel = new ResultsTabPanel(tabName);
+			tabPanel.addActionListener(new CloseTabListener(tabName));
 			
 			setTabComponentAt(index, tabPanel);
 		}  
@@ -201,6 +187,12 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		return tracker;
 	}
 	
+	/**
+	 * Assigns an instance of {@link CSVTracker} to the object, so that the 
+	 * closing of tabs can be dealt with effectively.
+	 * 
+	 * @param tracker an instance of CSVTracker
+	 */
 	public void setTracker(CSVTracker tracker) {
 		this.tracker = tracker;
 	}
@@ -222,5 +214,4 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			
 		}
 	}
-
 }
