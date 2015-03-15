@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -22,6 +24,10 @@ import javax.swing.event.*;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -63,7 +69,6 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
-	private JMenuItem removeLogs;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -126,7 +131,6 @@ public class MainInterface extends JFrame {
 		// menu items
 		loadCodes = new JMenuItem("Load anonymous marking codes");
 		loadResults = new JMenuItem("Load exam results");
-		removeLogs = new JMenuItem("Delete logged files");
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		emailSettings = new JMenuItem("Email Settings");
@@ -149,7 +153,6 @@ public class MainInterface extends JFrame {
 
 		file.add(loadCodes);
 		file.add(loadResults);
-		file.add(removeLogs);
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(emailSettings);
@@ -158,13 +161,6 @@ public class MainInterface extends JFrame {
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				resultTabs.plotAverageMarks();
-			}
-		});
-		
-		// empties log file containing loaded csv's
-		removeLogs.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				csvTracker.flush();
 			}
 		});
 		
@@ -182,12 +178,27 @@ public class MainInterface extends JFrame {
 	}
 	
 	private void createFileLoaders() {
-		loader = new CSVLoader(sr);
-		csvTracker = new CSVTracker();
+		// this Map is used to connect Assessment names to the paths
+		// of the files they were loaded from. Needed for closing tabs
+		Map<String, String> csvPathMap = new HashMap<String, String>();
+		
+		loader = new CSVLoader(sr, csvPathMap);
+		csvTracker = new CSVTracker(csvPathMap);
 		csvTracker.addObserver(loader);
 		csvTracker.initialise();
 		
-		if (sr.hasCodes()) loadResults.setEnabled(true);
+		if (sr.hasCodes()) {
+			loadResults.setEnabled(true);
+			if (sr.hasAssessments()) averageResults.setEnabled(true);
+		}
+		
+		resultTabs.setTracker(csvTracker);
+		
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				csvTracker.writeToLog();
+			}
+		});
 	}
 
 	/**
@@ -266,10 +277,8 @@ public class MainInterface extends JFrame {
 					
 					if (e.getSource() == loadCodes) {
 						success = loader.loadMarkingCodes(paths[i]);
-						if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 					} else if (e.getSource() == loadResults) {
 						success = loader.loadExamResults(paths[i]);
-						if (!averageResults.isEnabled()) averageResults.setEnabled(true);
 					}
 					
 				}
@@ -277,9 +286,11 @@ public class MainInterface extends JFrame {
 				// log file paths to be loaded on program launch
 				if (success) {
 					if (e.getSource() == loadCodes) {
-						csvTracker.writeFilePaths(paths, CSVTracker.CODES);
+						csvTracker.addFiles(paths, CSVTracker.CODES);
+						if (!loadResults.isEnabled()) loadResults.setEnabled(true);
 					} else if (e.getSource() == loadResults) {
-						csvTracker.writeFilePaths(paths, CSVTracker.RESULTS);
+						csvTracker.addFiles(paths, CSVTracker.RESULTS);
+						if (!averageResults.isEnabled()) averageResults.setEnabled(true);
 					}
 				}
 

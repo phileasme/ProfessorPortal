@@ -2,22 +2,32 @@ package gui;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 import records.Assessment;
 import records.Result;
 import records.Student;
 import records.StudentRecords;
+import io.CSVTracker;
 
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
@@ -31,6 +41,7 @@ import records.StudentRecords;
 public class ResultsTabManager extends JTabbedPane implements Observer {
 
 	private StudentRecords studentRecords;
+	private CSVTracker tracker;
 	
 	/**
 	 * Creates a new ResultsTabManager, and gives it references to the main GUI
@@ -44,7 +55,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		studentRecords.addObserver(this);
 		this.studentRecords = studentRecords;
 		
-		setTabLayoutPolicy(this.SCROLL_TAB_LAYOUT);
+		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 	}
 
 	/**
@@ -58,12 +69,10 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 	 */
 	@Override
 	public void update(Observable o, Object assessments) {
-		HashMap<String,Assessment>  assess = (HashMap<String,Assessment>) assessments;
+		Map<String,Assessment>  assess = (HashMap<String,Assessment>) assessments;
 		
 		List<Assessment> assessmentList = new ArrayList<Assessment>( assess.values());
 				
-		//Collections.sort(assessmentList);
-		
 		String[] columns = {"Student Name", "Student Number", "Mark", "Grade"};
 		
 		for (Assessment a : assessmentList) {
@@ -115,13 +124,25 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 				}
 			});
 			
-		
-			
-			
 //			table.setAutoCreateRowSorter(true);
 			table.setCellEditor(null);
 			JScrollPane scrollPane = new JScrollPane(table);
 			addTab(tabName, scrollPane);
+			
+			int index = indexOfTab(tabName);
+			final JButton close = new JButton(new ImageIcon("img" + System.getProperty("file.separator") + "close_tab.png"));
+			close.setBorder(null);
+			close.setPreferredSize(new Dimension(16, 16));
+			
+			JPanel tabPanel = new JPanel();
+			tabPanel.setOpaque(false);
+			
+			tabPanel.add(new JLabel(tabName));
+			tabPanel.add(close);
+			
+			close.addActionListener(new CloseTabListener(tabName));
+			
+			setTabComponentAt(index, tabPanel);
 		}  
 	
 	}
@@ -170,11 +191,36 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			 
 			
 //			System.out.println(String.format("%-40s MARK = %2.1f AVERAGE = %2.1f", s.getName(), assResult, average));
-			
 		}
 
 		st.launch();
 		
+	}
+	
+	private CSVTracker getTracker() {
+		return tracker;
+	}
+	
+	public void setTracker(CSVTracker tracker) {
+		this.tracker = tracker;
+	}
+	
+	class CloseTabListener implements ActionListener {
+		
+		private String tabName;
+		
+		CloseTabListener(String tabName) {
+			this.tabName = tabName;
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			int index = indexOfTab(tabName);
+			studentRecords.removeAssessment(tabName);
+			CSVTracker t = getTracker();
+			t.removeEntry(tabName);
+			remove(index);
+			
+		}
 	}
 
 }

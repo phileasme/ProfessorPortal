@@ -37,6 +37,8 @@ import records.Assessment;
 public class CSVLoader implements Observer {
 
 	private StudentRecords studentRecords;
+	private Map<String, String> pathMap;
+	
 	private Pattern angledQuotesPattern;
 	private Pattern straightQuotesPattern;
 	private Pattern numSymbolPattern;
@@ -49,8 +51,9 @@ public class CSVLoader implements Observer {
 	 * 
 	 * @param studentRecords the StudentRecords from the main GUI window
 	 */
-	public CSVLoader(StudentRecords studentRecords) {
+	public CSVLoader(StudentRecords studentRecords, Map<String, String> pathMap) {
 		this.studentRecords = studentRecords;
+		this.pathMap = pathMap;
 		
 		String leftQuote = String.valueOf((char) 8220);
 		String rightQuote = String.valueOf((char) 8221);
@@ -77,7 +80,8 @@ public class CSVLoader implements Observer {
 		try {
 			sc = new Scanner(new BufferedReader(new FileReader(filePath)));
 			
-			String[] row = clean(sc.nextLine()).split(",");
+//			String[] row = clean(sc.nextLine()).split(",");
+			String[] row = sc.nextLine().split(",");
 			
 			if (row.length == 2) {
 				// get filename for dialog message
@@ -85,7 +89,7 @@ public class CSVLoader implements Observer {
 				String fileName;
 				
 				if (m.find()) {
-					fileName = m.group(1) + ": ";
+					fileName = m.group(1) + " - ";
 				} else {
 					fileName = "";
 				}
@@ -96,7 +100,6 @@ public class CSVLoader implements Observer {
 				
 				// begin by storing first row
 				if (studentRecords.hasStudent(row[0])) {
-					studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
 					studentRecords.putCode(row[1], row[0]);
 					++known;
 				} else {
@@ -105,9 +108,9 @@ public class CSVLoader implements Observer {
 				
 				// continue with rest of file
 				while (sc.hasNextLine()) {
-					row = clean(sc.nextLine()).split(",");
+//					row = clean(sc.nextLine()).split(",");
+					row = sc.nextLine().split(",");
 					if (studentRecords.hasStudent(row[0])) {
-						studentRecords.returnStudent(row[0]).setMarkingCode(row[1]);
 						studentRecords.putCode(row[1], row[0]);
 						++known;
 					} else {
@@ -258,6 +261,10 @@ public class CSVLoader implements Observer {
 				
 				assessments.addAll(assMap.values());
 				studentRecords.addAssessments(assessments);
+				
+				for (String name : assMap.keySet()) {
+					pathMap.put(name, filePath);
+				}
 			} else {
 				showWarning("Incorrect column format in selected CSV file!");
 				sc.close();
@@ -286,9 +293,9 @@ public class CSVLoader implements Observer {
 		String file = (String) data;
 		char type = file.charAt(0);
 		
-		if (type == 'C') {
+		if (type == CSVTracker.CODES) {
 			loadMarkingCodes(file.substring(1, file.length()));
-		} else if (type == 'R') {
+		} else if (type == CSVTracker.RESULTS) {
 			loadExamResults(file.substring(1, file.length()));
 		}
 		

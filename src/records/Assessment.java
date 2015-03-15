@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-//import records.Result;
-
 /**
  * Storage for instances of Result, all of which are from the same module from
  * the same assessment.
