@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import gui.ResultsTabManager;
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
@@ -64,6 +63,7 @@ public class MainInterface extends JFrame {
 	private JTextField searchText;
 	
 	private ResultsTabManager resultTabs;
+	private SettingsWindow settingsWindow;
 	private CSVTracker csvTracker;
 	private CSVLoader loader;
 
@@ -72,7 +72,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem loadResults;
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
-	private JMenuItem emailSettings;
+	private JMenuItem settings;
 	private JMenuItem fetch;
 	
 	/**
@@ -138,8 +138,8 @@ public class MainInterface extends JFrame {
 		loadResults = new JMenuItem("Load exam results");
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
-		emailSettings = new JMenuItem("Email Settings");
 		fetch = new JMenuItem("Fetch Participation");
+		settings = new JMenuItem("Settings");
 		
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
@@ -161,8 +161,8 @@ public class MainInterface extends JFrame {
 		file.add(loadResults);
 		data.add(averageResults);
 		data.add(emailToStudents);
-		data.add(emailSettings);
 		data.add(fetch);
+		data.add(settings);
 		
 		//Opens the Email window
 		emailToStudents.addActionListener(new EmailListener());
@@ -171,6 +171,13 @@ public class MainInterface extends JFrame {
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				resultTabs.plotAverageMarks();
+			}
+		});
+		
+		settings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SettingsWindow sw = new SettingsWindow();
+				sw.setVisible(true);
 			}
 		});
 
