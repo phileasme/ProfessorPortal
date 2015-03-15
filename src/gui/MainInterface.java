@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -19,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.*;
 
@@ -69,6 +73,7 @@ public class MainInterface extends JFrame {
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
 	private JMenuItem emailSettings;
+	private JMenuItem fetch;
 	
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
@@ -134,7 +139,8 @@ public class MainInterface extends JFrame {
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		emailSettings = new JMenuItem("Email Settings");
-
+		fetch = new JMenuItem("Fetch Participation");
+		
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
 		loadResults.setEnabled(false);
@@ -156,14 +162,25 @@ public class MainInterface extends JFrame {
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(emailSettings);
-
+		data.add(fetch);
+		
+		//Opens the Email window
+		emailToStudents.addActionListener(new EmailListener());
+		
 		//Plots average marks of results tabs
 		averageResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				resultTabs.plotAverageMarks();
 			}
 		});
-		
+
+		//Participant login data
+		fetch.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				ScrapperPopUp scrap = new ScrapperPopUp();
+			}
+		});
+	
 		setJMenuBar(menuBar);
 	}
 
@@ -215,10 +232,12 @@ public class MainInterface extends JFrame {
 		}
 	}
 
-
-	class EmailListener extends MouseAdapter{
-		public void mouseClicked(MouseEvent e) {
-			EmailWindow ew = new EmailWindow();
+	/**
+	 * MouseListener to open the Email Window to email settings
+	 */
+	class EmailListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			EmailWindow ew = new EmailWindow(sr);
 		}
 	}
 	/**
