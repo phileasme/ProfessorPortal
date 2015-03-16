@@ -29,10 +29,12 @@ public class EmailSend {
 	private String toAddress;
 	private String messageToSend;
 	
-	
-	public EmailSend(String to, String message) {
+	public EmailSend(String to, String from, String password, String message, int i) {
 		toAddress = to;
 		messageToSend = message;
+		fromAddress = from;
+		this.password = password;
+		
 		Properties props = System.getProperties();
 		
 		props.put("mail.smtp.host", serverName);
@@ -40,11 +42,10 @@ public class EmailSend {
 		props.put("mail.smtp.auth", true);
 		props.put("mail.smtp.starttls.enable", true);
 		
-		int i = getAuth();
-		
 		if (i == 0) {
 
 			try {
+				long start = System.currentTimeMillis();
 				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
 				Session session = Session.getInstance(props, pa);
 				session.setDebug(true);
@@ -70,38 +71,13 @@ public class EmailSend {
 				transport.close();
 
 				System.out.println("\nGREAT SUCCESS!");
-
+				long end = System.currentTimeMillis();
+				System.out.println(end-start);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 		}
-	}
-
-	private int getAuth() {
-		JPanel panel = new JPanel();
-		JLabel nameLabel = new JLabel("Email: ");
-		JLabel passLabel = new JLabel("Password: ");
-		JTextField text = new JTextField(20);
-		JPasswordField passwd = new JPasswordField(15);
-
-		panel.setLayout(new GridLayout(2, 2));
-
-		panel.add(nameLabel); panel.add(text);
-		panel.add(passLabel); panel.add(passwd);
-		
-		String[] options = new String[]{"OK", "Cancel"};
-		
-		int option = JOptionPane.showOptionDialog(null, panel, "Enter info",
-							JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-							null, options, options[0]);
-		
-		if (option == 0) {
-			fromAddress = text.getText();
-			password = new String(passwd.getPassword());
-		}
-		
-		return option;
 	}
 	
 	class PRAauthenticator extends Authenticator {

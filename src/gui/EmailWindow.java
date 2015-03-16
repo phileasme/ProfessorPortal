@@ -5,6 +5,7 @@ import io.EmailSend;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,9 +15,13 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ProgressMonitor;
 
 import records.Result;
 import records.Student;
@@ -65,6 +70,12 @@ public class EmailWindow extends JFrame {
 	private JLabel header;
 	private JLabel footer;
 	private JLabel examMarks;
+	
+	//Authorisation
+	private String emailFrom;
+	private String password;
+	
+	private int auth;
 	
 	public EmailWindow(StudentRecords sr) {
 		super("Send Email");
@@ -216,6 +227,36 @@ public class EmailWindow extends JFrame {
 	
 	public void createPrevSend(){
 		prevSendPanel = new JPanel();
+		ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
+		final Runnable runnable = new Runnable() {
+			public void run() {
+				int sleepTime = 3000;
+				boolean interrupt = false;
+				double completion = 0;
+				double studentsize = (double) selectedStudents.length;
+				int completed = (int) (completion);
+				while(!interrupt) {
+				for(double i = 0.0; i < studentsize; i++) {
+					try {
+						
+				emailMonitor.setNote("Completed...." + completed + "%");
+				emailMonitor.setProgress(completed);
+				 if (emailMonitor.isCanceled()) {
+						emailMonitor.close();
+						interrupt = true;
+						break;		
+				 }
+				completion = (i+1.0)/studentsize*100;
+				completed = (int) (completion);
+				Thread.sleep(sleepTime);
+					}
+					catch(InterruptedException e) { interrupt = true;}
+				 }
+				 emailMonitor.close();
+				 interrupt = true;
+				}
+			}
+			};
 		prev = new JButton("Previous");
 		prev.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -224,15 +265,23 @@ public class EmailWindow extends JFrame {
 			}
 		});
 		send = new JButton("Send");
+		
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				auth = getAuth();
+				Thread emailThread = new Thread(runnable);
+				emailThread.start();	
 				for(int i = 0; i < selectedStudents.length; i++) {
-					String email = selectedStudents[i].getEmail();
-					String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
-					EmailSend send = new EmailSend(email, textToSend);
+					if (emailMonitor.isCanceled()) {
+						emailMonitor.close();
+						break;
+				 }
+				String email = selectedStudents[i].getEmail();
+				String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
+				EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth);
 				}
-			}
-		});
+				}
+			});
 		
 		prevSendPanel.add(prev);
 		prevSendPanel.add(send);
@@ -241,6 +290,7 @@ public class EmailWindow extends JFrame {
 	
 	public String createPreviewText(Collection<Result> results){
 		StringBuilder previewString = new StringBuilder();
+		System.out.println(selectedStudents.length);
 		String outputString;
 		previewString.append("<html>");
 		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
@@ -266,7 +316,32 @@ public class EmailWindow extends JFrame {
 		}
 		previewString.append(footer);
 		outputString = previewString.toString();
-		System.out.println(outputString);
 		return outputString;
+	}
+	
+	private int getAuth() {
+		JPanel panel = new JPanel();
+		JLabel nameLabel = new JLabel("Email: ");
+		JLabel passLabel = new JLabel("Password: ");
+		JTextField text = new JTextField(20);
+		JPasswordField passwd = new JPasswordField(15);
+
+		panel.setLayout(new GridLayout(2, 2));
+
+		panel.add(nameLabel); panel.add(text);
+		panel.add(passLabel); panel.add(passwd);
+		
+		String[] options = new String[]{"OK", "Cancel"};
+		
+		int option = JOptionPane.showOptionDialog(null, panel, "Enter info",
+							JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, options, options[0]);
+		
+		if (option == 0) {
+			emailFrom = text.getText();
+			password = new String(passwd.getPassword());
+		}
+		
+		return option;
 	}
 }

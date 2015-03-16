@@ -42,6 +42,8 @@ public class EmailTest {
 		if (i == 0) {
 
 			try {
+				long start = System.currentTimeMillis();
+				System.out.println(System.currentTimeMillis());
 				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
 				Session session = Session.getInstance(props, pa);
 				session.setDebug(true);
@@ -68,7 +70,9 @@ public class EmailTest {
 				transport.close();
 
 				System.out.println("\nGREAT SUCCESS!");
-
+				long end = System.currentTimeMillis();
+				long total = end - start;
+				System.out.println(total);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
