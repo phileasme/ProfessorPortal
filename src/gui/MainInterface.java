@@ -41,6 +41,7 @@ import records.StudentRecords;
 import io.CSVLoader;
 import io.CSVTracker;
 import io.Scraper;
+import io.Settings;
 
 /**
  * Class to create an interface containing Scrollable list of students
@@ -63,16 +64,16 @@ public class MainInterface extends JFrame {
 	private JTextField searchText;
 	
 	private ResultsTabManager resultTabs;
-	private SettingsWindow settingsWindow;
 	private CSVTracker csvTracker;
 	private CSVLoader loader;
+	private Settings settings;
 
 	private JMenuBar menuBar;
 	private JMenuItem loadCodes;
 	private JMenuItem loadResults;
 	private JMenuItem averageResults;
 	private JMenuItem emailToStudents;
-	private JMenuItem settings;
+	private JMenuItem settingsMenu;
 	private JMenuItem fetch;
 	
 	/**
@@ -85,6 +86,7 @@ public class MainInterface extends JFrame {
 		createMenuBar();
 		createStudentList();
 		createDataBox();
+		settings = new Settings();
 		
 		// set visible now so that the window is visible when marking codes notification pops up
 		setVisible(true);
@@ -139,7 +141,7 @@ public class MainInterface extends JFrame {
 		averageResults = new JMenuItem("Compare to Average");
 		emailToStudents = new JMenuItem("Email to Students");
 		fetch = new JMenuItem("Fetch Participation");
-		settings = new JMenuItem("Settings");
+		settingsMenu = new JMenuItem("Settings");
 		
 		// want this to remain greyed-out until at least one set of marking codes
 		// has been loaded
@@ -162,7 +164,7 @@ public class MainInterface extends JFrame {
 		data.add(averageResults);
 		data.add(emailToStudents);
 		data.add(fetch);
-		data.add(settings);
+		data.add(settingsMenu);
 		
 		//Opens the Email window
 		emailToStudents.addActionListener(new EmailListener());
@@ -174,9 +176,9 @@ public class MainInterface extends JFrame {
 			}
 		});
 		
-		settings.addActionListener(new ActionListener() {
+		settingsMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SettingsWindow sw = new SettingsWindow();
+				SettingsWindow sw = new SettingsWindow(settings);
 				sw.setVisible(true);
 			}
 		});
@@ -220,7 +222,13 @@ public class MainInterface extends JFrame {
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				csvTracker.writeToLog();
+				settings.store();
+				
+				if (Boolean.parseBoolean(settings.get("save_data"))) {
+					csvTracker.writeToLog();
+				} else {
+					csvTracker.flush();
+				}
 			}
 		});
 	}
