@@ -203,20 +203,9 @@ public class EmailWindow extends JFrame {
 		header = new JLabel(headerText);
 		footer = new JLabel(footerText);
 		examMarks = new JLabel();
-		StringBuilder examString = new StringBuilder();
-		String newLine = System.lineSeparator();
-		examString.append("<html>");
-		examString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
-		examString.append(newLine);	
 		Student stu = selectedStudents[0];
 		Collection<Result> results = stu.getAllResults();
-		for(Result r: results) {
-			examString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
-			examString.append(newLine);
-		}
-		examString.append("</html>");
-		examMarks.setText(examString.toString());
-		
+		examMarks.setText(createPreviewText(results));
 		previewPanel.add(header, BorderLayout.NORTH);
 		previewPanel.add(examMarks, BorderLayout.CENTER);
 		previewPanel.add(footer, BorderLayout.SOUTH);
@@ -237,6 +226,38 @@ public class EmailWindow extends JFrame {
 		prevSendPanel.add(prev);
 		prevSendPanel.add(send);
 		secondPanel.add(prevSendPanel, BorderLayout.PAGE_END);
+	}
+	
+	public String createPreviewText(Collection<Result> results){
+		StringBuilder previewString = new StringBuilder();
+		String outputString;
+		String newLine = System.lineSeparator();
+		previewString.append("<html>");
+		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
+		previewString.append(newLine);	
+		for(Result r: results) {
+			previewString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
+			previewString.append(newLine);
+		}
+		previewString.append("</html>");
+		outputString = previewString.toString();
+		return outputString;
+	}
+	
+	public String createEmailText(Collection<Result> results, String header, String footer) {
+		StringBuilder previewString = new StringBuilder();
+		String outputString;
+		String newLine = System.lineSeparator();
+		previewString.append("<html>");
+		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
+		previewString.append(newLine);	
+		for(Result r: results) {
+			previewString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
+			previewString.append(newLine);
+		}
+		previewString.append("</html>");
+		outputString = previewString.toString();
+		return outputString;
 	}
 	
 }
