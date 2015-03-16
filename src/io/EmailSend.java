@@ -26,10 +26,13 @@ public class EmailSend {
 	private String fromAddress; // must be k-----@kcl.ac.uk
 	private String password;
 	
-	private String toAddress = "kenneth.barker@mailinator.com";
+	private String toAddress;
+	private String messageToSend;
 	
 	
-	public EmailSend() {
+	public EmailSend(String to, String message) {
+		toAddress = to;
+		messageToSend = message;
 		Properties props = System.getProperties();
 		
 		props.put("mail.smtp.host", serverName);
@@ -53,10 +56,9 @@ public class EmailSend {
 
 				msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
 
-				msg.setSubject("test message");
+				msg.setSubject("Exam Results");
 
-				String msgText = "Hello there,\nThis is a test message. Good day";
-				msg.setText(msgText);
+				msg.setText(messageToSend);
 
 				// does it matter what this is?
 				msg.setHeader("X-Mailer", "Plague Rat 666");
