@@ -241,7 +241,7 @@ public class EmailWindow extends JFrame {
 						
 				emailMonitor.setNote("Completed...." + completed + "%");
 				emailMonitor.setProgress(completed);
-				 if (emailMonitor.isCanceled()) {
+				 if (emailMonitor.isCanceled()) {	
 						emailMonitor.close();
 						interrupt = true;
 						break;		
