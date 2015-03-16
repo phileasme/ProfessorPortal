@@ -1,13 +1,13 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import records.Result;
 import records.Student;
 import records.StudentRecords;
 
@@ -23,13 +24,16 @@ import com.jidesoft.swing.CheckBoxList;
 
 public class EmailWindow extends JFrame {
 
+	//For the First Panel
+	private JPanel firstPanel;
+	
 	private JPanel studentPanel;
 	private JPanel studentButtonPanel;
 	private JPanel headerFooterPanel;
 	private JPanel bottomButtonPanel;
-	
+
 	private StudentRecords sr;
-	CheckBoxList studentCheck;
+	private CheckBoxList studentCheck;
 	
 	private JButton selectAll;
 	private JButton selectNone;
@@ -37,6 +41,7 @@ public class EmailWindow extends JFrame {
 	
 	private Student[] studentsToEmail;
 	private ArrayList<Student> studentArray;
+	private Student[] selectedStudents;
 	
 	private JLabel headerLabel;
 	private JLabel footerLabel;
@@ -44,17 +49,38 @@ public class EmailWindow extends JFrame {
 	private JTextArea headerArea;
 	private JTextArea footerArea;
 	
+	private String headerText;
+	private String footerText;
+	
+	//For the second panel
+	private JPanel secondPanel;
+	private JPanel previewPanel;
+	private JPanel prevSendPanel;
+	
+	private JButton send;
+	private JButton prev;
+	
+	private JLabel header;
+	private JLabel footer;
+	private JLabel examMarks;
+	
 	public EmailWindow(StudentRecords sr) {
 		super("Send Email");
 		this.sr = sr;
-		setLayout(new BorderLayout());
-		createStudentPanel();
-		createTextPanel();
-		createNextPanel();
+		createFirstPanel();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(540,300);
 		setResizable(false);
 		setVisible(true);
+	}
+	
+	public void createFirstPanel() {
+		firstPanel = new JPanel();
+		firstPanel.setLayout(new BorderLayout());
+		createStudentPanel();
+		createTextPanel();
+		createNextPanel();
+		this.add(firstPanel);
 	}
 	
 	public void createStudentPanel() {
@@ -93,7 +119,7 @@ public class EmailWindow extends JFrame {
 		
 		studentPanel.add(studentScroll, BorderLayout.CENTER);
 		studentPanel.add(studentButtonPanel, BorderLayout.NORTH);
-		this.add(studentPanel, BorderLayout.WEST);
+		firstPanel.add(studentPanel, BorderLayout.WEST);
 	}
 	
 	public void createTextPanel() {
@@ -113,13 +139,13 @@ public class EmailWindow extends JFrame {
 		gbc_lblHeader.gridy = 0;
 		headerFooterPanel.add(lblHeader, gbc_lblHeader);
 		
-		JTextArea textArea = new JTextArea();
+		headerArea = new JTextArea();
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
 		gbc_textArea.insets = new Insets(0, 0, 5, 0);
 		gbc_textArea.fill = GridBagConstraints.BOTH;
 		gbc_textArea.gridx = 0;
 		gbc_textArea.gridy = 1;
-		headerFooterPanel.add(textArea, gbc_textArea);
+		headerFooterPanel.add(headerArea, gbc_textArea);
 		
 		JLabel lblFooter = new JLabel("Footer: ");
 		GridBagConstraints gbc_lblFooter = new GridBagConstraints();
@@ -128,21 +154,89 @@ public class EmailWindow extends JFrame {
 		gbc_lblFooter.gridy = 2;
 		headerFooterPanel.add(lblFooter, gbc_lblFooter);
 		
-		JTextArea textArea_1 = new JTextArea();
+		footerArea = new JTextArea();
 		GridBagConstraints gbc_textArea_1 = new GridBagConstraints();
 		gbc_textArea_1.fill = GridBagConstraints.BOTH;
 		gbc_textArea_1.gridx = 0;
 		gbc_textArea_1.gridy = 3;
-		headerFooterPanel.add(textArea_1, gbc_textArea_1);
+		headerFooterPanel.add(footerArea, gbc_textArea_1);
 
-		this.add(headerFooterPanel, BorderLayout.CENTER);
+		firstPanel.add(headerFooterPanel, BorderLayout.CENTER);
 	}
 	
 	public void createNextPanel() {
 		bottomButtonPanel = new JPanel();
 		next = new JButton("Next:");
+		headerText = "";
+		footerText = "";
+		next.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				headerText = headerArea.getText();
+				footerText = footerArea.getText();
+				int size = studentCheck.getCheckBoxListSelectedValues().length;
+				Object[] studentObj = studentCheck.getCheckBoxListSelectedValues();
+				selectedStudents = new Student[size];
+				for(int i = 0; i<size; i++) {
+					selectedStudents[i] = (Student) studentObj[i];
+				}
+				remove(firstPanel);
+				createSecondPanel();
+			}
+		});
 		bottomButtonPanel.add(next);
-		this.add(bottomButtonPanel, BorderLayout.SOUTH);
+		firstPanel.add(bottomButtonPanel, BorderLayout.SOUTH);
+	}
+	
+	public void createSecondPanel() {
+		secondPanel = new JPanel();
+		secondPanel.setLayout(new BorderLayout());
+		createPreview();
+		createPrevSend();
+		prevSendPanel = new JPanel();
+		this.add(secondPanel);
+	}
+	
+	public void createPreview() {
+		previewPanel = new JPanel();
+		previewPanel.setLayout(new BorderLayout());
+		
+		header = new JLabel(headerText);
+		footer = new JLabel(footerText);
+		examMarks = new JLabel();
+		StringBuilder examString = new StringBuilder();
+		String newLine = System.lineSeparator();
+		examString.append("<html>");
+		examString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
+		examString.append(newLine);	
+		Student stu = selectedStudents[0];
+		Collection<Result> results = stu.getAllResults();
+		for(Result r: results) {
+			examString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
+			examString.append(newLine);
+		}
+		examString.append("</html>");
+		examMarks.setText(examString.toString());
+		
+		previewPanel.add(header, BorderLayout.NORTH);
+		previewPanel.add(examMarks, BorderLayout.CENTER);
+		previewPanel.add(footer, BorderLayout.SOUTH);
+		secondPanel.add(previewPanel, BorderLayout.CENTER);
+	}
+	
+	public void createPrevSend(){
+		prevSendPanel = new JPanel();
+		prev = new JButton("Previous");
+		prev.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				remove(secondPanel);
+				createFirstPanel();
+			}
+		});
+		send = new JButton("Send");
+		
+		prevSendPanel.add(prev);
+		prevSendPanel.add(send);
+		secondPanel.add(prevSendPanel, BorderLayout.PAGE_END);
 	}
 	
 }
