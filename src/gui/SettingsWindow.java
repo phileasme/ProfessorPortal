@@ -8,17 +8,42 @@ import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
-import javax.swing.JButton;
 
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Font;
 
+import io.Settings;
+
+/**
+ * Opens a dialog box with options to change some email and general program
+ * settings.
+ * 
+ * @author Max Karasinski
+ *
+ */
 public class SettingsWindow extends JTabbedPane {
 
 	JPanel generalPanel;
 	JPanel emailPanel;
+	Settings settings;
 	
-	public SettingsWindow() {
+	// fields which get saved to settings
+	JCheckBox rememberLoaded;
+	JTextField jtServer;
+	JSpinner jsPort;
+	JComboBox<String> jcConn;
+	JTextField jtUser;
+	
+	/**
+	 * Opens the settings dialog box and loads the settings stored on the 
+	 * provided {@link Settings} instance.
+	 * 
+	 * @param settings program settings provided from MainInterface
+	 */
+	public SettingsWindow(Settings settings) {
+		this.settings = settings;
+		
 		setTabPlacement(JTabbedPane.LEFT);
 		setPreferredSize(new Dimension(600, 300));
 		
@@ -26,19 +51,46 @@ public class SettingsWindow extends JTabbedPane {
 		createGeneralSettings();
 		setSelectedIndex(0);
 		
-		String[] options = new String[]{"OK", "Cancel"};
+		String[] options = new String[]{"Cancel", "OK"};
 		
 		int option = JOptionPane.showOptionDialog(null, this, "Settings",
 							JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
 							null, options, options[0]);
 		
+		if (option == 1) saveSettings();
 	}
 	
+	/**
+	 * Fetches values from the various components in the dialog box and stores
+	 * their values on the Settings object.
+	 */
+	private void saveSettings() {
+		settings.set("mail.smtp.host", jtServer.getText().trim());
+		
+		String port = String.valueOf(jsPort.getValue());
+		settings.set("mail.smtp.port", port);
+		
+		if (!(jcConn.getSelectedItem().equals("None"))) {
+			settings.set("mail.smtp.starttls.enable", "true");
+		} else {
+			settings.set("mail.smtp.starttls.enable", "false");
+		}
+		
+		String checked = String.valueOf(rememberLoaded.isSelected());
+		settings.set("save_data", checked);
+		
+		settings.set("username", jtUser.getText().trim());
+	}
+	
+	/**
+	 * Creates a tab for general program settings.
+	 */
 	private void createGeneralSettings() {
 		generalPanel = new JPanel();
 		generalPanel.setLayout(null);
 		
-		JCheckBox rememberLoaded = new JCheckBox(" Remember loaded CSV files");
+		rememberLoaded = new JCheckBox(" Remember loaded CSV files");
+		if (Boolean.parseBoolean(settings.get("save_data"))) rememberLoaded.setSelected(true);
 		
 		Insets insets = generalPanel.getInsets();
 		Dimension size = rememberLoaded.getPreferredSize();
@@ -49,6 +101,9 @@ public class SettingsWindow extends JTabbedPane {
 		addTab("General", generalPanel);
 	}
 	
+	/**
+	 * Creates a tab for email settings.
+	 */
 	private void createEmailSettings() {
 		emailPanel = new JPanel();
 		emailPanel.setLayout(null);
@@ -56,18 +111,38 @@ public class SettingsWindow extends JTabbedPane {
 		JLabel jlSettings = new JLabel("Settings");
 		JLabel jlServer = new JLabel("Server Name:");
 		JLabel jlPort = new JLabel("Port:");
-		JTextField jtServer = new JTextField();
-		JSpinner jsPort = new JSpinner();
-		jsPort.setValue(587);
+		jtServer = new JTextField();
+		jtServer.setText(settings.get("mail.smtp.host"));
+		
+		jsPort = new JSpinner();
+		try {
+			int port = Integer.valueOf(settings.get("mail.smtp.port"));
+			jsPort.setValue(port);
+		} catch (NumberFormatException e) {
+			jsPort.setValue(587);
+		}
+		
 		JLabel jlPortMsg = new JLabel("Default:  587");
 		JLabel jlSec = new JLabel("Security and Authentication");
 		JLabel jlConn = new JLabel("Connection Security:");
 //		JLabel jlAuth = new JLabel("Authentication Method:");
-		JComboBox<String> jcConn = new JComboBox<String>(new String[] {"None", "STARTTLS"});
-		jcConn.setSelectedIndex(1);
+		
+		jcConn = new JComboBox<String>(new String[] {"None", "STARTTLS"});
+		
+		boolean b = Boolean.parseBoolean(settings.get("mail.smtp.starttls.enable"));
+		if (b) {
+			jcConn.setSelectedIndex(1);
+		} else {
+			jcConn.setSelectedIndex(0);
+		}
 		JLabel jlUser = new JLabel("User Name:");
-		JTextField jtUser = new JTextField();
-//		JButton
+		jtUser = new JTextField();
+		jtUser.setText(settings.get("username"));
+		
+		Font f = jlSettings.getFont();
+		Font plain = new Font(f.getFamily() + ".plain", Font.PLAIN, f.getSize());
+		jlServer.setFont(plain); jlPort.setFont(plain); jlPortMsg.setFont(plain);
+		jlConn.setFont(plain); jlUser.setFont(plain);
 		
 		emailPanel.add(jlSettings);
 		emailPanel.add(jlServer);
@@ -122,9 +197,5 @@ public class SettingsWindow extends JTabbedPane {
 		
 		
 		addTab("Email", emailPanel);
-	}
-	
-	public static void main(String[] args) {
-		SettingsWindow sw = new SettingsWindow();
 	}
 }

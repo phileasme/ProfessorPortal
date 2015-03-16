@@ -7,5 +7,6 @@ bin/
 .classpath
 .settings
 
-# file with csv paths to preload #
+# stuff to be loaded on program start #
 loaded_results_log.txt
+.properties

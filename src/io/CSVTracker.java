@@ -59,14 +59,7 @@ public class CSVTracker extends Observable {
 	 */
 	public CSVTracker(Map<String, String> pathMap) {
 		root = System.getProperty("user.dir");
-		String os = System.getProperty("os.name").toLowerCase();
-
-		// adjust directory separators for operating system
-		if (os.matches("windows.*")) {
-			slash = "\\";
-		} else {
-			slash = "/";
-		}
+		slash = System.getProperty("file.separator");
 
 		filename = root + slash + "loaded_results_log.txt";
 
@@ -163,6 +156,17 @@ public class CSVTracker extends Observable {
 	 */
 	public void removeEntry(String name) {
 		loadedFiles.get(RESULTS).remove(pathMap.get(name));
+	}
+	
+	/**
+	 * Deletes the log file.
+	 */
+	public void flush() {
+		try {
+			Files.delete(Paths.get(filename));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
