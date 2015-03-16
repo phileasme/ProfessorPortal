@@ -1,5 +1,7 @@
 package gui;
 
+import io.EmailSend;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -222,6 +224,15 @@ public class EmailWindow extends JFrame {
 			}
 		});
 		send = new JButton("Send");
+		send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < selectedStudents.length; i++) {
+					String email = selectedStudents[i].getEmail();
+					String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
+					EmailSend send = new EmailSend(email, textToSend);
+				}
+			}
+		});
 		
 		prevSendPanel.add(prev);
 		prevSendPanel.add(send);
@@ -231,13 +242,10 @@ public class EmailWindow extends JFrame {
 	public String createPreviewText(Collection<Result> results){
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
-		String newLine = System.lineSeparator();
 		previewString.append("<html>");
 		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
-		previewString.append(newLine);	
 		for(Result r: results) {
 			previewString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
-			previewString.append(newLine);
 		}
 		previewString.append("</html>");
 		outputString = previewString.toString();
@@ -248,16 +256,17 @@ public class EmailWindow extends JFrame {
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
 		String newLine = System.lineSeparator();
-		previewString.append("<html>");
-		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
+		previewString.append(header);
+		previewString.append(newLine);
+		previewString.append("Assessment\t" + "Mark\t" + "Grade");
 		previewString.append(newLine);	
 		for(Result r: results) {
-			previewString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
+			previewString.append(r.module + "-" + r.assessment + "\t" + r.mark + "\t" + r.grade);
 			previewString.append(newLine);
 		}
-		previewString.append("</html>");
+		previewString.append(footer);
 		outputString = previewString.toString();
+		System.out.println(outputString);
 		return outputString;
 	}
-	
 }
