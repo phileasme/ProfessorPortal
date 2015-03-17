@@ -1,6 +1,7 @@
 package gui;
 
 import io.EmailSend;
+import io.Settings;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -31,6 +32,7 @@ import com.jidesoft.swing.CheckBoxList;
 
 public class EmailWindow extends JFrame {
 
+	private Settings settings;
 	//For the First Panel
 	private JPanel firstPanel;
 	
@@ -77,7 +79,7 @@ public class EmailWindow extends JFrame {
 	
 	private int auth;
 	
-	public EmailWindow(StudentRecords sr) {
+	public EmailWindow(StudentRecords sr, Settings set) {
 		super("Send Email");
 		this.sr = sr;
 		createFirstPanel();
@@ -85,6 +87,7 @@ public class EmailWindow extends JFrame {
 		setSize(540,300);
 		setResizable(false);
 		setVisible(true);
+		settings = set;
 	}
 	
 	public void createFirstPanel() {
@@ -227,7 +230,7 @@ public class EmailWindow extends JFrame {
 	
 	public void createPrevSend(){
 		prevSendPanel = new JPanel();
-		ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
+		final ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
 		final Runnable runnable = new Runnable() {
 			public void run() {
 				int sleepTime = 3000;
@@ -278,7 +281,7 @@ public class EmailWindow extends JFrame {
 				 }
 				String email = selectedStudents[i].getEmail();
 				String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
-				EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth);
+				EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
 				}
 				}
 			});
@@ -290,7 +293,6 @@ public class EmailWindow extends JFrame {
 	
 	public String createPreviewText(Collection<Result> results){
 		StringBuilder previewString = new StringBuilder();
-		System.out.println(selectedStudents.length);
 		String outputString;
 		previewString.append("<html>");
 		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
@@ -323,7 +325,7 @@ public class EmailWindow extends JFrame {
 		JPanel panel = new JPanel();
 		JLabel nameLabel = new JLabel("Email: ");
 		JLabel passLabel = new JLabel("Password: ");
-		JTextField text = new JTextField(20);
+		JTextField text = new JTextField(settings.get("username"));
 		JPasswordField passwd = new JPasswordField(15);
 
 		panel.setLayout(new GridLayout(2, 2));

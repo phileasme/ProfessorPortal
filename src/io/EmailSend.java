@@ -20,8 +20,8 @@ public class EmailSend {
 //	private String serverName = "outlook.office365.com";
 //	private int port = 993;
 	
-	private String serverName = "pod51013.outlook.com";
-	private int port = 587;
+	private String serverName;
+	private int port;
 	
 	private String fromAddress; // must be k-----@kcl.ac.uk
 	private String password;
@@ -29,11 +29,16 @@ public class EmailSend {
 	private String toAddress;
 	private String messageToSend;
 	
-	public EmailSend(String to, String from, String password, String message, int i) {
+	private Settings settings;
+	
+	public EmailSend(String to, String from, String password, String message, int i, Settings set) {
 		toAddress = to;
 		messageToSend = message;
 		fromAddress = from;
 		this.password = password;
+		settings = set;
+		serverName = settings.get("mail.smtp.host");
+		port = Integer.parseInt(settings.get("mail.smtp.port"));
 		
 		Properties props = System.getProperties();
 		

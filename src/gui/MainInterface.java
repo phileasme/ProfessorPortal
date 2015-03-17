@@ -252,7 +252,7 @@ public class MainInterface extends JFrame {
 	 */
 	class EmailListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			EmailWindow ew = new EmailWindow(sr);
+			EmailWindow ew = new EmailWindow(sr, settings);
 		}
 	}
 	/**
