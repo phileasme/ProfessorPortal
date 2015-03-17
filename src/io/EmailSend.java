@@ -1,20 +1,14 @@
 package io;
 
-import java.util.Properties;
-
 import java.util.Date;
 
-import javax.swing.*;
-import java.awt.GridLayout;
-
-import javax.mail.Session;
-import javax.mail.Message;
-import javax.mail.URLName;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  * Class to send an email using an SMTP Server and Port using the JavaMail API
