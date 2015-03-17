@@ -128,7 +128,12 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			ResultsTabPanel tabPanel = new ResultsTabPanel(tabName);
 			tabPanel.addActionListener(new CloseTabListener(tabName));
 			
-			setTabComponentAt(index, tabPanel);
+			try {
+				setTabComponentAt(index, tabPanel);
+			} catch (Exception ex) {
+				System.out.println("\nResultsTabManager setTabComponentAt\n");
+				ex.printStackTrace();
+			}
 		}  
 	
 	}
