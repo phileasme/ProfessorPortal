@@ -309,6 +309,7 @@ public class EmailWindow extends JFrame {
 			}
 			protected void done() {
 				emailMonitor.close();
+				EmailWindow.this.setVisible(false);
 			};
 		}.execute();
 	}
