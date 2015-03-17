@@ -76,6 +76,15 @@ public class Settings {
 	}
 	
 	/**
+	 * Returns the inner Properties object for use with email sessions.
+	 * 
+	 * @return the stored Properties
+	 */
+	public Properties getProps() {
+		return props;
+	}
+	
+	/**
 	 * Creates a .properties file with some default values.
 	 */
 	private void createNewSettings() {

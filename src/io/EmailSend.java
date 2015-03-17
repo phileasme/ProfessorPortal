@@ -54,19 +54,12 @@ public class EmailSend {
 		serverName = settings.get("mail.smtp.host");
 		port = Integer.parseInt(settings.get("mail.smtp.port"));
 		
-		Properties props = System.getProperties();
-		
-		props.put("mail.smtp.host", serverName);
-		props.put("mail.smtp.port", port);
-		props.put("mail.smtp.auth", true);
-		props.put("mail.smtp.starttls.enable", true);
-		
 		if (i == 0) {
 
 			try {
 				long start = System.currentTimeMillis();
 				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
-				Session session = Session.getInstance(props, pa);
+				Session session = Session.getInstance(set.getProps(), pa);
 				session.setDebug(true);
 				
 				// set up message
@@ -81,7 +74,7 @@ public class EmailSend {
 				msg.setText(messageToSend);
 
 				// does it matter what this is?
-				msg.setHeader("X-Mailer", "Plague Rat 666");
+				msg.setHeader("X-Mailer", "some guy");
 				msg.setSentDate(new Date());
 
 				Transport transport = session.getTransport();
