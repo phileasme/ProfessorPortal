@@ -307,12 +307,12 @@ public class EmailWindow extends JFrame {
 				}
 				return null;
 			}
-	 	   // this is called when the SwingWorker's doInBackground finishes
 			protected void done() {
 				emailMonitor.close();
 			};
 		}.execute();
 	}
+	
 	/**
 	 * Creates the Previous and Send button panels.
 	 * Creates a Progress Monitor and a new Thread to monitor
