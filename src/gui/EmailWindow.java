@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingWorker;
 
 import records.Result;
 import records.Student;
@@ -270,16 +271,13 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates the Previous and Send button panels.
-	 * Creates a Progress Monitor and a new Thread to monitor
-	 * progress of the Emails being sent if "SEND" is pressed.
-	 * On (Previous) click, opens the previous panel.
+	 * Creates a new Email Progress Monitor with a Background Thread that takes care of sending emails
+	 * and updating the Progress Monitor. 
 	 */
-	public void createPrevSend(){
-		prevSendPanel = new JPanel();
+	public void doEmailMonitor() {
 		final ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
-		final Runnable runnable = new Runnable() {
-			public void run() {
+		new SwingWorker<Void, Void>() {
+			protected Void doInBackground() throws Exception {
 				int sleepTime = 3000;
 				boolean interrupt = false;
 				double completion = 0;
@@ -288,25 +286,41 @@ public class EmailWindow extends JFrame {
 				while(!interrupt) {
 					for(double i = 0.0; i < studentsize; i++) {
 						try {
-
 							emailMonitor.setNote("Completed...." + completed + "%");
 							emailMonitor.setProgress(completed);
-							if (emailMonitor.isCanceled()) {	
-								emailMonitor.close();
-								interrupt = true;
-								break;		
-							}
-							completion = (i+1.0)/studentsize*100;
-							completed = (int) (completion);
-							Thread.sleep(sleepTime);
+						if (emailMonitor.isCanceled()) {	
+							emailMonitor.close();
+							interrupt = true;
+							break;		
+						}
+						String email = selectedStudents[(int) i].getEmail();
+						String textToSend = createEmailText(selectedStudents[(int) i].getAllResults(), headerText, footerText);
+						EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
+						completion = (i+1.0)/studentsize*100;
+						completed = (int) (completion);
+						Thread.sleep(sleepTime);
 						}
 						catch(InterruptedException e) { interrupt = true;}
 					}
 					emailMonitor.close();
 					interrupt = true;
 				}
+				return null;
 			}
-		};
+	 	   // this is called when the SwingWorker's doInBackground finishes
+			protected void done() {
+				emailMonitor.close();
+			};
+		}.execute();
+	}
+	/**
+	 * Creates the Previous and Send button panels.
+	 * Creates a Progress Monitor and a new Thread to monitor
+	 * progress of the Emails being sent if "SEND" is pressed.
+	 * On (Previous) click, opens the previous panel.
+	 */
+	public void createPrevSend(){
+		prevSendPanel = new JPanel();
 		prev = new JButton("Previous");
 		prev.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -320,17 +334,7 @@ public class EmailWindow extends JFrame {
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				auth = getAuth();
-				Thread emailThread = new Thread(runnable);
-				emailThread.start();	
-				for(int i = 0; i < selectedStudents.length; i++) {
-					if (emailMonitor.isCanceled()) {
-						emailMonitor.close();
-						break;
-					}
-					String email = selectedStudents[i].getEmail();
-					String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
-					EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
-				}
+				doEmailMonitor();	
 			}
 		});
 

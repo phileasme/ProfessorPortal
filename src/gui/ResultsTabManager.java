@@ -1,15 +1,17 @@
 package gui;
 
+import io.CSVTracker;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -21,7 +23,6 @@ import records.Assessment;
 import records.Result;
 import records.Student;
 import records.StudentRecords;
-import io.CSVTracker;
 
 /**
  * An object which observes an instance of {@link StudentRecords} to detect
