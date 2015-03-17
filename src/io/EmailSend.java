@@ -1,6 +1,7 @@
 package io;
 
 import java.util.Properties;
+
 import java.util.Date;
 
 import javax.swing.*;
@@ -15,10 +16,13 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
 
+/**
+ * Class to send an email using an SMTP Server and Port using the JavaMail API
+ * 
+ * @author Nikita Vorontsov
+ * @author Max Karasinski
+ */
 public class EmailSend {
-
-//	private String serverName = "outlook.office365.com";
-//	private int port = 993;
 	
 	private String serverName;
 	private int port;
@@ -31,6 +35,16 @@ public class EmailSend {
 	
 	private Settings settings;
 	
+	/**
+	 * Constructs the email to send using a ToAddress, FromAddress(Received either from .properties or the EmailWindow getAuth() call)
+	 * Password, a Message made in EmailWindow, authorisation and Email Settings from Settings
+	 * @param to The Email of the Recepient
+	 * @param from The Email of the Sender
+	 * @param password The password relating to the Sender's Email
+	 * @param message The message to send in the Email
+	 * @param i The getAuth() option
+	 * @param set The current settings stored in .properties
+	 */
 	public EmailSend(String to, String from, String password, String message, int i, Settings set) {
 		toAddress = to;
 		messageToSend = message;
@@ -85,15 +99,27 @@ public class EmailSend {
 		}
 	}
 	
+	/**
+	 * Authenticates a password using an email and password.
+	 *
+	 */
 	class PRAauthenticator extends Authenticator {
 		String email;
 		String password;
 		
+		/**
+		 * Constructs an Authenticator using an Email and Password
+		 * @param email Sender's Email
+		 * @param password Sender's Password
+		 */
 		public PRAauthenticator(String email, String password) {
 			this.email = email;
 			this.password = password;
 		}
 		
+		/**
+		 * Authenticates Password.
+		 */
 		public PasswordAuthentication getPasswordAuthentication() {
 			return new PasswordAuthentication(email, password);
 		}

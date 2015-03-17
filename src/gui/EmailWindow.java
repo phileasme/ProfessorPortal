@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,6 +31,12 @@ import records.Student;
 import records.StudentRecords;
 
 import com.jidesoft.swing.CheckBoxList;
+
+/**
+ * Class to create a window for sending a customizable e-mail to a number of students and to send their respectable marks
+ * 
+ * @author Nikita Vorontsov
+ */
 
 public class EmailWindow extends JFrame {
 
@@ -79,6 +87,11 @@ public class EmailWindow extends JFrame {
 	
 	private int auth;
 	
+	/**
+	 * Constructs the Email Window using a current student records database and the current .properties file
+	 * @param sr The current Students on Record
+	 * @param set the current settings stored in the .properties file
+	 */
 	public EmailWindow(StudentRecords sr, Settings set) {
 		super("Send Email");
 		this.sr = sr;
@@ -90,6 +103,9 @@ public class EmailWindow extends JFrame {
 		settings = set;
 	}
 	
+	/**
+	 * Constructs the first panel of the Emailwindow. 
+	 */
 	public void createFirstPanel() {
 		firstPanel = new JPanel();
 		firstPanel.setLayout(new BorderLayout());
@@ -99,6 +115,11 @@ public class EmailWindow extends JFrame {
 		this.add(firstPanel);
 	}
 	
+	/**
+	 * Creates the CheckBoxList of Students and places into ScrollPane.
+	 * Implements API from  
+	 * <a href="http://www.jidesoft.com/javadoc/com/jidesoft/swing/CheckBoxList.html">Jidesoft API</a>.
+	 */
 	public void createStudentPanel() {
 		studentPanel = new JPanel();
 		studentPanel.setLayout(new BorderLayout());
@@ -138,6 +159,9 @@ public class EmailWindow extends JFrame {
 		firstPanel.add(studentPanel, BorderLayout.WEST);
 	}
 	
+	/**
+	 * Creates a Panel containing a Header and Footer Text Areas, with their respective JLabels
+	 */
 	public void createTextPanel() {
 		headerFooterPanel = new JPanel();
 		
@@ -180,6 +204,11 @@ public class EmailWindow extends JFrame {
 		firstPanel.add(headerFooterPanel, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Creates a panel containing the "Next" Button.
+	 * Implements an actionListener which on (Next) 
+	 * click changes the Panel to the Second Panel
+	 */
 	public void createNextPanel() {
 		bottomButtonPanel = new JPanel();
 		next = new JButton("Next:");
@@ -203,6 +232,9 @@ public class EmailWindow extends JFrame {
 		firstPanel.add(bottomButtonPanel, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Creates the Second Panel to be opened on (Next) click
+	 */
 	public void createSecondPanel() {
 		secondPanel = new JPanel();
 		secondPanel.setLayout(new BorderLayout());
@@ -212,22 +244,36 @@ public class EmailWindow extends JFrame {
 		this.add(secondPanel);
 	}
 	
+	/**
+	 * Creates the panel containing the preview of the email to be sent. 
+	 * Takes all results currently on database for the students selected
+	 * and adds to an overall preview panel
+	 */
 	public void createPreview() {
 		previewPanel = new JPanel();
-		previewPanel.setLayout(new BorderLayout());
+		previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
 		
+		JLabel previewLabel = new JLabel("This is the preview of the e-mail to be sent: ");
 		header = new JLabel(headerText);
 		footer = new JLabel(footerText);
 		examMarks = new JLabel();
 		Student stu = selectedStudents[0];
 		Collection<Result> results = stu.getAllResults();
 		examMarks.setText(createPreviewText(results));
-		previewPanel.add(header, BorderLayout.NORTH);
-		previewPanel.add(examMarks, BorderLayout.CENTER);
-		previewPanel.add(footer, BorderLayout.SOUTH);
-		secondPanel.add(previewPanel, BorderLayout.CENTER);
+		previewPanel.add(previewLabel);
+		previewPanel.add(Box.createVerticalStrut(25));
+		previewPanel.add(header);
+		previewPanel.add(examMarks);
+		previewPanel.add(footer);
+		secondPanel.add(previewPanel, BorderLayout.WEST);
 	}
 	
+	/**
+	 * Creates the Previous and Send button panels.
+	 * Creates a Progress Monitor and a new Thread to monitor
+	 * progress of the Emails being sent if "SEND" is pressed.
+	 * On (Previous) click, opens the previous panel.
+	 */
 	public void createPrevSend(){
 		prevSendPanel = new JPanel();
 		final ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
@@ -291,6 +337,11 @@ public class EmailWindow extends JFrame {
 		secondPanel.add(prevSendPanel, BorderLayout.PAGE_END);
 	}
 	
+	/**
+	 * Creates the preview text using a string builder, a student's results and basic HTML text.
+	 * @param results The first student's collection of results
+	 * @return The String containing a preview
+	 */
 	public String createPreviewText(Collection<Result> results){
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
@@ -304,6 +355,13 @@ public class EmailWindow extends JFrame {
 		return outputString;
 	}
 	
+	/**
+	 * Creates the text to be sent in the email by combining the header, footer and results of a certain student.
+	 * @param results The collection of results of a student.
+	 * @param header The text to come before the results taken from the Header Text Area.
+	 * @param footer The text to come after the results, taken from the Footer Text Area.
+	 * @return The Text String for the Email Message.
+	 */
 	public String createEmailText(Collection<Result> results, String header, String footer) {
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
@@ -321,6 +379,11 @@ public class EmailWindow extends JFrame {
 		return outputString;
 	}
 	
+	/**
+	 * Prompts the user for a username and password and saves as a variable.
+	 * Returns the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL)
+	 * @return the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL)
+	 */
 	private int getAuth() {
 		JPanel panel = new JPanel();
 		JLabel nameLabel = new JLabel("Email: ");
