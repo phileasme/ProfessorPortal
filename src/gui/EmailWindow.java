@@ -43,7 +43,7 @@ public class EmailWindow extends JFrame {
 	private Settings settings;
 	//For the First Panel
 	private JPanel firstPanel;
-	
+
 	private JPanel studentPanel;
 	private JPanel studentButtonPanel;
 	private JPanel headerFooterPanel;
@@ -51,42 +51,42 @@ public class EmailWindow extends JFrame {
 
 	private StudentRecords sr;
 	private CheckBoxList studentCheck;
-	
+
 	private JButton selectAll;
 	private JButton selectNone;
 	private JButton next;
-	
+
 	private Student[] studentsToEmail;
 	private ArrayList<Student> studentArray;
 	private Student[] selectedStudents;
-	
+
 	private JLabel headerLabel;
 	private JLabel footerLabel;
-	
+
 	private JTextArea headerArea;
 	private JTextArea footerArea;
-	
+
 	private String headerText;
 	private String footerText;
-	
+
 	//For the second panel
 	private JPanel secondPanel;
 	private JPanel previewPanel;
 	private JPanel prevSendPanel;
-	
+
 	private JButton send;
 	private JButton prev;
-	
+
 	private JLabel header;
 	private JLabel footer;
 	private JLabel examMarks;
-	
+
 	//Authorisation
 	private String emailFrom;
 	private String password;
-	
+
 	private int auth;
-	
+
 	/**
 	 * Constructs the Email Window using a current student records database and the current .properties file
 	 * @param sr The current Students on Record
@@ -102,7 +102,7 @@ public class EmailWindow extends JFrame {
 		setVisible(true);
 		settings = set;
 	}
-	
+
 	/**
 	 * Constructs the first panel of the Emailwindow. 
 	 */
@@ -114,7 +114,7 @@ public class EmailWindow extends JFrame {
 		createNextPanel();
 		this.add(firstPanel);
 	}
-	
+
 	/**
 	 * Creates the CheckBoxList of Students and places into ScrollPane.
 	 * Implements API from  
@@ -123,62 +123,62 @@ public class EmailWindow extends JFrame {
 	public void createStudentPanel() {
 		studentPanel = new JPanel();
 		studentPanel.setLayout(new BorderLayout());
-		
+
 		studentButtonPanel = new JPanel(new BorderLayout());
-		
+
 		studentsToEmail = new Student[sr.numOfStudents()];
 		studentArray = new ArrayList<Student>(sr.returnStudents().values());
-	
+
 		for(int i = 0; i < sr.numOfStudents(); i++) {
 			studentsToEmail[i] = studentArray.get(i);
 		}
-		
+
 		studentCheck = new CheckBoxList(studentsToEmail);
 		JScrollPane studentScroll = new JScrollPane(studentCheck);
-		
+
 		selectAll = new JButton("Select All");
 		selectNone = new JButton("Select None");
-		
+
 		studentButtonPanel.add(selectAll, BorderLayout.WEST);
 		studentButtonPanel.add(selectNone, BorderLayout.EAST);
-		
+
 		selectAll.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-					studentCheck.selectAll();
+				studentCheck.selectAll();
 			}
 		});
-		
+
 		selectNone.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				studentCheck.selectNone();
 			}
 		});
-		
+
 		studentPanel.add(studentScroll, BorderLayout.CENTER);
 		studentPanel.add(studentButtonPanel, BorderLayout.NORTH);
 		firstPanel.add(studentPanel, BorderLayout.WEST);
 	}
-	
+
 	/**
 	 * Creates a Panel containing a Header and Footer Text Areas, with their respective JLabels
 	 */
 	public void createTextPanel() {
 		headerFooterPanel = new JPanel();
-		
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{354, 0};
 		gridBagLayout.rowHeights = new int[]{47, 79, 41, 73, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		headerFooterPanel.setLayout(gridBagLayout);
-		
+
 		JLabel lblHeader = new JLabel("Header: ");
 		GridBagConstraints gbc_lblHeader = new GridBagConstraints();
 		gbc_lblHeader.insets = new Insets(0, 0, 5, 0);
 		gbc_lblHeader.gridx = 0;
 		gbc_lblHeader.gridy = 0;
 		headerFooterPanel.add(lblHeader, gbc_lblHeader);
-		
+
 		headerArea = new JTextArea();
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
 		gbc_textArea.insets = new Insets(0, 0, 5, 0);
@@ -186,14 +186,14 @@ public class EmailWindow extends JFrame {
 		gbc_textArea.gridx = 0;
 		gbc_textArea.gridy = 1;
 		headerFooterPanel.add(headerArea, gbc_textArea);
-		
+
 		JLabel lblFooter = new JLabel("Footer: ");
 		GridBagConstraints gbc_lblFooter = new GridBagConstraints();
 		gbc_lblFooter.insets = new Insets(0, 0, 5, 0);
 		gbc_lblFooter.gridx = 0;
 		gbc_lblFooter.gridy = 2;
 		headerFooterPanel.add(lblFooter, gbc_lblFooter);
-		
+
 		footerArea = new JTextArea();
 		GridBagConstraints gbc_textArea_1 = new GridBagConstraints();
 		gbc_textArea_1.fill = GridBagConstraints.BOTH;
@@ -203,7 +203,7 @@ public class EmailWindow extends JFrame {
 
 		firstPanel.add(headerFooterPanel, BorderLayout.CENTER);
 	}
-	
+
 	/**
 	 * Creates a panel containing the "Next" Button.
 	 * Implements an actionListener which on (Next) 
@@ -211,7 +211,7 @@ public class EmailWindow extends JFrame {
 	 */
 	public void createNextPanel() {
 		bottomButtonPanel = new JPanel();
-		next = new JButton("Next:");
+		next = new JButton("Next");
 		headerText = "";
 		footerText = "";
 		next.addActionListener(new ActionListener() {
@@ -231,7 +231,7 @@ public class EmailWindow extends JFrame {
 		bottomButtonPanel.add(next);
 		firstPanel.add(bottomButtonPanel, BorderLayout.SOUTH);
 	}
-	
+
 	/**
 	 * Creates the Second Panel to be opened on (Next) click
 	 */
@@ -242,8 +242,9 @@ public class EmailWindow extends JFrame {
 		createPrevSend();
 		prevSendPanel = new JPanel();
 		this.add(secondPanel);
+		pack();
 	}
-	
+
 	/**
 	 * Creates the panel containing the preview of the email to be sent. 
 	 * Takes all results currently on database for the students selected
@@ -252,7 +253,7 @@ public class EmailWindow extends JFrame {
 	public void createPreview() {
 		previewPanel = new JPanel();
 		previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-		
+
 		JLabel previewLabel = new JLabel("This is the preview of the e-mail to be sent: ");
 		header = new JLabel(headerText);
 		footer = new JLabel(footerText);
@@ -267,7 +268,7 @@ public class EmailWindow extends JFrame {
 		previewPanel.add(footer);
 		secondPanel.add(previewPanel, BorderLayout.WEST);
 	}
-	
+
 	/**
 	 * Creates the Previous and Send button panels.
 	 * Creates a Progress Monitor and a new Thread to monitor
@@ -285,36 +286,37 @@ public class EmailWindow extends JFrame {
 				double studentsize = (double) selectedStudents.length;
 				int completed = (int) (completion);
 				while(!interrupt) {
-				for(double i = 0.0; i < studentsize; i++) {
-					try {
-						
-				emailMonitor.setNote("Completed...." + completed + "%");
-				emailMonitor.setProgress(completed);
-				 if (emailMonitor.isCanceled()) {	
-						emailMonitor.close();
-						interrupt = true;
-						break;		
-				 }
-				completion = (i+1.0)/studentsize*100;
-				completed = (int) (completion);
-				Thread.sleep(sleepTime);
+					for(double i = 0.0; i < studentsize; i++) {
+						try {
+
+							emailMonitor.setNote("Completed...." + completed + "%");
+							emailMonitor.setProgress(completed);
+							if (emailMonitor.isCanceled()) {	
+								emailMonitor.close();
+								interrupt = true;
+								break;		
+							}
+							completion = (i+1.0)/studentsize*100;
+							completed = (int) (completion);
+							Thread.sleep(sleepTime);
+						}
+						catch(InterruptedException e) { interrupt = true;}
 					}
-					catch(InterruptedException e) { interrupt = true;}
-				 }
-				 emailMonitor.close();
-				 interrupt = true;
+					emailMonitor.close();
+					interrupt = true;
 				}
 			}
-			};
+		};
 		prev = new JButton("Previous");
 		prev.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				remove(secondPanel);
 				createFirstPanel();
+				pack();
 			}
 		});
 		send = new JButton("Send");
-		
+
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				auth = getAuth();
@@ -324,19 +326,19 @@ public class EmailWindow extends JFrame {
 					if (emailMonitor.isCanceled()) {
 						emailMonitor.close();
 						break;
-				 }
-				String email = selectedStudents[i].getEmail();
-				String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
-				EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
+					}
+					String email = selectedStudents[i].getEmail();
+					String textToSend = createEmailText(selectedStudents[i].getAllResults(), headerText, footerText);
+					EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
 				}
-				}
-			});
-		
+			}
+		});
+
 		prevSendPanel.add(prev);
 		prevSendPanel.add(send);
 		secondPanel.add(prevSendPanel, BorderLayout.PAGE_END);
 	}
-	
+
 	/**
 	 * Creates the preview text using a string builder, a student's results and basic HTML text.
 	 * @param results The first student's collection of results
@@ -354,7 +356,7 @@ public class EmailWindow extends JFrame {
 		outputString = previewString.toString();
 		return outputString;
 	}
-	
+
 	/**
 	 * Creates the text to be sent in the email by combining the header, footer and results of a certain student.
 	 * @param results The collection of results of a student.
@@ -378,7 +380,7 @@ public class EmailWindow extends JFrame {
 		outputString = previewString.toString();
 		return outputString;
 	}
-	
+
 	/**
 	 * Prompts the user for a username and password and saves as a variable.
 	 * Returns the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL)
@@ -395,18 +397,18 @@ public class EmailWindow extends JFrame {
 
 		panel.add(nameLabel); panel.add(text);
 		panel.add(passLabel); panel.add(passwd);
-		
+
 		String[] options = new String[]{"OK", "Cancel"};
-		
+
 		int option = JOptionPane.showOptionDialog(null, panel, "Enter info",
-							JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-							null, options, options[0]);
-		
+				JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+				null, options, options[0]);
+
 		if (option == 0) {
 			emailFrom = text.getText();
 			password = new String(passwd.getPassword());
 		}
-		
+
 		return option;
 	}
 }

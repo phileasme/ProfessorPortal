@@ -50,6 +50,8 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		this.studentRecords = studentRecords;
 		
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		
+		setRequestFocusEnabled(false);
 	}
 
 	/**
