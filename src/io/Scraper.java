@@ -2,6 +2,9 @@ package io;
 
 
 
+import gui.Scatterplot;
+import gui.ScrapperPopUp;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,16 +20,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-
+import records.Logs;
 public class Scraper {
 	private String webdata = "";
 	private String module = "";
 	private String user = "";
 	private String pass = "";
-	public boolean loggedin = false;
+	
 	private ArrayList<String> fullString = new ArrayList<String>();
 	
-
 	/**  http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
 	public Scraper(String url,String mname,String numb,String pass) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
 		webdata = url;
@@ -48,11 +50,10 @@ public class Scraper {
 
 		final HtmlPage Loginpage= (HtmlPage) webClient.getPage("https://login-keats.kcl.ac.uk/");
 
-		final  List<HtmlForm> forms = Loginpage.getForms();
-
 		
-		for(HtmlForm form : forms){
-			if( form.getId().equals("login")){
+		
+
+HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 
 				final HtmlTextInput username = form.getInputByName("username");
 				final HtmlPasswordInput password = form.getInputByName("password");
@@ -63,12 +64,15 @@ public class Scraper {
 
 				// Click "Sign In" button/link
 				final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
-				loggedin = true;
+				
+					Logs.loggedin = true;
+					Logs.user = this.user;
+					Logs.pass = this.pass;
+					
 				/* Gets first page content while Logging in */
 				String htmlBody = Scrappingpage.getWebResponse().getContentAsString(); 
 
-			}
-		}
+		
 
 		/*   Gets cells containt in plantext */
 		final HtmlPage Scrappedpage= (HtmlPage) webClient.getPage(webdata);
@@ -78,7 +82,7 @@ public class Scraper {
 
 
 		
-		BufferedReader bufferReader = new BufferedReader(new StringReader(Scrappedpage.asText()));
+		BufferedReader bufferReader = new BufferedReader(new StringReader(allScrappedPage));
 		String currentLine = null;
 		int count =0 ;
 
@@ -158,14 +162,21 @@ public class Scraper {
 
 			}
 			
+
+			TreeMap<String,String> modDate = new TreeMap<String,String>();
+
 			String fullEmail =current.substring(startOfEmail, endOfEmail);
 			String fullDate =current.substring(startOfDate,endOfDate);
-
-			System.out.println(fullEmail+" "+fullDate);
+			modDate.put(mname,fullDate);
+			Logs.addToParticipationData(fullEmail, modDate);
+			System.out.println(Logs.getParticipation().get(fullEmail).firstKey());
+			System.out.println(Logs.getParticipation().get(fullEmail).get(Logs.getParticipation().get(fullEmail).firstKey()));
+		
 		}
 
-		
-		/** Gets cells <h1>,<span>,etc.. */
+
+		System.out.println(Logs.loggedin);
+		/* Gets cells <h1>,<span>,etc.. */
 		String scrappString= Scrappedpage.getWebResponse().getContentAsString(); 
 
 
@@ -173,7 +184,13 @@ public class Scraper {
 
 		webClient.closeAllWindows();
 	}
-
+	public String getuser(){
+		return user;
+	}
+	public String getpass(){
+		return pass;
+	}
+	
 
 	public static boolean isBlank(String s)
 	{
