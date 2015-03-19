@@ -19,12 +19,14 @@ import javax.swing.JTextField;
 
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
+/** @author: Phileas Hocquard */
 public class ScrapperPopUp extends JFrame{
 	
+	/** JPanels */
 	private JPanel jpField; 
 	private JPanel jpConfirmation;
 	
-	
+	/** JLabels */
 	private JLabel jlUrl =  new JLabel("Url of the participant data:") ;
 	private JLabel jlModuleName= new JLabel("Module name:");
 	private JLabel jlKnumb = new JLabel("K-number:");
@@ -76,8 +78,7 @@ public class ScrapperPopUp extends JFrame{
 				try {
 					Scraper scrap = new Scraper(url,mname,knumb,pass);
 				} catch (FailingHttpStatusCodeException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+							e.printStackTrace();
 				}
 				}
 			}
