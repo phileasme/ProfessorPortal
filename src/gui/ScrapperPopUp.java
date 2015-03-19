@@ -20,14 +20,16 @@ import javax.swing.JTextField;
 import records.*;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
-/** @author: Phileas Hocquard */
+/**
+ * PUT SOMETHING HERE
+ * 
+ * @author Phileas Hocquard
+ */
 public class ScrapperPopUp extends JFrame{
 
-	/** JPanels */
 	private JPanel jpField; 
 	private JPanel jpConfirmation;
 
-	/** JLabels */
 	private JLabel jlUrl =  new JLabel("Url of the participant data: ") ;
 	private JLabel jlModuleName= new JLabel("Module name: ");
 	private JLabel jlKnumb = new JLabel("K-number: ");
@@ -42,8 +44,10 @@ public class ScrapperPopUp extends JFrame{
 	private JButton jbconfirm = new JButton("Confirm");
 	Logs log = new Logs();
 
+	/**
+	 * PUT SOMETHING HERE
+	 */
 	public ScrapperPopUp(){
-
 		super(" Participant Data ");
 		new JFrame("Participations");
 		setSize(250,200);
@@ -65,8 +69,7 @@ public class ScrapperPopUp extends JFrame{
 
 			add(jpField,BorderLayout.CENTER);
 			add(jpConfirmation,BorderLayout.SOUTH);
-		}
-		else {
+		} else {
 			GridLayout myGrid = new GridLayout(2, 2);
 			jpField= new JPanel (myGrid); 
 			jpConfirmation =new JPanel(new FlowLayout());
@@ -87,6 +90,9 @@ public class ScrapperPopUp extends JFrame{
 		setVisible(true);
 		ActionListener ConfirmationListener = new ActionListener() {
 
+			/**
+			 * PUT SOMETHING HERE
+			 */
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
@@ -113,9 +119,7 @@ public class ScrapperPopUp extends JFrame{
 				}
 			}
 		};
+		
 		jbconfirm.addActionListener(ConfirmationListener);
-
 	}
-
-
 }
