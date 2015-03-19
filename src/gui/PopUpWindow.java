@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -36,7 +35,7 @@ public class PopUpWindow extends JFrame {
 	private String studentEmail;
 	private String studentNumber;
 	private String studentTutor;
-	
+
 	/**
 	 * Creates a frame displaying the student's information.
 	 * 
@@ -48,23 +47,22 @@ public class PopUpWindow extends JFrame {
 		studentEmail = stu.getEmail();
 		studentNumber = stu.getNumber();
 		studentTutor = stu.getTutorEmail();
-		
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		setSize(540,300);
 		setResizable(false);
 		setLayout(new BorderLayout());
-		
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
-		
+
 		//New JPanel using GridBagConstraints to set Labels in
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		
+
 		//Creates student name label using the student's name
 		JLabel studentNameLabel = new JLabel(studentName);
 		studentNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -73,7 +71,7 @@ public class PopUpWindow extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(studentNameLabel, c);
-		
+
 		//Creates students email label using the student's email
 		JLabel studentEmailLabel = new JLabel(studentEmail);
 		studentEmailLabel.setFont(new Font("Tahoma", Font.ITALIC, 18));
@@ -83,7 +81,7 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.CENTER;
 		c.weighty = 0.05;
 		panel.add(studentEmailLabel, c);
-		
+
 		//Creates label: "Student No: "
 		JLabel lblStudentNo = new JLabel("Student No: ");
 		lblStudentNo.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -92,7 +90,7 @@ public class PopUpWindow extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(lblStudentNo, c);
-		
+
 		//Creates a student's ID Number label
 		JLabel studentNumberLabel = new JLabel(studentNumber);
 		studentNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -101,7 +99,7 @@ public class PopUpWindow extends JFrame {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.PAGE_START;
 		panel.add(studentNumberLabel, c);
-		
+
 		//Creates a "Tutor: " label
 		JLabel lblTutor = new JLabel("Tutor: ");
 		lblTutor.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -111,7 +109,7 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.CENTER;
 		c.weighty = 0.05;
 		panel.add(lblTutor, c);
-		
+
 		//Creates a tutor's email label
 		JLabel tutorEmailLabel = new JLabel(studentTutor);
 		tutorEmailLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -121,25 +119,25 @@ public class PopUpWindow extends JFrame {
 		c.anchor = GridBagConstraints.CENTER;
 		c.weighty = 0.001;
 		panel.add(tutorEmailLabel, c);
-		
-		JPanel dataPanel = new JPanel();
-		
+
+		JPanel dataPanel = new JPanel(new BorderLayout());
+
 		// make a table with all of the student's results
 		JScrollPane scrollResults;
 		Collection<Result> results = stu.getAllResults();
-		
+
 		if (!results.isEmpty()) {
 			String[] columns = {"Assessment", "Mark", "Grade"};
 			Object[][] data = new Object[results.size()][3];
 			int i = 0;
-			
+
 			for (Result r : results) {
 				data[i][0] = r.module + "-" + r.assessment;
 				data[i][1] = r.mark;
 				data[i][2] = r.grade;
 				++i;
 			}
-			
+
 			JTable resultTable = new JTable(new ResultsTableModel(data, columns));
 			resultTable.setBackground(new Color(230, 230, 230));
 			scrollResults = new JScrollPane(resultTable);
@@ -147,39 +145,38 @@ public class PopUpWindow extends JFrame {
 			JLabel noResults = new JLabel(String.format("%67s", "No results to display"));
 			scrollResults = new JScrollPane(noResults);
 		}
-		
-		scrollResults.setPreferredSize(new Dimension(300,120));
-		dataPanel.add(scrollResults);
-		
+
+		scrollResults.setPreferredSize(new Dimension(500,120));
+		dataPanel.add(scrollResults, BorderLayout.NORTH);
+
 		TreeMap<String, String> partData = Logs.getStudentData(studentEmail);
 		if (partData != null) {
 			System.out.println("poop");
 			String[] columns = {"Module", "Time last accessed"};
 			Object[][] data = new Object[partData.size()][2];
 			int i = 0;
-			
+
 			for (String module : partData.keySet()) {
 				data[i][0] = module;
 				data[i][1] = partData.get(module);
 				i++;
 			}
-			
+
 			JTable dataTable = new JTable(new ResultsTableModel(data, columns));
 			dataTable.setBackground(new Color(230, 230, 230));
 			JScrollPane scrollData = new JScrollPane(dataTable);
-			scrollData.setPreferredSize(new Dimension(300, 120));
-			dataPanel.add(scrollData);
+			scrollData.setPreferredSize(new Dimension(500, 120));
+			dataPanel.add(scrollData, BorderLayout.SOUTH);
 		}
-		
-//		contentPane.add(dataPanel, BorderLayout.SOUTH);
+
 		add(dataPanel, BorderLayout.SOUTH);
-		
+
 		if (partData != null) {
 			setSize(540, 500);
 		} else {
 			setSize(540,300);
 		}
-		
+
 	}
 }
 

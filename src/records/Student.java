@@ -16,9 +16,8 @@ public class Student {
 	private String name;
 	private String email;
 	private String tutorEmail;
-//	private String markingCode = null;
 	private Map<String, Result> results = new TreeMap<String, Result>();
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -33,35 +32,35 @@ public class Student {
 		email = e;
 		tutorEmail = tEmail;
 	}
-	
+
 	/**
 	 * @return the number for this student
 	 */
 	public String getNumber() {
 		return number;
 	}
-	
+
 	/**
 	 * @return the student's name
 	 */
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * @return the student's email address
 	 */
 	public String getEmail() {
 		return email;
 	}
-	
+
 	/**
 	 * @return the student's tutor's email address
 	 */
 	public String getTutorEmail() {
 		return tutorEmail;
 	}
-	
+
 	/**
 	 * Adds a result to the student's list of results.
 	 * 
@@ -72,7 +71,7 @@ public class Student {
 		String key = res.module + "-" + res.assessment;
 		results.put(key, res);
 	}
-	
+
 	/**
 	 * Use an result's module + assessment code, formatted as "module-assessment",
 	 * e.g. "4CCS1ELA-001", to fetch a result belonging to the student.
@@ -84,7 +83,7 @@ public class Student {
 	public Result getResult(String key) {
 		return results.get(key);
 	}
-	
+
 	/**
 	 * Get an iterable object with all the results that have been loaded for
 	 * the student, ordered by module.
@@ -94,12 +93,12 @@ public class Student {
 	public Collection<Result> getAllResults() {
 		return results.values();
 	}
-	
+
 	/**
 	 * @return all the info on the student: number, tutor's email, name, email
 	 */
 	public String toString() {
 		return name + " (" + number + ")";
 	}
-	
+
 }

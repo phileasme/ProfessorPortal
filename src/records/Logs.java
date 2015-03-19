@@ -35,7 +35,6 @@ public class Logs {
 		}
 
 		participationData.get(email).put(module, date);
-		System.out.println(participationData.get(email));
 	}
 
 	/**

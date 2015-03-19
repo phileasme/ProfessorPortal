@@ -171,8 +171,8 @@ public class Scraper {
 			String fullDate =current.substring(startOfDate,endOfDate);
 			modDate.put(mname,fullDate);
 			Logs.addToParticipationData(fullEmail, mname, fullDate);
-			System.out.println(Logs.getParticipation().get(fullEmail).firstKey());
-			System.out.println(Logs.getParticipation().get(fullEmail).get(Logs.getParticipation().get(fullEmail).firstKey()));
+//			System.out.println(Logs.getParticipation().get(fullEmail).firstKey());
+//			System.out.println(Logs.getParticipation().get(fullEmail).get(Logs.getParticipation().get(fullEmail).firstKey()));
 
 		}
 
