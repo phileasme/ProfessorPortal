@@ -123,7 +123,7 @@ public class StudentRecords extends Observable {
 		if (markingCodes.size() > 0) return true;
 		return false;
 	}
-	
+
 	public boolean hasAssessments() {
 		if (assessments.size() > 0) return true;
 		return false;
@@ -146,7 +146,7 @@ public class StudentRecords extends Observable {
 		setChanged();
 		notifyObservers(assessments);
 	}
-	
+
 	public void removeAssessment(String name) {
 		assessments.remove(name);
 	}

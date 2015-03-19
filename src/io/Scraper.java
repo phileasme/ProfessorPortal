@@ -26,9 +26,9 @@ public class Scraper {
 	private String module = "";
 	private String user = "";
 	private String pass = "";
-	
+
 	private ArrayList<String> fullString = new ArrayList<String>();
-	
+
 	/**  http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
 	public Scraper(String url,String mname,String numb,String pass) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
 		webdata = url;
@@ -50,26 +50,26 @@ public class Scraper {
 
 		final HtmlPage Loginpage= (HtmlPage) webClient.getPage("https://login-keats.kcl.ac.uk/");
 
-		
-		
-
-HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
-
-				final HtmlTextInput username = form.getInputByName("username");
-				final HtmlPasswordInput password = form.getInputByName("password");
 
 
-				username.setValueAttribute(user);
-				password.setValueAttribute(pass);
 
-				// Click "Sign In" button/link
-				final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
-				
-					
-				/* Gets first page content while Logging in */
-				String htmlBody = Scrappingpage.getWebResponse().getContentAsString(); 
+		HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 
-		
+		final HtmlTextInput username = form.getInputByName("username");
+		final HtmlPasswordInput password = form.getInputByName("password");
+
+
+		username.setValueAttribute(user);
+		password.setValueAttribute(pass);
+
+		// Click "Sign In" button/link
+		final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
+
+
+		/* Gets first page content while Logging in */
+		String htmlBody = Scrappingpage.getWebResponse().getContentAsString(); 
+
+
 
 		/*   Gets cells containt in plantext */
 		final HtmlPage Scrappedpage= (HtmlPage) webClient.getPage(webdata);
@@ -83,7 +83,7 @@ HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 		}
 
 
-		
+
 		BufferedReader bufferReader = new BufferedReader(new StringReader(allScrappedPage));
 		String currentLine = null;
 		int count =0 ;
@@ -163,17 +163,17 @@ HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 				startOfDate ++;
 
 			}
-			
+
 
 			TreeMap<String,String> modDate = new TreeMap<String,String>();
 
 			String fullEmail =current.substring(startOfEmail, endOfEmail);
 			String fullDate =current.substring(startOfDate,endOfDate);
 			modDate.put(mname,fullDate);
-			Logs.addToParticipationData(fullEmail, modDate);
+			Logs.addToParticipationData(fullEmail, mname, fullDate);
 			System.out.println(Logs.getParticipation().get(fullEmail).firstKey());
 			System.out.println(Logs.getParticipation().get(fullEmail).get(Logs.getParticipation().get(fullEmail).firstKey()));
-		
+
 		}
 
 
@@ -192,7 +192,7 @@ HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 	public String getpass(){
 		return pass;
 	}
-	
+
 
 	public static boolean isBlank(String s)
 	{
