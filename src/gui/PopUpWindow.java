@@ -1,11 +1,12 @@
 package gui;
 import java.util.Collection;
-
+import java.util.TreeMap;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -48,10 +49,8 @@ public class PopUpWindow extends JFrame {
 		studentNumber = stu.getNumber();
 		studentTutor = stu.getTutorEmail();
 		
-		System.out.println(Logs.getStudentData(studentEmail));
-		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(540,300);
+//		setSize(540,300);
 		setResizable(false);
 		setLayout(new BorderLayout());
 		
@@ -123,12 +122,14 @@ public class PopUpWindow extends JFrame {
 		c.weighty = 0.001;
 		panel.add(tutorEmailLabel, c);
 		
+		JPanel dataPanel = new JPanel();
+		
 		// make a table with all of the student's results
 		JScrollPane scrollResults;
-		String[] columns = {"Assessment", "Mark", "Grade"};
 		Collection<Result> results = stu.getAllResults();
 		
 		if (!results.isEmpty()) {
+			String[] columns = {"Assessment", "Mark", "Grade"};
 			Object[][] data = new Object[results.size()][3];
 			int i = 0;
 			
@@ -148,7 +149,37 @@ public class PopUpWindow extends JFrame {
 		}
 		
 		scrollResults.setPreferredSize(new Dimension(300,120));
-		add(scrollResults, BorderLayout.SOUTH);
+		dataPanel.add(scrollResults);
+		
+		TreeMap<String, String> partData = Logs.getStudentData(studentEmail);
+		if (partData != null) {
+			System.out.println("poop");
+			String[] columns = {"Module", "Time last accessed"};
+			Object[][] data = new Object[partData.size()][2];
+			int i = 0;
+			
+			for (String module : partData.keySet()) {
+				data[i][0] = module;
+				data[i][1] = partData.get(module);
+				i++;
+			}
+			
+			JTable dataTable = new JTable(new ResultsTableModel(data, columns));
+			dataTable.setBackground(new Color(230, 230, 230));
+			JScrollPane scrollData = new JScrollPane(dataTable);
+			scrollData.setPreferredSize(new Dimension(300, 120));
+			dataPanel.add(scrollData);
+		}
+		
+//		contentPane.add(dataPanel, BorderLayout.SOUTH);
+		add(dataPanel, BorderLayout.SOUTH);
+		
+		if (partData != null) {
+			setSize(540, 500);
+		} else {
+			setSize(540,300);
+		}
+		
 	}
 }
 
