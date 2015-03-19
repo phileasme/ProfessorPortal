@@ -65,9 +65,6 @@ HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 				// Click "Sign In" button/link
 				final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
 				
-					Logs.loggedin = true;
-					Logs.user = this.user;
-					Logs.pass = this.pass;
 					
 				/* Gets first page content while Logging in */
 				String htmlBody = Scrappingpage.getWebResponse().getContentAsString(); 
@@ -79,6 +76,11 @@ HtmlForm form = Loginpage.getFirstByXPath("//form[@id='login']");
 
 		String allScrappedPage = Scrappedpage.asText();
 
+		if(allScrappedPage.contains("Last accessSort by Last access Descending")){
+			Logs.loggedin = true;
+			Logs.user = this.user;
+			Logs.pass = this.pass;
+		}
 
 
 		
