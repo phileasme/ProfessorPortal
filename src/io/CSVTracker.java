@@ -1,8 +1,9 @@
 package io;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Observable;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class CSVTracker extends Observable {
 	private Map<String, String> pathMap;
 
 	// contains paths to loaded csv files
-	private Map<Character, ArrayList<String>> loadedFiles = new HashMap<Character, ArrayList<String>>();
+	private Map<Character, HashSet<String>> loadedFiles = new HashMap<Character, HashSet<String>>();
 
 	private Charset charset = Charset.forName("UTF-8");
 
@@ -63,8 +64,8 @@ public class CSVTracker extends Observable {
 
 		filename = root + slash + "loaded_results_log.txt";
 
-		loadedFiles.put(CODES, new ArrayList<String>());
-		loadedFiles.put(RESULTS, new ArrayList<String>());
+		loadedFiles.put(CODES, new HashSet<String>());
+		loadedFiles.put(RESULTS, new HashSet<String>());
 		
 		this.pathMap = pathMap;
 	}
@@ -87,8 +88,8 @@ public class CSVTracker extends Observable {
 	 * be loaded.
 	 */
 	private void loadFiles() {
-		ArrayList<String> markingCodes = loadedFiles.get(CODES);
-		ArrayList<String> examResults = loadedFiles.get(RESULTS);
+		HashSet<String> markingCodes = loadedFiles.get(CODES);
+		HashSet<String> examResults = loadedFiles.get(RESULTS);
 
 		for (String path : markingCodes) {
 			setChanged();
@@ -113,7 +114,7 @@ public class CSVTracker extends Observable {
 	 * @param fileType the type of data contained in the file
 	 */
 	public void addFiles(String[] paths, char fileType) {
-		ArrayList<String> category = loadedFiles.get(fileType);
+		HashSet<String> category = loadedFiles.get(fileType);
 		
 		for (String path : paths) {
 			category.add(path);
@@ -126,8 +127,8 @@ public class CSVTracker extends Observable {
 	 * codes or exam results.
 	 */
 	public void writeToLog() {
-		ArrayList<String> markingCodes = loadedFiles.get(CODES);
-		ArrayList<String> examResults = loadedFiles.get(RESULTS);
+		Set<String> markingCodes = loadedFiles.get(CODES);
+		Set<String> examResults = loadedFiles.get(RESULTS);
 		
 		try {
 			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename), charset);
@@ -163,7 +164,9 @@ public class CSVTracker extends Observable {
 	 */
 	public void flush() {
 		try {
-			Files.delete(Paths.get(filename));
+			if (new File(filename).exists()) {
+				Files.delete(Paths.get(filename));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

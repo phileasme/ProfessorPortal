@@ -270,17 +270,6 @@ public class MainInterface extends JFrame {
 		private String currentPath = null;
 
 		public void actionPerformed(ActionEvent e) {
-			// temporary setting for our convenience
-			// TODO remove this before submitting final copy
-			String os = System.getProperty("os.name").toLowerCase();
-			String root = System.getProperty("user.dir");
-			
-			if (os.equals("linux")) {
-				currentPath = root + "/csv";
-			} else if (os.equals("windows 7")) {
-				currentPath = "" + root + "\\csv";
-			}
-			
 			JFileChooser fc;
 			if (currentPath != null) {
 				fc = new JFileChooser(currentPath);

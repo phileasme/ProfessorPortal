@@ -60,23 +60,11 @@ public class ResultsTabPanel extends JPanel {
 	 */
 	class CloseButtonListener extends MouseAdapter {
 		public void mouseEntered(MouseEvent e) {
-			try {
-				closeButton.setIcon(hoverImg);				
-			} catch (Exception ex) {
-				System.out.println("\nResultsTabPanel mouseEntered\n");
-				
-				ex.printStackTrace();
-			}
+			closeButton.setIcon(hoverImg);				
 		}
 		
 		public void mouseExited(MouseEvent e) {
-			try {
-				closeButton.setIcon(noHoverImg);
-			} catch (Exception ex) {
-				System.out.println("\nResultsTabPanel mouseExited\n");
-				
-				ex.printStackTrace();
-			}
+			closeButton.setIcon(noHoverImg);
 		}
 	}
 }
