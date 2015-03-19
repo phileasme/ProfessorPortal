@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 
 import records.Student;
 import records.Result;
+import records.Logs;
 
 /**
  * Class to create a Pop Up Window containing the student details.
@@ -46,6 +47,8 @@ public class PopUpWindow extends JFrame {
 		studentEmail = stu.getEmail();
 		studentNumber = stu.getNumber();
 		studentTutor = stu.getTutorEmail();
+		
+		System.out.println(Logs.getStudentData(studentEmail));
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(540,300);
