@@ -53,7 +53,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		// attempt to stop swing bug to do with repainting tabs
-//		setRequestFocusEnabled(false);
+		setRequestFocusEnabled(false);
 	}
 
 	/**

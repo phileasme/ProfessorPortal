@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -24,23 +22,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.event.*;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-
-import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 
 import records.Student;
 import records.StudentRecords;
 import io.CSVLoader;
 import io.CSVTracker;
-import io.Scraper;
 import io.Settings;
 
 /**
@@ -371,6 +361,5 @@ public class MainInterface extends JFrame {
 
 	public static void main (String[] args) throws Exception {
 		MainInterface mi = new MainInterface();
-//		Scraper scrap = new Scraper();
 	}
 }
