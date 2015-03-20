@@ -24,39 +24,31 @@ import records.Logs;
 
 
 /**
- * Class that Scrapes the data out of keat's that let's the user login to Keats
+ * Class that Scrapes the data out of keat's and let's the user login to Keats
  * and get the participation data's from a given Web link.
  * 
  * @author Phileas Hocquard
+ * 
  */
 
 public class Scraper {
 	
-	/** The webdata link. */
+	/** The participation data link. */
 	private String webdata = "";
 	
 	/** The module. */
 	private String module = "";
 	
-	/** The user. */
+	/** The user's k-number. */
 	private String user = "";
 	
-	/** The pass. */
+	/** The user's password. */
 	private String pass = "";
 
 	/** The full string. */
 	private ArrayList<String> fullString = new ArrayList<String>();
 
 	/**
-	 *   http://keats.kcl.ac.uk/mod/page/view.php?id=886138
-	 *
-	 * @param url the url
-	 * @param mname the module name
-	 * @param numb the Username's K-number
-	 * @param pass the Password
-	 * @throws FailingHttpStatusCodeException the failing http status code exception
-	 * @throws MalformedURLException the malformed url exception
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 * 
 	 * Sets the webClient, makes the webClient fetch the login page of Keats.
 	 * Looking for the needed fields in the login form to put in the username
@@ -65,11 +57,21 @@ public class Scraper {
 	 * successful login.
 	 *Filter the content of the page by line and grab those containing '@'.
 	 * Grab the email and date of each student for each line.
-	 *  Stores the module name and date as a unique TreeMap for each student.
-	 *  Stores the TreeMap as values for the corresponding student email
-	 *   in a HashMap in the Logs Object.
+	 * Gives the participation data to the Logs Object.
+	 *   
+	 * @param url the URL
+	 * @param mname the module name
+	 * @param numb the Username's K-number
+	 * @param pass the Password
+	 * @throws FailingHttpStatusCodeException the failing http status code exception
+	 * @throws MalformedURLException the malformed url exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
 	 */
 	public Scraper(String url,String mname,String numb,String pass) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
+	
+		/*http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
+		
 		webdata = url;
 		module = mname;
 		user =  numb;
@@ -205,17 +207,13 @@ public class Scraper {
 			}
 
 
-			TreeMap<String,String> modDate = new TreeMap<String,String>();
-
+			
 			String fullEmail =current.substring(startOfEmail, endOfEmail);
 			String fullDate =current.substring(startOfDate,endOfDate);
-			modDate.put(mname,fullDate);
+			
 			Logs.addToParticipationData(fullEmail, mname, fullDate);
 
 		}
-
-
-		System.out.println(Logs.loggedin);
 
 
 		webClient.closeAllWindows();

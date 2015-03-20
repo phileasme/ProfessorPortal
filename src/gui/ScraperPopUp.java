@@ -22,10 +22,10 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
 
 /**
- *Displays a frame where a the user enters
- * the partipation data URL and module it corresponds to.
- * Displays the request of the K-number and password,
- * if the user is not already logged in within the App.
+ *	Displays a interface where the user enters
+ * 	the partipation data URL of the students and module it corresponds to.
+ *	Displays the request of the K-number and password,
+ * 	if the user is not already logged in within the App.
  * 
  * @author Phileas Hocquard
  */
