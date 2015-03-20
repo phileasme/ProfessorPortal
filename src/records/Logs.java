@@ -30,7 +30,7 @@ public class Logs {
 
 	/**
 	 * Adds to participation data.
-	 *
+	 * 
 	 * @param email the student's email
 	 * @param module the module for which we are adding participation data
 	 * @param date the last time the module was accessed by the student

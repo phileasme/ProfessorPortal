@@ -151,7 +151,7 @@ public class PopUpWindow extends JFrame {
 
 		TreeMap<String, String> partData = Logs.getStudentData(studentEmail);
 		if (partData != null) {
-			System.out.println("poop");
+			
 			String[] columns = {"Module", "Time last accessed"};
 			Object[][] data = new Object[partData.size()][2];
 			int i = 0;
