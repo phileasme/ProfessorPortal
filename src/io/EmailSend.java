@@ -9,25 +9,22 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.AuthenticationFailedException;
 
 /**
- * Class to send an email using an SMTP Server and Port using the JavaMail API
+ * Class to send an email using an SMTP Server and Port using the JavaMail API.
  * 
  * @author Nikita Vorontsov
  * @author Max Karasinski
  */
 public class EmailSend {
 	
-	private String serverName;
-	private int port;
-	
 	private String fromAddress; // must be k-----@kcl.ac.uk
-	private String password;
 	
 	private String toAddress;
-	private String messageToSend;
 	
 	private Settings settings;
+	boolean debug = false;
 	
 	/**
 	 * Constructs the email to send using a ToAddress, FromAddress(Received either from .properties or the EmailWindow getAuth() call)
@@ -39,22 +36,17 @@ public class EmailSend {
 	 * @param i The getAuth() option
 	 * @param set The current settings stored in .properties
 	 */
-	public EmailSend(String to, String from, String password, String message, int i, Settings set) {
+	public EmailSend(String to, String from, String password, String message, int i, Settings set) throws AuthenticationFailedException {
 		toAddress = to;
-		messageToSend = message;
 		fromAddress = from;
-		this.password = password;
 		settings = set;
-		serverName = settings.get("mail.smtp.host");
-		port = Integer.parseInt(settings.get("mail.smtp.port"));
 		
 		if (i == 0) {
 
 			try {
-				long start = System.currentTimeMillis();
 				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
 				Session session = Session.getInstance(set.getProps(), pa);
-				session.setDebug(true);
+				session.setDebug(debug);
 				
 				// set up message
 				Message msg = new MimeMessage(session);
@@ -65,10 +57,8 @@ public class EmailSend {
 
 				msg.setSubject("Exam Results");
 
-				msg.setText(messageToSend);
+				msg.setContent(message, "text/html; charset=utf-8");
 
-				// does it matter what this is?
-				msg.setHeader("X-Mailer", "some guy");
 				msg.setSentDate(new Date());
 
 				Transport transport = session.getTransport();
@@ -76,9 +66,8 @@ public class EmailSend {
 				transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
 				transport.close();
 
-				System.out.println("\nGREAT SUCCESS!");
-				long end = System.currentTimeMillis();
-				System.out.println(end-start);
+			} catch (AuthenticationFailedException afEx) {
+				throw afEx;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

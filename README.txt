@@ -17,3 +17,18 @@ Windows:
  (once) MD bin
  (once) javac -d bin\ -cp src src\*\*.java
 	java -cp lib\StudentData.jar;lib\htmlunit.jar;lib\javax.mail.jar;lib\jcommon.jar;lib\jedit.jar;lib\jfreechart.jar;lib\jide-oss.jar;bin gui.MainInterface
+
+	
+	
+	
+=== KNOWN ISSUES ===
+
+We're not exactly sure what the required conditions are to trigger the error, but very
+occasionally a JTabbedPane throws an ArrayIndexOutOfBounds error.
+
+The stack trace is very similar to this one: https://bugs.eclipse.org/bugs/show_bug.cgi?format=multiple&id=352634
+
+One possible solution which has been implemented is described here: https://community.oracle.com/message/5874003#5874003
+although this doesn't seem to always prevent it.
+
+NOTE: as far as we can tell, this error does not affect the normal running of the application in any way so don't worry if it happens.

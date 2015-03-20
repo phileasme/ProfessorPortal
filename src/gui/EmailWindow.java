@@ -13,8 +13,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +24,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
+
+import javax.mail.AuthenticationFailedException;
 
 import records.Result;
 import records.Student;
@@ -61,9 +62,6 @@ public class EmailWindow extends JFrame {
 	private ArrayList<Student> studentArray;
 	private Student[] selectedStudents;
 
-	private JLabel headerLabel;
-	private JLabel footerLabel;
-
 	private JTextArea headerArea;
 	private JTextArea footerArea;
 
@@ -77,10 +75,6 @@ public class EmailWindow extends JFrame {
 
 	private JButton send;
 	private JButton prev;
-
-	private JLabel header;
-	private JLabel footer;
-	private JLabel examMarks;
 
 	//Authorisation
 	private String emailFrom;
@@ -98,8 +92,6 @@ public class EmailWindow extends JFrame {
 		this.sr = sr;
 		createFirstPanel();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(540,300);
-		setResizable(false);
 		setVisible(true);
 		settings = set;
 	}
@@ -114,6 +106,7 @@ public class EmailWindow extends JFrame {
 		createTextPanel();
 		createNextPanel();
 		this.add(firstPanel);
+		pack();
 	}
 
 	/**
@@ -217,16 +210,20 @@ public class EmailWindow extends JFrame {
 		footerText = "";
 		next.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				headerText = headerArea.getText();
-				footerText = footerArea.getText();
 				int size = studentCheck.getCheckBoxListSelectedValues().length;
-				Object[] studentObj = studentCheck.getCheckBoxListSelectedValues();
-				selectedStudents = new Student[size];
-				for(int i = 0; i<size; i++) {
-					selectedStudents[i] = (Student) studentObj[i];
+				if (size == 0) {
+					JOptionPane.showMessageDialog(null, "Please select a student!", "", JOptionPane.WARNING_MESSAGE);
+				} else {
+					headerText = headerArea.getText();
+					footerText = footerArea.getText();
+					Object[] studentObj = studentCheck.getCheckBoxListSelectedValues();
+					selectedStudents = new Student[size];
+					for(int i = 0; i<size; i++) {
+						selectedStudents[i] = (Student) studentObj[i];
+					}
+					remove(firstPanel);
+					createSecondPanel();
 				}
-				remove(firstPanel);
-				createSecondPanel();
 			}
 		});
 		bottomButtonPanel.add(next);
@@ -252,22 +249,21 @@ public class EmailWindow extends JFrame {
 	 * and adds to an overall preview panel
 	 */
 	public void createPreview() {
-		previewPanel = new JPanel();
-		previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
-
-		JLabel previewLabel = new JLabel("This is the preview of the e-mail to be sent: ");
-		header = new JLabel(headerText);
-		footer = new JLabel(footerText);
-		examMarks = new JLabel();
+		setTitle("Email Preview");
+		previewPanel = new JPanel(new BorderLayout());
+		previewPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		
+		String header = "<html><p>" + headerText + "</p>";
+		String footer = "<br><p>" + footerText + "</p></html>";
+		
 		Student stu = selectedStudents[0];
 		Collection<Result> results = stu.getAllResults();
-		examMarks.setText(createPreviewText(results));
-		previewPanel.add(previewLabel);
-		previewPanel.add(Box.createVerticalStrut(25));
-		previewPanel.add(header);
-		previewPanel.add(examMarks);
-		previewPanel.add(footer);
-		secondPanel.add(previewPanel, BorderLayout.WEST);
+		
+		String previewString = createEmailText(results, header, footer);
+		JLabel previewText = new JLabel(previewString);
+		
+		previewPanel.add(previewText, BorderLayout.CENTER);
+		secondPanel.add(previewPanel, BorderLayout.CENTER);
 	}
 
 	/**
@@ -278,29 +274,39 @@ public class EmailWindow extends JFrame {
 		final ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
 		new SwingWorker<Void, Void>() {
 			protected Void doInBackground() throws Exception {
-				int sleepTime = 3000;
+				int sleepTime = 1500;
 				boolean interrupt = false;
+				boolean failedAuth = false;
 				double completion = 0;
 				double studentsize = (double) selectedStudents.length;
 				int completed = (int) (completion);
+				
 				while(!interrupt) {
 					for(double i = 0.0; i < studentsize; i++) {
 						try {
 							emailMonitor.setNote("Completed...." + completed + "%");
 							emailMonitor.setProgress(completed);
-						if (emailMonitor.isCanceled()) {	
-							emailMonitor.close();
-							interrupt = true;
-							break;		
-						}
-						String email = selectedStudents[(int) i].getEmail();
-						String textToSend = createEmailText(selectedStudents[(int) i].getAllResults(), headerText, footerText);
-						EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
-						completion = (i+1.0)/studentsize*100;
-						completed = (int) (completion);
-						Thread.sleep(sleepTime);
-						}
-						catch(InterruptedException e) { interrupt = true;}
+							if (emailMonitor.isCanceled()) {	
+								emailMonitor.close();
+								interrupt = true;
+								break;		
+							}
+							
+							String email = selectedStudents[(int) i].getEmail();
+							String textToSend = createEmailText(selectedStudents[(int) i].getAllResults(), headerText, footerText);
+							EmailSend send = new EmailSend(email, emailFrom, password, textToSend, auth, settings);
+							completion = (i+1.0)/studentsize*100;
+							completed = (int) (completion);
+							Thread.sleep(sleepTime);
+							
+						} catch (AuthenticationFailedException afEx) {
+							failedAuth = true;
+							break;
+						} catch (InterruptedException e) { interrupt = true;}
+					}
+					
+					if (failedAuth) {
+						JOptionPane.showMessageDialog(null, "Incorrect password!", "", JOptionPane.WARNING_MESSAGE);
 					}
 					emailMonitor.close();
 					interrupt = true;
@@ -327,6 +333,7 @@ public class EmailWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				remove(secondPanel);
 				createFirstPanel();
+				setTitle("Send Email");
 				pack();
 			}
 		});
@@ -335,7 +342,9 @@ public class EmailWindow extends JFrame {
 		send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				auth = getAuth();
-				doEmailMonitor();	
+				doEmailMonitor();
+				send.setEnabled(false);
+				prev.setEnabled(false);
 			}
 		});
 
@@ -345,45 +354,29 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates the preview text using a string builder, a student's results and basic HTML text.
-	 * @param results The first student's collection of results
-	 * @return The String containing a preview
-	 */
-	public String createPreviewText(Collection<Result> results){
-		StringBuilder previewString = new StringBuilder();
-		String outputString;
-		previewString.append("<html>");
-		previewString.append("Assessment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + " Mark " + " Grade<br>");
-		for(Result r: results) {
-			previewString.append(r.module + "-" + r.assessment + " " + r.mark + " " + r.grade + "<br>");
-		}
-		previewString.append("</html>");
-		outputString = previewString.toString();
-		return outputString;
-	}
-
-	/**
 	 * Creates the text to be sent in the email by combining the header, footer and results of a certain student.
-	 * @param results The collection of results of a student.
-	 * @param header The text to come before the results taken from the Header Text Area.
-	 * @param footer The text to come after the results, taken from the Footer Text Area.
-	 * @return The Text String for the Email Message.
+	 * @param results the collection of results of a student.
+	 * @param header the text to come before the results taken from the Header Text Area.
+	 * @param footer the text to come after the results, taken from the Footer Text Area.
+	 * @return the text String for the Email Message.
 	 */
 	public String createEmailText(Collection<Result> results, String header, String footer) {
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
-		String newLine = System.lineSeparator();
+		
 		previewString.append(header);
-		previewString.append(newLine);
-		previewString.append("Assessment\t" + "Mark\t" + "Grade");
-		previewString.append(newLine);	
+		previewString.append("<br><br>");
+		previewString.append("<table><tr><th colspan=\"2\">Assessment</th><th>Mark</th><th>Grade</th></tr>");
+		
 		for(Result r: results) {
-			previewString.append(r.module + "-" + r.assessment + "\t" + r.mark + "\t" + r.grade);
-			previewString.append(newLine);
+			previewString.append("<tr><td>" + r.module + "</td><td>" + r.assessment +"</td><td>" +
+					r.mark + "</td><td>" + r.grade + "</td></tr>");
 		}
+		
+		previewString.append("</table><br>");
 		previewString.append(footer);
 		outputString = previewString.toString();
-		return outputString;
+		return outputString.replaceAll("\n", "<br>");
 	}
 
 	/**
