@@ -28,7 +28,7 @@ import java.nio.file.Paths;
  * 
  * @author Max Karasinski
  * @see CSVLoader
- * @see Obervable
+ * @see Observable
  *
  */
 public class CSVTracker extends Observable {
@@ -57,6 +57,8 @@ public class CSVTracker extends Observable {
 
 	/**
 	 * Creates a new instance and does a little bit of internal book-keeping.
+	 * 
+	 * @param pathMap a mapping from Assessment names to their corresponding file paths
 	 */
 	public CSVTracker(Map<String, String> pathMap) {
 		root = System.getProperty("user.dir");

@@ -41,7 +41,7 @@ public class Assessment {
 	/**
 	 * Creates a {@link ListIterator} for the list of results on the assessment.
 	 * 
-	 * @return a ListIterator<Result> of the list of results
+	 * @return a list iterator over the list of results
 	 */
 	public ListIterator<Result> listIterator() {
 		return results.listIterator();
