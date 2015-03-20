@@ -46,7 +46,7 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 	 * @param frame the main window of the GUI program
 	 * @param studentRecords the StudentRecords from the main GUI window
 	 */
-	public ResultsTabManager(MainInterface frame, StudentRecords studentRecords) {
+	public ResultsTabManager(MainApp frame, StudentRecords studentRecords) {
 		studentRecords.addObserver(this);
 		this.studentRecords = studentRecords;
 		

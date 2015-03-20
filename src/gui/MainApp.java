@@ -42,7 +42,7 @@ import io.Settings;
  * @author Max Karasinski
  *
  */
-public class MainInterface extends JFrame {
+public class MainApp extends JFrame {
 
 	private DefaultListModel<Student> studentListModel;
 	private JList<Student> studentList;
@@ -69,7 +69,7 @@ public class MainInterface extends JFrame {
 	/**
 	 * Constructor for the Interface, setting a size, visibility, exit function and creating the widgets
 	 */
-	public MainInterface(){
+	public MainApp(){
 		super("PRA Coursework - MNP");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000,600);
@@ -176,7 +176,7 @@ public class MainInterface extends JFrame {
 		//Participant login data
 		fetch.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				ScrapperPopUp scrap = new ScrapperPopUp();
+				ScraperPopUp scrap = new ScraperPopUp();
 			}
 		});
 	
@@ -272,7 +272,7 @@ public class MainInterface extends JFrame {
 			fc.setAcceptAllFileFilterUsed(false);
 			fc.setMultiSelectionEnabled(true);
 
-			int returnVal = fc.showOpenDialog(MainInterface.this);
+			int returnVal = fc.showOpenDialog(MainApp.this);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File[] files = fc.getSelectedFiles();
@@ -360,6 +360,6 @@ public class MainInterface extends JFrame {
 
 
 	public static void main (String[] args) throws Exception {
-		MainInterface mi = new MainInterface();
+		MainApp mi = new MainApp();
 	}
 }
