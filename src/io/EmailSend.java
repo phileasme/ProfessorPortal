@@ -35,6 +35,8 @@ public class EmailSend {
 	 * @param message The message to send in the Email
 	 * @param i The getAuth() option
 	 * @param set The current settings stored in .properties
+	 * 
+	 * @throws AuthenticationFailedException if the provided password is incorrect
 	 */
 	public EmailSend(String to, String from, String password, String message, int i, Settings set) throws AuthenticationFailedException {
 		toAddress = to;

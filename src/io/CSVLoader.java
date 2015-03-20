@@ -50,6 +50,7 @@ public class CSVLoader implements Observer {
 	 * replacement later on.
 	 * 
 	 * @param studentRecords the StudentRecords from the main GUI window
+	 * @param pathMap a Map for storing Assessment names and their corresponding file paths
 	 */
 	public CSVLoader(StudentRecords studentRecords, Map<String, String> pathMap) {
 		this.studentRecords = studentRecords;
