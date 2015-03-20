@@ -20,34 +20,60 @@ import javax.swing.JTextField;
 import records.*;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
+
 /**
- * PUT SOMETHING HERE
+ *Displays a frame where a the user enters
+ * the partipation data URL and module it corresponds to.
+ * Displays the request of the K-number and password,
+ * if the user is not already logged in within the App.
  * 
  * @author Phileas Hocquard
  */
-public class ScrapperPopUp extends JFrame{
+public class ScraperPopUp extends JFrame{
 
+	/** The jp field. */
 	private JPanel jpField; 
+	
+	/** The jp confirmation. */
 	private JPanel jpConfirmation;
 
+	/** The jl url. */
 	private JLabel jlUrl =  new JLabel("Url of the participant data: ") ;
+	
+	/** The jl module name. */
 	private JLabel jlModuleName= new JLabel("Module name: ");
+	
+	/** The jl knumb. */
 	private JLabel jlKnumb = new JLabel("K-number: ");
+	
+	/** The jl pwd. */
 	private JLabel jlPwd = new JLabel("Password: "); 
 
 
+	/** The jturl. */
 	private JTextField jturl= new JTextField();
+	
+	/** The jt module name. */
 	private JTextField jtModuleName= new JTextField();
+	
+	/** The jt knumb. */
 	private JTextField jtKnumb = new JTextField();
+	
+	/** The jtpassword. */
 	private JPasswordField jtpassword = new JPasswordField(20);
 
+	/** The jbconfirm. */
 	private JButton jbconfirm = new JButton("Confirm");
+	
+	/** The log. */
 	Logs log = new Logs();
 
+	
 	/**
-	 * PUT SOMETHING HERE
+	 * Instantiates a new scrapper pop up.
+	 * This will display the JFrame with content.
 	 */
-	public ScrapperPopUp(){
+	public ScraperPopUp(){
 		super(" Participant Data ");
 		new JFrame("Participations");
 		setSize(250,200);
@@ -90,8 +116,15 @@ public class ScrapperPopUp extends JFrame{
 		setVisible(true);
 		ActionListener ConfirmationListener = new ActionListener() {
 
+			
+			
+			
+			
+		
 			/**
-			 * PUT SOMETHING HERE
+			 * ActionListener which grabs the user input from the TextFields
+			 *If the user is already logged in, the credentials are took
+			 *from the object Logs.
 			 */
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -111,7 +144,7 @@ public class ScrapperPopUp extends JFrame{
 						Scraper scrap = new Scraper(url,mname,knumb,pass);
 						if(Logs.loggedin == true)
 						{
-							ScrapperPopUp.this.setVisible(false);
+							ScraperPopUp.this.setVisible(false);
 						}
 					} catch (FailingHttpStatusCodeException | IOException e) {
 						e.printStackTrace();

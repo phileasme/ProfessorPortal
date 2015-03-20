@@ -3,7 +3,7 @@ package io;
 
 
 import gui.Scatterplot;
-import gui.ScrapperPopUp;
+import gui.ScraperPopUp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,15 +21,54 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import records.Logs;
+
+
+/**
+ * Class that Scrapes the data out of keat's that let's the user login to Keats
+ * and get the participation data's from a given Web link.
+ * 
+ * @author Phileas Hocquard
+ */
+
 public class Scraper {
+	
+	/** The webdata link. */
 	private String webdata = "";
+	
+	/** The module. */
 	private String module = "";
+	
+	/** The user. */
 	private String user = "";
+	
+	/** The pass. */
 	private String pass = "";
 
+	/** The full string. */
 	private ArrayList<String> fullString = new ArrayList<String>();
 
-	/**  http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
+	/**
+	 *   http://keats.kcl.ac.uk/mod/page/view.php?id=886138
+	 *
+	 * @param url the url
+	 * @param mname the module name
+	 * @param numb the Username's K-number
+	 * @param pass the Password
+	 * @throws FailingHttpStatusCodeException the failing http status code exception
+	 * @throws MalformedURLException the malformed url exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * Sets the webClient, makes the webClient fetch the login page of Keats.
+	 * Looking for the needed fields in the login form to put in the username
+	 * and password. Once Logged in fetch for the participation data htmlpage.
+	 * Add the Users K-number and password in the Logs class if there is a
+	 * successful login.
+	 *Filter the content of the page by line and grab those containing '@'.
+	 * Grab the email and date of each student for each line.
+	 *  Stores the module name and date as a unique TreeMap for each student.
+	 *  Stores the TreeMap as values for the corresponding student email
+	 *   in a HashMap in the Logs Object.
+	 */
 	public Scraper(String url,String mname,String numb,String pass) throws FailingHttpStatusCodeException, MalformedURLException, IOException{
 		webdata = url;
 		module = mname;
@@ -37,6 +76,7 @@ public class Scraper {
 		this.pass = pass;
 
 		System.setProperty("jsse.enableSNIExtension", "false");
+		
 		WebClient webClient = new WebClient();
 
 		webClient.getOptions().setRedirectEnabled(true);
@@ -63,20 +103,20 @@ public class Scraper {
 		password.setValueAttribute(pass);
 
 		// Click "Sign In" button/link
-		final HtmlPage Scrappingpage = (HtmlPage) form.getInputByValue("Log in").click();
+		final HtmlPage Scrapingpage = (HtmlPage) form.getInputByValue("Log in").click();
 
 
 		/* Gets first page content while Logging in */
-		String htmlBody = Scrappingpage.getWebResponse().getContentAsString(); 
+		String htmlBody = Scrapingpage.getWebResponse().getContentAsString(); 
 
 
 
 		/*   Gets cells containt in plantext */
-		final HtmlPage Scrappedpage= (HtmlPage) webClient.getPage(webdata);
+		final HtmlPage Scrapedpage= (HtmlPage) webClient.getPage(webdata);
 
-		String allScrappedPage = Scrappedpage.asText();
+		String allScrapedPage = Scrapedpage.asText();
 
-		if(allScrappedPage.contains("Last accessSort by Last access Descending")){
+		if(allScrapedPage.contains("Last accessSort by Last access Descending")){
 			Logs.loggedin = true;
 			Logs.user = this.user;
 			Logs.pass = this.pass;
@@ -84,7 +124,7 @@ public class Scraper {
 
 
 
-		BufferedReader bufferReader = new BufferedReader(new StringReader(allScrappedPage));
+		BufferedReader bufferReader = new BufferedReader(new StringReader(allScrapedPage));
 		String currentLine = null;
 		int count =0 ;
 
@@ -171,32 +211,33 @@ public class Scraper {
 			String fullDate =current.substring(startOfDate,endOfDate);
 			modDate.put(mname,fullDate);
 			Logs.addToParticipationData(fullEmail, mname, fullDate);
-//			System.out.println(Logs.getParticipation().get(fullEmail).firstKey());
-//			System.out.println(Logs.getParticipation().get(fullEmail).get(Logs.getParticipation().get(fullEmail).firstKey()));
 
 		}
 
 
 		System.out.println(Logs.loggedin);
-		/* Gets cells <h1>,<span>,etc.. */
-		String scrappString= Scrappedpage.getWebResponse().getContentAsString(); 
-
-
 
 
 		webClient.closeAllWindows();
 	}
+	
+	
+	/**
+	 * Gets the user's k-numb.
+	 *
+	 * @return the user
+	 */
 	public String getuser(){
 		return user;
 	}
+	
+	/**
+	 * Gets the password.
+	 *
+	 * @return the pass
+	 */
 	public String getpass(){
 		return pass;
-	}
-
-
-	public static boolean isBlank(String s)
-	{
-		return (s == null) || (s.trim().length() == 0);
 	}
 
 }

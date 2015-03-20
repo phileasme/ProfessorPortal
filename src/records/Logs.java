@@ -3,9 +3,15 @@ package records;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class Logs.
+ * The Class Logs contains the users login informations
+ * 			and holds the participation data.
+ * 
+ * @authors: 
+ * 	Phileas Hocquard 
+ * 	Max Karasinski
+ * 
  */
 public class Logs {
 
@@ -19,7 +25,7 @@ public class Logs {
 	/** The user's password. */
 	public static String pass = "";
 
-	/** The user's username. */
+	/** The user's k-number. */
 	public static String user = "";
 
 	/**
