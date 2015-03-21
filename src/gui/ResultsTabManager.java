@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -201,6 +202,9 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 		this.tracker = tracker;
 	}
 	
+	/**
+	 * Closes tabs and updates StudentRecords and CSVTracker.
+	 */
 	class CloseTabListener implements ActionListener {
 		
 		private String tabName;
@@ -209,6 +213,10 @@ public class ResultsTabManager extends JTabbedPane implements Observer {
 			this.tabName = tabName;
 		}
 		
+		/**
+		 * Closes the clicked tab and removes the corresponding Assessment from
+		 * StudentRecords and corresponding file path from CSVTracker.
+		 */
 		public void actionPerformed(ActionEvent e) {
 			int index = indexOfTab(tabName);
 			studentRecords.removeAssessment(tabName);

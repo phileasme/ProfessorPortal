@@ -1,13 +1,10 @@
 package gui;
 
-import io.Scraper;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,9 +14,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import records.*;
+import java.io.IOException;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 
+import records.Logs;
+import io.Scraper;
 
 /**
  *	Displays a interface where the user enters
@@ -31,44 +30,27 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
  */
 public class ScraperPopUp extends JFrame{
 
-	/** The jp field. */
 	private JPanel jpField; 
-	
-	/** The jp confirmation. */
 	private JPanel jpConfirmation;
 
-	/** The jl url. */
 	private JLabel jlUrl =  new JLabel("Url of the participant data: ") ;
-	
-	/** The jl module name. */
 	private JLabel jlModuleName= new JLabel("Module name: ");
-	
-	/** The jl knumb. */
 	private JLabel jlKnumb = new JLabel("K-number: ");
-	
-	/** The jl pwd. */
 	private JLabel jlPwd = new JLabel("Password: "); 
 
 
-	/** The jturl. */
 	private JTextField jturl= new JTextField();
-	
-	/** The jt module name. */
 	private JTextField jtModuleName= new JTextField();
-	
-	/** The jt knumb. */
 	private JTextField jtKnumb = new JTextField();
-	
-	/** The jtpassword. */
+
 	private JPasswordField jtpassword = new JPasswordField(20);
 
-	/** The jbconfirm. */
 	private JButton jbconfirm = new JButton("Confirm");
-	
+
 	/** The log. */
 	Logs log = new Logs();
 
-	
+
 	/**
 	 * Instantiates a new scrapper pop up.
 	 * This will display the JFrame with content.
@@ -114,13 +96,9 @@ public class ScraperPopUp extends JFrame{
 
 		pack();
 		setVisible(true);
+		
 		ActionListener ConfirmationListener = new ActionListener() {
 
-			
-			
-			
-			
-		
 			/**
 			 * ActionListener which grabs the user input from the TextFields
 			 *If the user is already logged in, the credentials are took
@@ -141,9 +119,9 @@ public class ScraperPopUp extends JFrame{
 							knumb = Logs.user;
 							pass = Logs.pass;
 						}
+						
 						Scraper scrap = new Scraper(url,mname,knumb,pass);
-						if(Logs.loggedin == true)
-						{
+						if(Logs.loggedin == true) {
 							ScraperPopUp.this.setVisible(false);
 						}
 					} catch (FailingHttpStatusCodeException | IOException e) {
@@ -152,7 +130,7 @@ public class ScraperPopUp extends JFrame{
 				}
 			}
 		};
-		
+
 		jbconfirm.addActionListener(ConfirmationListener);
 	}
 }

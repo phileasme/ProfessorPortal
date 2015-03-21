@@ -5,15 +5,16 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Observable;
-
-import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.File;
-
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import javax.swing.JOptionPane;
 
 /**
  * Creates and tracks a text file in which paths of CSV files that have been 
@@ -147,8 +148,10 @@ public class CSVTracker extends Observable {
 			
 			writer.close();
 			
+		} catch (FileNotFoundException e) {
+			showWarning("Could not find file!\n" + filename);
 		} catch (IOException e) {
-			System.out.println("Could not find file");
+			showWarning("Something went wrong!\nCause: " + e.getMessage());
 		}
 	}
 	
@@ -195,8 +198,11 @@ public class CSVTracker extends Observable {
 			reader.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			showWarning("Something went wrong when reading from " + filename + "\nCause: " + e.getMessage());
 		}
 	}
 
+	private void showWarning(String message) {
+		JOptionPane.showMessageDialog(null, message, "", JOptionPane.WARNING_MESSAGE);
+	}
 }

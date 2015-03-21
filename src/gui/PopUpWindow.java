@@ -37,7 +37,8 @@ public class PopUpWindow extends JFrame {
 	private String studentTutor;
 
 	/**
-	 * Creates a frame displaying the student's information.
+	 * Creates a frame displaying the student's contact information, exam
+	 * results (if loaded) and participation data (if loaded).
 	 * 
 	 * @param s a {@link Student} object
 	 */
@@ -120,6 +121,7 @@ public class PopUpWindow extends JFrame {
 		c.weighty = 0.001;
 		panel.add(tutorEmailLabel, c);
 
+		// panel where exam results and participation data tables will go
 		JPanel dataPanel = new JPanel(new BorderLayout());
 
 		// make a table with all of the student's results
@@ -149,6 +151,8 @@ public class PopUpWindow extends JFrame {
 		scrollResults.setPreferredSize(new Dimension(500,120));
 		dataPanel.add(scrollResults, BorderLayout.NORTH);
 
+		// make a table with participation data
+		JScrollPane scrollData;
 		TreeMap<String, String> partData = Logs.getStudentData(studentEmail);
 		if (partData != null) {
 			
@@ -164,19 +168,18 @@ public class PopUpWindow extends JFrame {
 
 			JTable dataTable = new JTable(new ResultsTableModel(data, columns));
 			dataTable.setBackground(new Color(230, 230, 230));
-			JScrollPane scrollData = new JScrollPane(dataTable);
-			scrollData.setPreferredSize(new Dimension(500, 120));
-			dataPanel.add(scrollData, BorderLayout.SOUTH);
+			scrollData = new JScrollPane(dataTable);
+		} else {
+			JLabel noParticipation = new JLabel(String.format("%66s", "No participation data to show"));
+			scrollData = new JScrollPane(noParticipation);
 		}
 
+		scrollData.setPreferredSize(new Dimension(500, 100));
+		dataPanel.add(scrollData, BorderLayout.SOUTH);
+		
 		add(dataPanel, BorderLayout.SOUTH);
 
-		if (partData != null) {
-			setSize(540, 500);
-		} else {
-			setSize(540,300);
-		}
-
+		setSize(540, 480);
 	}
 }
 

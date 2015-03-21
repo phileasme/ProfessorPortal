@@ -224,6 +224,26 @@ public class MainApp extends JFrame {
 	}
 
 	/**
+	 * Method to change studentListModel
+	 */
+	private void filteringList(){
+		if (searchText.getText().equals("")){
+			for (Student student : sr.returnStudents().values()) {
+				studentListModel.addElement(student);
+			}
+		} else {
+			//Compare searchtext Text with student name and student number
+			studentListModel.removeAllElements();
+			for (Student student : sr.returnStudents().values()) {
+				if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
+						|| student.getNumber().toString().contains(searchText.getText()) ){
+					studentListModel.addElement(student);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * MouseListener to make a pop up window of the Student Information appear
 	 */
 	class StudentPressListener extends MouseAdapter{
@@ -238,7 +258,7 @@ public class MainApp extends JFrame {
 	}
 
 	/**
-	 * MouseListener to open the Email Window to email settings
+	 * MouseListener to open the Email Window
 	 */
 	class EmailListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -259,6 +279,9 @@ public class MainApp extends JFrame {
 
 		private String currentPath = null;
 
+		/**
+		 * Takes the chosen file(s) and loads them and tracks them.
+		 */
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc;
 			if (currentPath != null) {
@@ -312,11 +335,15 @@ public class MainApp extends JFrame {
 	}
 
 	/**
-	 *SearchFilter keeps track of searchText textArea  by using 
-	 *a DocumentListener and updates studentListModel using filteringList().
+	 * SearchFilter keeps track of searchText textArea by using a 
+	 * DocumentListener and updates studentListModel using filteringList().
 	 */
 	class SearchFilter {
-
+		
+		/**
+		 * Creates a DocumentListener on the search box which will filter the 
+		 * list of students when text is typed in it.
+		 */
 		public SearchFilter(){
 			searchText.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -339,27 +366,11 @@ public class MainApp extends JFrame {
 	}
 
 	/**
-	 * Method to change studentListModel
+	 * The entry point to the entire application.
+	 * 
+	 * @param args command line arguments
 	 */
-	public void filteringList(){
-		if (searchText.getText().equals("")){
-			for (Student student : sr.returnStudents().values()) {
-				studentListModel.addElement(student);
-			}
-		} else {
-			//Compare searchtext Text with student name and student number
-			studentListModel.removeAllElements();
-			for (Student student : sr.returnStudents().values()) {
-				if(( (student.getName()).toLowerCase() ).contains( (searchText.getText()).toLowerCase())
-						|| student.getNumber().toString().contains(searchText.getText()) ){
-					studentListModel.addElement(student);
-				}
-			}
-		}
-	}
-
-
-	public static void main (String[] args) throws Exception {
+	public static void main (String[] args) {
 		MainApp mi = new MainApp();
 	}
 }

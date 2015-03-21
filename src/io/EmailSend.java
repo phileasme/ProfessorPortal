@@ -23,31 +23,30 @@ public class EmailSend {
 	
 	private String toAddress;
 	
-	private Settings settings;
 	boolean debug = false;
 	
 	/**
 	 * Constructs the email to send using a ToAddress, FromAddress(Received either from .properties or the EmailWindow getAuth() call)
 	 * Password, a Message made in EmailWindow, authorisation and Email Settings from Settings
-	 * @param to The Email of the Recepient
-	 * @param from The Email of the Sender
-	 * @param password The password relating to the Sender's Email
-	 * @param message The message to send in the Email
-	 * @param i The getAuth() option
-	 * @param set The current settings stored in .properties
+	 * 
+	 * @param to the Email of the Recepient
+	 * @param from the Email of the Sender
+	 * @param password the password relating to the Sender's Email
+	 * @param message the message to send in the Email
+	 * @param i the getAuth() option
+	 * @param settings the current settings stored in .properties
 	 * 
 	 * @throws AuthenticationFailedException if the provided password is incorrect
 	 */
-	public EmailSend(String to, String from, String password, String message, int i, Settings set) throws AuthenticationFailedException {
+	public EmailSend(String to, String from, String password, String message, int i, Settings settings) throws AuthenticationFailedException {
 		toAddress = to;
 		fromAddress = from;
-		settings = set;
 		
 		if (i == 0) {
 
 			try {
 				PRAauthenticator pa = new PRAauthenticator(fromAddress, password);
-				Session session = Session.getInstance(set.getProps(), pa);
+				Session session = Session.getInstance(settings.getProps(), pa);
 				session.setDebug(debug);
 				
 				// set up message
