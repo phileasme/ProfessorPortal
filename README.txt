@@ -9,14 +9,14 @@ Linux:
 
  (once) mkdir bin
  (once) javac -d bin/ -cp src src/*/*.java
-	java -cp lib/StudentData.jar:lib/htmlunit.jar:lib/javax.mail.jar:lib/jcommon.jar:lib/jedit.jar:lib/jfreechart.jar:lib/jide-oss.jar:bin gui.MainInterface
+	java -cp lib/StudentData.jar:lib/htmlunit.jar:lib/javax.mail.jar:lib/jcommon.jar:lib/jedit.jar:lib/jfreechart.jar:lib/jide-oss.jar:bin gui.MainApp
 
 
 Windows:
 
  (once) MD bin
  (once) javac -d bin\ -cp src src\*\*.java
-	java -cp lib\StudentData.jar;lib\htmlunit.jar;lib\javax.mail.jar;lib\jcommon.jar;lib\jedit.jar;lib\jfreechart.jar;lib\jide-oss.jar;bin gui.MainInterface
+	java -cp lib\StudentData.jar;lib\htmlunit.jar;lib\javax.mail.jar;lib\jcommon.jar;lib\jedit.jar;lib\jfreechart.jar;lib\jide-oss.jar;bin gui.MainApp
 
 	
 	
