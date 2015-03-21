@@ -3,24 +3,20 @@ package records;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-
 /**
- * The Class Logs contains the users login informations
- * 			and holds the participation data.
+ * The Class Logs contains the users login informations and holds the 
+ * participation data.
  * 
- * @authors: 
- * 	Phileas Hocquard 
- * 	Max Karasinski
+ * @author Phileas Hocquard
+ * @author Max Karasinski
  * 
  */
 public class Logs {
 
-
 	/** True if logged in */
 	public static boolean loggedin = false;
 
-	/** The participation data. */
-	private static HashMap<String,TreeMap<String,String>> participationData =   new HashMap<String,TreeMap<String,String>>();
+	private static HashMap<String,TreeMap<String,String>> participationData = new HashMap<String,TreeMap<String,String>>();
 
 	/** The user's password. */
 	public static String pass = "";
@@ -52,6 +48,12 @@ public class Logs {
 		return participationData;
 	}
 
+	/**
+	 * Gets (module, last accessed) pairs for a given student.
+	 * 
+	 * @param email a student's email address
+	 * @return the student's participation data
+	 */
 	public static TreeMap<String, String> getStudentData(String email) {
 		return participationData.get(email);
 	}

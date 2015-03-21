@@ -6,7 +6,8 @@ import java.util.TreeMap;
 
 /**
  * Class to store basic student information, as retrieved from the server via
- * the StudentData jar.
+ * the StudentData jar. Once they have been loaded, the student's exam results are
+ * also stored here.
  * 
  * @author Max Karasinski
  */
@@ -19,7 +20,7 @@ public class Student {
 	private Map<String, Result> results = new TreeMap<String, Result>();
 
 	/**
-	 * Constructor.
+	 * Creates a Student object with the provided number, name, email, tutor email.
 	 * 
 	 * @param num the student's ID number
 	 * @param tEmail the student's tutor's email address
@@ -34,7 +35,7 @@ public class Student {
 	}
 
 	/**
-	 * @return the number for this student
+	 * @return the student's number
 	 */
 	public String getNumber() {
 		return number;

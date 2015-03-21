@@ -119,11 +119,21 @@ public class StudentRecords extends Observable {
 		return markingCodes.get(markingCode);
 	}
 
+	/**
+	 * Returns true if any marking codes have been loaded.
+	 * 
+	 * @return true if any marking codes have been loaded
+	 */
 	public boolean hasCodes() {
 		if (markingCodes.size() > 0) return true;
 		return false;
 	}
 
+	/**
+	 * Returns true if any Assessments have been loaded.
+	 * 
+	 * @return true if any Assessments have been loaded
+	 */
 	public boolean hasAssessments() {
 		if (assessments.size() > 0) return true;
 		return false;
@@ -147,10 +157,25 @@ public class StudentRecords extends Observable {
 		notifyObservers(assessments);
 	}
 
+	/**
+	 * Removes an Assessment from the list.
+	 * 
+	 * @param name the Assessment's toString()
+	 */
 	public void removeAssessment(String name) {
 		assessments.remove(name);
 	}
 
+	/**
+	 * Returns the Assessment with the provided name.
+	 * 
+	 * @param assesment the assessment's toString()
+	 * @return the corresponding Assessment object
+	 */
+	public Assessment getAssessment(String assesment){
+		return assessments.get(assesment);
+	}
+	
 	/**
 	 * Return size of students.
 	 * 
@@ -169,9 +194,6 @@ public class StudentRecords extends Observable {
 		return assessments.size();
 	}
 
-	public Assessment getAssessment(String assesment){
-		return assessments.get(assesment);
-	}
 	/**
 	 * Prints all the students.
 	 */

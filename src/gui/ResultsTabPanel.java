@@ -59,10 +59,17 @@ public class ResultsTabPanel extends JPanel {
 	 * otherwise.
 	 */
 	class CloseButtonListener extends MouseAdapter {
+		
+		/**
+		 * Makes the close button red.
+		 */
 		public void mouseEntered(MouseEvent e) {
 			closeButton.setIcon(hoverImg);				
 		}
 		
+		/**
+		 * Makes the close button black.
+		 */
 		public void mouseExited(MouseEvent e) {
 			closeButton.setIcon(noHoverImg);
 		}

@@ -35,11 +35,11 @@ import records.StudentRecords;
 import com.jidesoft.swing.CheckBoxList;
 
 /**
- * Class to create a window for sending a customizable e-mail to a number of students and to send their respectable marks
+ * Class to create a window for sending a customizable e-mail to a number of 
+ * students and to send their respectable marks.
  * 
  * @author Nikita Vorontsov
  */
-
 public class EmailWindow extends JFrame {
 
 	private Settings settings;
@@ -83,8 +83,10 @@ public class EmailWindow extends JFrame {
 	private int auth;
 
 	/**
-	 * Constructs the Email Window using a current student records database and the current .properties file
-	 * @param sr The current Students on Record
+	 * Constructs the Email Window using a current student records database and 
+	 * the current .properties file.
+	 * 
+	 * @param sr the current Students on Record
 	 * @param set the current settings stored in the .properties file
 	 */
 	public EmailWindow(StudentRecords sr, Settings set) {
@@ -99,7 +101,7 @@ public class EmailWindow extends JFrame {
 	/**
 	 * Constructs the first panel of the Emailwindow. 
 	 */
-	public void createFirstPanel() {
+	private void createFirstPanel() {
 		firstPanel = new JPanel();
 		firstPanel.setLayout(new BorderLayout());
 		createStudentPanel();
@@ -111,10 +113,10 @@ public class EmailWindow extends JFrame {
 
 	/**
 	 * Creates the CheckBoxList of Students and places into ScrollPane.
-	 * Implements API from  
-	 * <a href="http://www.jidesoft.com/javadoc/com/jidesoft/swing/CheckBoxList.html">Jidesoft API</a>.
+	 * Implements this API from  
+	 * <a href="http://www.jidesoft.com/javadoc/com/jidesoft/swing/CheckBoxList.html">Jidesoft</a>.
 	 */
-	public void createStudentPanel() {
+	private void createStudentPanel() {
 		studentPanel = new JPanel();
 		studentPanel.setLayout(new BorderLayout());
 
@@ -154,9 +156,10 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates a Panel containing a Header and Footer Text Areas, with their respective JLabels
+	 * Creates a Panel containing a Header and Footer Text Areas, with their 
+	 * respective JLabels.
 	 */
-	public void createTextPanel() {
+	private void createTextPanel() {
 		headerFooterPanel = new JPanel();
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -199,11 +202,10 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates a panel containing the "Next" Button.
-	 * Implements an actionListener which on (Next) 
-	 * click changes the Panel to the Second Panel
+	 * Creates a panel containing the "Next" Button. Implements an actionListener 
+	 * which on (Next) click changes the Panel to the Second Panel.
 	 */
-	public void createNextPanel() {
+	private void createNextPanel() {
 		bottomButtonPanel = new JPanel();
 		next = new JButton("Next");
 		headerText = "";
@@ -231,9 +233,9 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates the Second Panel to be opened on (Next) click
+	 * Creates the Second Panel to be opened on (Next) click.
 	 */
-	public void createSecondPanel() {
+	private void createSecondPanel() {
 		secondPanel = new JPanel();
 		secondPanel.setLayout(new BorderLayout());
 		createPreview();
@@ -246,9 +248,9 @@ public class EmailWindow extends JFrame {
 	/**
 	 * Creates the panel containing the preview of the email to be sent. 
 	 * Takes all results currently on database for the students selected
-	 * and adds to an overall preview panel
+	 * and adds to an overall preview panel.
 	 */
-	public void createPreview() {
+	private void createPreview() {
 		setTitle("Email Preview");
 		previewPanel = new JPanel(new BorderLayout());
 		previewPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -267,10 +269,10 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates a new Email Progress Monitor with a Background Thread that takes care of sending emails
-	 * and updating the Progress Monitor. 
+	 * Creates a new Email Progress Monitor with a Background Thread that takes 
+	 * care of sending emails and updating the Progress Monitor. 
 	 */
-	public void doEmailMonitor() {
+	private void doEmailMonitor() {
 		final ProgressMonitor emailMonitor = new ProgressMonitor(EmailWindow.this, "Sending emails...", "", 0, 100);
 		new SwingWorker<Void, Void>() {
 			protected Void doInBackground() throws Exception {
@@ -326,7 +328,7 @@ public class EmailWindow extends JFrame {
 	 * progress of the Emails being sent if "SEND" is pressed.
 	 * On (Previous) click, opens the previous panel.
 	 */
-	public void createPrevSend(){
+	private void createPrevSend(){
 		prevSendPanel = new JPanel();
 		prev = new JButton("Previous");
 		prev.addActionListener(new ActionListener() {
@@ -354,13 +356,15 @@ public class EmailWindow extends JFrame {
 	}
 
 	/**
-	 * Creates the text to be sent in the email by combining the header, footer and results of a certain student.
+	 * Creates the text to be sent in the email by combining the header, footer
+	 * and results of a certain student.
+	 * 
 	 * @param results the collection of results of a student.
 	 * @param header the text to come before the results taken from the Header Text Area.
 	 * @param footer the text to come after the results, taken from the Footer Text Area.
 	 * @return the text String for the Email Message.
 	 */
-	public String createEmailText(Collection<Result> results, String header, String footer) {
+	private String createEmailText(Collection<Result> results, String header, String footer) {
 		StringBuilder previewString = new StringBuilder();
 		String outputString;
 		
@@ -381,7 +385,7 @@ public class EmailWindow extends JFrame {
 
 	/**
 	 * Prompts the user for a username and password and saves as a variable.
-	 * Returns the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL)
+	 * Returns the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL).
 	 * @return the option selected (0 = OK (UserName+ Password saved), 1 = CANCEL)
 	 */
 	private int getAuth() {
