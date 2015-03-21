@@ -16,7 +16,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import records.Logs;
 
 /**
- * Class that Scrapes the data out of keat's and let's the user login to Keats
+ * Class that Scrapes the data out of keat's and lets the user login to Keats
  * and get the participation data's from a given Web link.
  * 
  * @author Phileas Hocquard
@@ -39,23 +39,24 @@ public class Scraper {
 	 * and password. Once Logged in fetch for the participation data htmlpage.
 	 * Add the Users K-number and password in the Logs class if there is a
 	 * successful login.
+	 * 
 	 *Filter the content of the page by line and grab those containing '@'.
 	 * Grab the email and date of each student for each line.
 	 * Gives the participation data to the Logs Object.
 	 *   
 	 * @param url the URL
 	 * @param module the module name
-	 * @param numb the Username's K-number
-	 * @param pass the Password
-	 * @throws FailingHttpStatusCodeException the failing http status code exception
-	 * @throws MalformedURLException the malformed url exception
+	 * @param numb the username's K-number
+	 * @param pass the password
+	 * @throws FailingHttpStatusCodeException the failing HTTP status code exception
+	 * @throws MalformedURLException the malformed URL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
-	 * 
+	 * @see records.Logs
 	 */
 	public Scraper(String url, String module, String numb, String pass) 
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 
-		/*http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
+		/* Test URL : http://keats.kcl.ac.uk/mod/page/view.php?id=886138 */
 
 		webdata = url;
 		user =  numb;

@@ -13,7 +13,7 @@ import java.util.TreeMap;
  */
 public class Logs {
 
-	/** True if logged in */
+	/** True if logged in. */
 	public static boolean loggedin = false;
 
 	private static HashMap<String,TreeMap<String,String>> participationData = new HashMap<String,TreeMap<String,String>>();
