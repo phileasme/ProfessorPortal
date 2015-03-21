@@ -8,14 +8,17 @@ Commands assume that you have cloned the repository and have a terminal window o
 Linux:
 
  (once) mkdir bin
- (once) javac -d bin/ -cp src src/*/*.java
+
+ (once) javac -d bin/ -cp lib/StudentData.jar:lib/htmlunit.jar:lib/javax.mail.jar:lib/jcommon.jar:lib/jedit.jar:lib/jfreechart.jar:lib/jide-oss.jar src/*/*.java
+
 	java -cp lib/StudentData.jar:lib/htmlunit.jar:lib/javax.mail.jar:lib/jcommon.jar:lib/jedit.jar:lib/jfreechart.jar:lib/jide-oss.jar:bin gui.MainApp
 
 
 Windows:
 
  (once) MD bin
- (once) javac -d bin\ -cp src src\*\*.java
+ (once) javac -d bin\ -cp lib\StudentData.jar;lib\htmlunit.jar;lib\javax.mail.jar;lib\jcommon.jar;lib\jedit.jar;lib\jfreechart.jar;lib\jide-oss.jar src\*\*.java
+
 	java -cp lib\StudentData.jar;lib\htmlunit.jar;lib\javax.mail.jar;lib\jcommon.jar;lib\jedit.jar;lib\jfreechart.jar;lib\jide-oss.jar;bin gui.MainApp
 
 	
