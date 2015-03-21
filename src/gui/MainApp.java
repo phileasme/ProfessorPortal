@@ -314,6 +314,7 @@ public class MainApp extends JFrame {
 	/**
 	 *SearchFilter keeps track of searchText textArea  by using 
 	 *a DocumentListener and updates studentListModel using filteringList().
+	 *@see filteringList()
 	 */
 	class SearchFilter {
 

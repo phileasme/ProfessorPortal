@@ -8,15 +8,14 @@ import java.util.TreeMap;
  * The Class Logs contains the users login informations
  * 			and holds the participation data.
  * 
- * @authors: 
- * 	Phileas Hocquard 
- * 	Max Karasinski
+ * @author: Phileas Hocquard
+ *  @author: Max Karasinski
  * 
  */
 public class Logs {
 
 
-	/** True if logged in */
+	/**  True if logged in. */
 	public static boolean loggedin = false;
 
 	/** The participation data. */
@@ -52,6 +51,13 @@ public class Logs {
 		return participationData;
 	}
 
+	
+	/**
+	 * Gets the student data.
+	 *
+	 * @param email the email of the student
+	 * @return the student data
+	 */
 	public static TreeMap<String, String> getStudentData(String email) {
 		return participationData.get(email);
 	}
