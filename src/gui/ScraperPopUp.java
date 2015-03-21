@@ -25,44 +25,44 @@ import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
  *	Displays a interface where the user enters
  * 	the partipation data URL of the students and module it corresponds to.
  *	Displays the request of the K-number and password,
- * 	if the user is not already logged in within the App.
+ * 	if the user is not already logged in within the Application.
  * 
  * @author Phileas Hocquard
  */
 public class ScraperPopUp extends JFrame{
 
-	/** The jp field. */
+	/** The field. */
 	private JPanel jpField; 
 	
-	/** The jp confirmation. */
+	/** The confirmation Panel. */
 	private JPanel jpConfirmation;
 
-	/** The jl url. */
+	/** The URL label */
 	private JLabel jlUrl =  new JLabel("Url of the participant data: ") ;
 	
-	/** The jl module name. */
+	/** The module name. */
 	private JLabel jlModuleName= new JLabel("Module name: ");
 	
-	/** The jl knumb. */
+	/** The K-numb label*/
 	private JLabel jlKnumb = new JLabel("K-number: ");
 	
-	/** The jl pwd. */
+	/** The Password label. */
 	private JLabel jlPwd = new JLabel("Password: "); 
 
 
-	/** The jturl. */
+	/** The URL text field */
 	private JTextField jturl= new JTextField();
 	
-	/** The jt module name. */
+	/** The Module name text field */
 	private JTextField jtModuleName= new JTextField();
 	
-	/** The jt knumb. */
+	/** The k-number text field */
 	private JTextField jtKnumb = new JTextField();
 	
-	/** The jtpassword. */
+	/** The password password field */
 	private JPasswordField jtpassword = new JPasswordField(20);
 
-	/** The jbconfirm. */
+	/** The submit button */
 	private JButton jbconfirm = new JButton("Confirm");
 	
 	/** The log. */
@@ -72,6 +72,7 @@ public class ScraperPopUp extends JFrame{
 	/**
 	 * Instantiates a new scrapper pop up.
 	 * This will display the JFrame with content.
+	 * 
 	 */
 	public ScraperPopUp(){
 		super(" Participant Data ");
@@ -123,10 +124,17 @@ public class ScraperPopUp extends JFrame{
 		
 			/**
 			 * ActionListener which grabs the user input from the TextFields
-			 *If the user is already logged in, the credentials are took
-			 *from the object Logs.
+			 * If the user is already logged in, the credentials are took
+			 * from the object Logs.
+			 *
+			 * @param arg0 the argument of the ActionEvent
+			 * @throws FailingHttpStatusCodeException Signals that a 
+			 * 	failing HTTP request exception has occurred.
+			 * @throws IOException Signals that an I/O exception has occurred.
+			 * @see {@link Logs}
 			 */
 			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				if(arg0.getSource() == jbconfirm){
